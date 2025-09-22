@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { url } = require('../src/services/authServices');
+const { url, createUrl } = require('../src/services/authServices');
 
 jest.mock('axios');
 
@@ -14,7 +14,7 @@ beforeAll(()=>{
 describe('Test generates url', () => {
     it('generates url',  () => {
         const expected = 'https://test-www.tax.service.gov.uk/oauth/authorize?response_type=code&client_id=mock-client-id&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=read%3Avat%20write%3Avat';
-        const generated = url(); 
+        const generated = createUrl(); 
 
         console.log('CLIENT_ID:', process.env.CLIENT_ID);
         console.log('REDIRECT_URI:', process.env.REDIRECT_URI);
