@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { exchangeForToken } = require('../src/services/authServices');
+const { getTokenData } = require('../src/services/authServices');
 
 jest.mock('axios');
 
@@ -15,7 +15,7 @@ describe('Test exchange token auth', () => {
     });
 
     const code = 'mock-authorization-code';
-    const tokenData = await exchangeForToken(code);
+    const tokenData = await getTokenData(code);
 
     console.log('Token Data:', tokenData)
 
@@ -25,7 +25,7 @@ describe('Test exchange token auth', () => {
       expires_in: 3600
     });
     expect(axios.post).toHaveBeenCalledWith(
-      'https://test-www.tax.service.gov.uk/oauth/token',
+      'https://test-api.service.hmrc.gov.uk/oauth/token',
       expect.objectContaining({
         grant_type: 'authorization_code',
         client_id: process.env.CLIENT_ID,
@@ -42,6 +42,6 @@ describe('Test exchange token auth', () => {
 
     const code = 'mock-authorization-code';
 
-    await expect(exchangeForToken(code)).rejects.toThrow('Failed: exchange token');
+    await expect(getTokenData(code)).rejects.toThrow('Failed: exchange token');
   });
 });

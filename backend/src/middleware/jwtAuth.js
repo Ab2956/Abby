@@ -1,4 +1,4 @@
-const {verifyJWT} = require('../services/jwtServices');
+const jwtService = require('../services/jwtServices');
 
 function jwtVerification(req, res, next){
 
@@ -8,7 +8,7 @@ function jwtVerification(req, res, next){
     if(!token){
         return res.status(401).json({error: "No token"})
     }
-    const user = verifyJWT(token);
+    const user = jwtService.verifyJWT(token);
 
     if(!user){
         return res.status(403).json({error: "Invalid token"})
