@@ -1,17 +1,17 @@
 const axios = require('axios');
-
-class oauthClient{
-    constructor(baseUrl){
+// helper class for authentication
+class oauthClient {
+    constructor(baseUrl) {
         this.client = axios.create({
             baseURL: baseUrl
         });
     }
-    async get(path, headers = {}){
-        const response = await this.client.get(path,{headers});
+    async get(path, headers = {}) {
+        const response = await this.client.get(path, { headers });
         return response.data;
     };
-    async post(path, data = {}, headers ={}){
-        const response = await this.client.post(path,data,{headers});
+    async post(path, data = {}, headers = {}) {
+        const response = await this.client.post(path, data, { headers });
         return response.data;
     };
 }

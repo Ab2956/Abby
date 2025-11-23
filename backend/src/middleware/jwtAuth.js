@@ -16,5 +16,5 @@ function jwtVerification(req, res, next){
         req.user = user;
         next();
 }
-module.exports = jwtVerification;
+module.exports = {jwtVerification};
 

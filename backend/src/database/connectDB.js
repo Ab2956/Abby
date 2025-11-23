@@ -2,22 +2,32 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://abrows_db:iLX5GvZZv9JbCgg8@abby-cluster.bzck6hi.mongodb.net/?retryWrites=true&w=majority&appName=abby-cluster";
 
 const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+    }
 });
 
-// connection to database.
-async function run() {
-  try {
-    await client.connect();
-    await client.db("admin").command({ ping: 1 });
-    console.log("Connected to database...")
-  } finally {
+let dbInstance = null;
+// Connect once and reuse the DB instance
+async function connectDB() {
+    if (dbInstance) return dbInstance;
 
-    await client.close();
-  }
+    try {
+        await client.connect();
+        dbInstance = client.db("abby_database");
+        console.log("Connected to MongoDB");
+        return dbInstance;
+    } catch (err) {
+        console.error("MongoDB connection error:", err);
+        throw err;
+    }
 }
-run().catch(console.dir);
+
+async function getCollection(name) {
+    const db = await connectDB();
+    return db.collection(name);
+}
+
+module.exports = { connectDB, getCollection };
