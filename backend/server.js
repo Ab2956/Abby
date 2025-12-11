@@ -6,7 +6,7 @@ const logibnRoutes = require('../backend/src/routes/login');
 
 
 const app = express();
-const openDbConnection = db.connectDB();
+const openDbConnection = db.createConnection();
 app.use(express.json());
 
 app.get('/', (req, res) => {

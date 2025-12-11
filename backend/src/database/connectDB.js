@@ -11,7 +11,7 @@ const client = new MongoClient(uri, {
 
 let dbInstance = null;
 // Connect once and reuse the DB instance
-async function connectDB() {
+async function createConnection() {
     if (dbInstance) return dbInstance;
 
     try {
@@ -24,10 +24,14 @@ async function connectDB() {
         throw err;
     }
 }
+async function closeConnection() {
+    await client.close();
+    dbInstance = null;
+}
 
 async function getCollection(name) {
-    const db = await connectDB();
+    const db = await createConnection();
     return db.collection(name);
 }
 
-module.exports = { connectDB, getCollection };
+module.exports = { createConnection, getCollection, closeConnection };

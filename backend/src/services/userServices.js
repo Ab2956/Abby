@@ -13,10 +13,9 @@ class UserServices {
             }
             const existing = await userCollection.findOne({ email });
             if (existing) {
-                throw new Error('email already exists');
+                throw new Error("email already exists");
             }
             const user = new User({
-                user_name,
                 email,
                 password,
                 refresh_token,
@@ -26,7 +25,8 @@ class UserServices {
             return await userCollection.insertOne(user);
 
         } catch (error) {
-
+            console.log("AddUser", error);
+            throw error;
         }
     }
 }

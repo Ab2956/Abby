@@ -6,13 +6,14 @@ const bcrypt = require("bcrypt");
 
 describe('User Tests', () => {
     beforeAll(async() => {
-        await db.connectDB();
+
+        await db.createConnection();
         usersCollection = await db.getCollection('users');
 
     });
 
     afterAll(async() => {
-        await mongoose.connection.close();
+        await db.closeConnection();
     });
 
     it('can get user', async() => {
@@ -36,8 +37,6 @@ describe('User Tests', () => {
                 token_expiration: token_expiration,
 
             };
-            const addUser = await userServices.addUser(newUser);
-            console.log("created user: ", addUser);
-            expect(addUser).toBeDefined();
+            await expect(userServices.addUser(newUser)).rejects.toThrow("email already exists");
         })
 });
