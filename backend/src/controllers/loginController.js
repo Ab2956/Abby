@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const { getCollection } = require('../database/connectDB');
 const jwtServices = require('../services/jwtServices');
+const userServices = require('../services/userServices');
 
 async function login(req, res) {
     const { email, password } = req.body;
@@ -30,17 +31,19 @@ async function getProfile(req, res) {
 
     res.json({ email: user.email });
 }
+
+
 async function createAccount(req, res) {
     const { email, password } = req.body;
+    const userData = { email, password };
 
     try {
+        userServices.addUser(userData);
+        res.status(200);
 
     } catch (error) {
-
+        throw error;
     }
-
-
-
 };
 
 module.exports = { createAccount, login, getProfile };

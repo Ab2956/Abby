@@ -1,8 +1,6 @@
 require('dotenv').config();
 const db = require('../src/database/connectDB');
 const userServices = require('../src/services/userServices');
-const mongoose = require('mongoose');
-const bcrypt = require("bcrypt");
 
 describe('User Tests', () => {
     beforeAll(async() => {
@@ -23,20 +21,31 @@ describe('User Tests', () => {
             expect(users).toBeDefined();
 
         }),
-        it('can create a user', async() => {
+        it('can throw error for existing email', async() => {
             const email = "adambrows@gmail.com";
             const password = "hello";
-            const hashedpass = await bcrypt.hash(password, 10);
             const token_expiration = '';
             const refresh_token = '';
 
             const newUser = {
                 email: email,
-                password: hashedpass,
+                password: password,
                 refresh_token: refresh_token,
                 token_expiration: token_expiration,
 
             };
             await expect(userServices.addUser(newUser)).rejects.toThrow("email already exists");
+        }),
+        it('can create user with email and password', async() => {
+            const email = "helloworld@gmail.com";
+            const password = "password";
+
+            const newUser = {
+                email: email,
+                password: password,
+
+            }
+            await userServices.addUser(newUser);
+
         })
 });
