@@ -13,11 +13,10 @@ describe('User Tests', () => {
     });
 
     afterEach(async () => {
-        // cleanup test user if it was created
         try {
             await usersCollection.deleteOne({ email: 'helloworld@gmail.com' });
         } catch (err) {
-            // ignore cleanup errors
+            
         }
     });
 

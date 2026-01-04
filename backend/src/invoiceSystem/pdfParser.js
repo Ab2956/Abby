@@ -1,4 +1,4 @@
-const InvoiceParser = require('./InvoiceParser');
+const InvoiceParser = require('./invoiceParser');
 
 
 class PdfParser extends InvoiceParser {
