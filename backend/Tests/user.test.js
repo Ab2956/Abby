@@ -2,12 +2,23 @@ require('dotenv').config();
 const db = require('../src/database/connectDB');
 const userServices = require('../src/services/userServices');
 
+let usersCollection;
+
 describe('User Tests', () => {
     beforeAll(async() => {
 
         await db.createConnection();
         usersCollection = await db.getCollection('users');
 
+    });
+
+    afterEach(async () => {
+        // cleanup test user if it was created
+        try {
+            await usersCollection.deleteOne({ email: 'helloworld@gmail.com' });
+        } catch (err) {
+            // ignore cleanup errors
+        }
     });
 
     afterAll(async() => {
