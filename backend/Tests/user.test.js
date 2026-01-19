@@ -34,12 +34,14 @@ describe('User Tests', () => {
         it('can throw error for existing email', async() => {
             const email = "adambrows@gmail.com";
             const password = "hello";
+            const vrn = "AB123456C";
             const token_expiration = '';
             const refresh_token = '';
 
             const newUser = {
                 email: email,
                 password: password,
+                vrn: vrn,
                 refresh_token: refresh_token,
                 token_expiration: token_expiration,
 
@@ -49,10 +51,12 @@ describe('User Tests', () => {
         it('can create user with email and password', async() => {
             const email = "helloworld@gmail.com";
             const password = "password";
+            const vrn = "XY987654Z";
 
             const newUser = {
                 email: email,
                 password: password,
+                vrn: vrn
 
             }
             await userServices.addUser(newUser);

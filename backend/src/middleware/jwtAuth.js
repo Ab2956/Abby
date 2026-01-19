@@ -8,13 +8,14 @@ function jwtVerification(req, res, next){
     if(!token){
         return res.status(401).json({error: "No token"})
     }
-    const user = jwtService.verifyJWT(token);
 
-    if(!user){
-        return res.status(403).json({error: "Invalid token"})
-    }
-        req.user = user;
+   try {
+    const decoded = jwtService.verifyJWT(token, process.env.JWT_SECRET);
+        req.user = decoded ;
         next();
+    } catch (error) {
+        return res.status(403).json({error: "Invalid token"});
+    }
 }
 module.exports = {jwtVerification};
 

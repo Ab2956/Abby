@@ -2,13 +2,14 @@ const bcrypt = require('bcrypt');
 const { getCollection } = require('../database/connectDB');
 const jwtServices = require('../services/jwtServices');
 const userServices = require('../services/userServices');
+const dataHandler = require('../database/dataHandler');
+const authController = require('../controllers/authController');
 
 async function login(req, res) {
     const { email, password } = req.body;
 
     try {
-        const users = await getCollection('users');
-        let user = await users.findOne({ email });
+        let user = await dataHandler.findUser({ email });
         if (!user) {
             res.send("no user create an account")
         } else {
@@ -18,24 +19,23 @@ async function login(req, res) {
             }
 
         }
-        const token = jwtServices.createJWT(user.userId);
-        res.json(token);
+        const token = jwtServices.createJWT(user.email, user._id.toString());
+        res.json({token});
 
     } catch (error) {
         res.status(500);
     }
 };
 async function getProfile(req, res) {
-    const users = getCollection('users');
-    const user = await users.findOne({ email: req.user.email });
+    const user = await dataHandler.findUser({ email: req.user.email });
 
     res.json({ email: user.email });
 }
 
 
 async function createAccount(req, res) {
-    const { email, password } = req.body;
-    const userData = { email, password };
+    const { email, password, vrn } = req.body;
+    const userData = { email, password, vrn };
 
     try {
         userServices.addUser(userData);

@@ -3,7 +3,7 @@ const OAuthClient = require('../utils/oauthClient');
 
 module.exports = {
 
-    createUrl: () => {
+    createUrl: (state) => {
         const redirectUri = process.env.REDIRECT_URI;
         const client_id = process.env.CLIENT_ID;
         const scopes = [
@@ -17,7 +17,8 @@ module.exports = {
         return `https://test-api.service.hmrc.gov.uk/oauth/authorize?response_type=code` +
             `&client_id=${client_id}` +
             `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-            `&scope=${scope}`;
+            `&scope=${scope}` +
+            `&state=${encodeURIComponent(state)}`;
     },
 
     getTokenData: async(code) => {
@@ -45,11 +46,11 @@ module.exports = {
         const client = new OAuthClient("https://test-api.service.hmrc.gov.uk");
         const params = new URLSearchParams({
             grant_type: "refresh_token",
-            client_id: CLIENT_ID,
-            client_secret: CLIENT_SECRET,
+            client_id: process.env.CLIENT_ID,
+            client_secret: process.env.CLIENT_SECRET,
             refresh_token: refreshToken
         });
-        return await client.get("/oauth/token", params, {
+        return await client.post("/oauth/token", params, {
             'Content-Type': 'application/x-www-form-urlencoded'
         });
     },

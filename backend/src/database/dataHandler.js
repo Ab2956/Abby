@@ -1,6 +1,6 @@
 const db = require('../database/connectDB');
-const { get } = require('../models/UserSchema');
-
+const { ObjectId } = require('mongodb');
+// data layer for database functions 
 class DatabaseHandler {
     constructor() {};
 
@@ -17,6 +17,12 @@ class DatabaseHandler {
         const userCollection = await this.getUsers();
         return await userCollection.insertOne(user);
     }
-
+    async updateUser(userId, updateData) {
+        const userCollection = await this.getUsers();
+        return await userCollection.updateOne(
+            { _id: new ObjectId(userId)},
+            { $set: updateData }
+        );
+    }
 }
-module.exports = new DatabaseHandler;
+module.exports = new DatabaseHandler();

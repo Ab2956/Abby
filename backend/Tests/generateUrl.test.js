@@ -14,7 +14,7 @@ beforeAll(() => {
 
 describe('Test generates url', () => {
     it('generates url', () => {
-        const expected = `https://test-api.service.hmrc.gov.uk/oauth/authorize?response_type=code&client_id=${process.env.CLIENT_ID}&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=read%3Avat%20write%3Avat%20read%3Aself-assessment%20write%3Aself-assessment`;
+        const expected = `https://test-api.service.hmrc.gov.uk/oauth/authorize?response_type=code&client_id=${process.env.CLIENT_ID}&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=read%3Avat%20write%3Avat%20read%3Aself-assessment%20write%3Aself-assessment&state=undefined`;
         const generated = createUrl();
 
         console.log('CLIENT_ID:', process.env.CLIENT_ID);

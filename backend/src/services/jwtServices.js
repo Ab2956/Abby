@@ -5,7 +5,7 @@ const SECRET = process.env.JWT_SECRET;
 class jwtServices{
     constructor(){}
 
-   static createJWT(userId,){
+   static createJWT(userId ){
     return jwt.sign(
         {userId}, 
         SECRET, 
