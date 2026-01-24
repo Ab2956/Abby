@@ -9,13 +9,14 @@ jest.mock('axios');
 describe("Test JWT", () => {
     it("can create token", () => {
         const userId = '1';
-        const token = jwtServices.createJWT(userId);
+        const email = 'test@example.com';
+        const token = jwtServices.createJWT({id: userId, email: email});
 
         expect(typeof token).toBe('string');
 
         const decoded = jwt.decode(token);
 
-        expect(decoded.userId).toBe(userId);
+        expect(decoded.payload.id).toBe(userId);
         expect(decoded.exp).toBeDefined();
         expect(decoded.iat).toBeDefined();
 
@@ -23,13 +24,14 @@ describe("Test JWT", () => {
 
     it("can verify token", () => {
         const userId = '1';
-        const token = jwtServices.createJWT(userId);
+        const email = 'test@example.com';
+        const token = jwtServices.createJWT({id: userId, email: email});
         console.log(token);
 
         const verifiedJWT = jwtServices.verifyJWT(token);
         console.log(verifiedJWT);
 
         expect(verifiedJWT).not.toBeNull();
-        expect(verifiedJWT.userId).toBe(userId);
+        expect(verifiedJWT.payload.id).toBe(userId);
     });
 });

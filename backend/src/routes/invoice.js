@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const upload = require("../middleware/fileUpload");
 const InvoiceController = require("../controllers/invoiceController");
+const { jwtVerification } = require('../middleware/jwtAuth');
 
 const invoiceController = new InvoiceController();
 
-router.post('/scanInvoice', upload.single('file'), async (req, res) => {
+router.post('/scanInvoice',jwtVerification, upload.single('file'), async (req, res) => {
 	try {
 		if (!req.file) {
 			return res.status(400).json({ 
@@ -13,7 +14,6 @@ router.post('/scanInvoice', upload.single('file'), async (req, res) => {
 				message: 'No file uploaded' 
 			});
 		}
-
 		// Handle file upload using the controller with strategy pattern
 		const result = await invoiceController.handleUpload(req.file);
 		

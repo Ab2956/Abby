@@ -1,3 +1,4 @@
+const InoviceSchema = require("../models/InvoiceModel");
 const PdfParser = require("../invoiceSystem/pdfParser");
 const ImageParser = require("../invoiceSystem/imageParser");
 const userServices = require("../services/userServices");
@@ -24,10 +25,9 @@ class InvoiceController {
                 const parsedFile = await imageParser.parseFile();
             }
             
-            const fileToAdd = {
-                file: parsedFile,
-
-             }
+            new InvoiceSchema = {
+               // parsed file to be formatted to schema
+            };
 
              await userServices.addInvoice(fileToAdd);
 

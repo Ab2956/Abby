@@ -1,9 +1,7 @@
 const bcrypt = require('bcrypt');
-const { getCollection } = require('../database/connectDB');
 const jwtServices = require('../services/jwtServices');
 const userServices = require('../services/userServices');
 const dataHandler = require('../database/dataHandler');
-const authController = require('../controllers/authController');
 
 async function login(req, res) {
     const { email, password } = req.body;
@@ -11,15 +9,15 @@ async function login(req, res) {
     try {
         let user = await dataHandler.findUser({ email });
         if (!user) {
-            res.send("no user create an account")
+            res.status(404).json({ error: "No user found, please create an account" });
         } else {
             const validPassword = await bcrypt.compare(password, user.password);
             if (!validPassword) {
-                return res.status(401);
+                return res.status(401).json({ error: "Invalid password" });
             }
 
         }
-        const token = jwtServices.createJWT(user.email, user._id.toString());
+        const token = jwtServices.createJWT({email: user.email, id: user._id.toString()});
         res.json({token});
 
     } catch (error) {
