@@ -1,3 +1,9 @@
+const PdfParser = require("../invoiceSystem/pdfParser");
+const ImageParser = require("../invoiceSystem/imageParser");
+const userServices = require("../services/userServices");
+const pdfParser = new PdfParser();
+const imageParser = new ImageParser();
+
 class InvoiceController {
     constructor() {}
 
@@ -7,20 +13,29 @@ class InvoiceController {
      * @returns {Promise<Object>} Upload result
      */
     async handleUpload(file) {
+
         try {
             if (!file || !file.buffer) {
                 throw new Error('No file provided');
             }
+            if(file.mimetype == "application/pdf") {
+                const parsedFile = await pdfParser.parseFile();
+            } else if(file.mimetype.startsWith("image/")) {
+                const parsedFile = await imageParser.parseFile();
+            }
+            
+            const fileToAdd = {
+                file: parsedFile,
+
+             }
+
+             await userServices.addInvoice(fileToAdd);
 
             // TODO: Implement invoice parsing logic here using strategy pattern
+            // if file is PDF, use PDFParser and if file is image, use ImageParser
+            // add parsed format into the users database collection
 
-            return {
-                success: true,
-                filename: file.originalname,
-                mimetype: file.mimetype,
-                size: file.size,
-                message: 'File uploaded successfully'
-            };
+            return {};
         } catch (error) {
             throw new Error(`File upload failed: ${error.message}`);
         }

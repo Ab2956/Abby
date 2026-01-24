@@ -3,10 +3,10 @@ const InvoiceParser = require('./invoiceParser');
 
 class PdfParser extends InvoiceParser {
 
-    parseFile() {
+    async parseFile() {
 
         return
     }
 }
 
-module.exports = PdfParser;
+module.exports = {PdfParser};

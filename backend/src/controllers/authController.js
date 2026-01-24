@@ -1,6 +1,6 @@
 const authServices = require('../services/authServices');
 const userServices = require('../services/userServices.js');
-const User = require('../models/UserSchema.js');
+const bcrypt = require('bcrypt');
 const redisCache = require("../utils/redisCache.js");
 const crypto = require('crypto');
 
@@ -49,10 +49,11 @@ exports.callback = async(req, res) => {
 
     const tokenData = await authServices.getTokenData(code);
     const { access_token, refresh_token, expires_in } = tokenData;
+    const hashed_refresh = await bcrypt.hash(refresh_token, 10);
 
     const updateData = {
         hrmc_connected: true,
-        refresh_token: refresh_token,
+        refresh_token: hashed_refresh,
         token_expiration: Date.now() + (expires_in * 1000)
     };
     await userServices.updateUser(userId, updateData);

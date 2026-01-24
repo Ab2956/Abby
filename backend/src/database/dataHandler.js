@@ -24,5 +24,12 @@ class DatabaseHandler {
             { $set: updateData }
         );
     }
+    async addInvoice(userId, invoiceData) {
+        const userCollection = await this.getUsers();
+        return await userCollection.updateOne(
+            { _id: new ObjectId(userId) },
+            { $push: { invoices: invoiceData } }
+        );
+    }
 }
 module.exports = new DatabaseHandler();
