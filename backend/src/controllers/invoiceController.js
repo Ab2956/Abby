@@ -1,5 +1,5 @@
 const InoviceSchema = require("../models/InvoiceModel");
-const PdfParser = require("../invoiceSystem/pdfParser");
+const PdfParser = require("../invoiceSystem/PdfParser");
 const ImageParser = require("../invoiceSystem/imageParser");
 const userServices = require("../services/userServices");
 const pdfParser = new PdfParser();
@@ -19,17 +19,17 @@ class InvoiceController {
             if (!file || !file.buffer) {
                 throw new Error('No file provided');
             }
-            if(file.mimetype == "application/pdf") {
+            if (file.mimetype == "application/pdf") {
                 const parsedFile = await pdfParser.parseFile();
-            } else if(file.mimetype.startsWith("image/")) {
+            } else if (file.mimetype.startsWith("image/")) {
                 const parsedFile = await imageParser.parseFile();
             }
-            
+
             new InvoiceSchema = {
-               // parsed file to be formatted to schema
+                // parsed file to be formatted to schema
             };
 
-             await userServices.addInvoice(fileToAdd);
+            await userServices.addInvoice(fileToAdd);
 
             // TODO: Implement invoice parsing logic here using strategy pattern
             // if file is PDF, use PDFParser and if file is image, use ImageParser

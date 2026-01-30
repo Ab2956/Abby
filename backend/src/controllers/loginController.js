@@ -8,23 +8,25 @@ async function login(req, res) {
 
     try {
         let user = await dataHandler.findUser({ email });
+
         if (!user) {
-            res.status(404).json({ error: "No user found, please create an account" });
+            res.send("no user create an account")
         } else {
             const validPassword = await bcrypt.compare(password, user.password);
             if (!validPassword) {
-                return res.status(401).json({ error: "Invalid password" });
+                return res.status(401);
             }
 
         }
-        const token = jwtServices.createJWT({email: user.email, id: user._id.toString()});
-        res.json({token});
+        const token = jwtServices.createJWT(user.userId);
+        res.json(token);
 
     } catch (error) {
         res.status(500);
     }
 };
 async function getProfile(req, res) {
+
     const user = await dataHandler.findUser({ email: req.user.email });
 
     res.json({ email: user.email });
@@ -32,8 +34,8 @@ async function getProfile(req, res) {
 
 
 async function createAccount(req, res) {
-    const { email, password, vrn } = req.body;
-    const userData = { email, password, vrn };
+    const { email, password } = req.body;
+    const userData = { email, password };
 
     try {
         userServices.addUser(userData);
