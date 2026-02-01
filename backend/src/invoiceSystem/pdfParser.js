@@ -1,12 +1,17 @@
 const InvoiceParser = require('./invoiceParser');
-
+const pdf = require('pdf-parse');
 
 class PdfParser extends InvoiceParser {
 
-    async parseFile() {
+    async parseFile(buffer) {
+        try {
+            const data = await pdf(buffer);
+            return data.text || data.textContent;
 
-        return
+        } catch (error) {
+            throw new Error(`PDF parsing failed: ${error.message}`);
+        }
     }
 }
 
-module.exports = {PdfParser};
+module.exports = { PdfParser };

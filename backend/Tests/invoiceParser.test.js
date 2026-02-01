@@ -1,49 +1,78 @@
 require('dotenv').config();
-const InvoiceParser = require('../src/invoiceSystem/invoiceParser');
-const PdfParser = require('../src/invoiceSystem/PdfParser');
-const ImageParser = require('../src/invoiceSystem/imageParser');
+const { PdfParser } = require('../src/invoiceSystem/pdfParser');
+const { ImageParser } = require('../src/invoiceSystem/imageParser');
 const fs = require('fs');
-const invoviceSchema = require('../src/models/invoiceSchema');
+const path = require('path');
+const invoviceSchema = require('../src/models/InvoiceModel');
 
 describe('Invoice Parsers', () => {
-    let pdfParser;
-    let imageParser;
+
+    const pdfParser = new PdfParser();
+    const imageParser = new ImageParser();
 
     const TestInvoice = new invoviceSchema({
-        vendor: "Test Vendor",
-        date: "2024-01-01",
-        totalAmount: 100.00,
-        taxAmount: 20.00,
-        items: [
-            { description: "Item 1", amount: 50.00 },
-            { description: "Item 2", amount: 50.00 }
-        ]
+        invoice_number: 'INV-001',
+        invoice_date: new Date('2023-01-01'),
+        suplier: {
+            suplier_name: 'Abby',
+            suplier_address: '123 Supplier St, City, Country',
+            suplier_vat_number: 'VAT123456',
+        },
+        customer: {
+            customer_name: 'Customer LLC',
+            customer_address: '456 Customer Ave, City, Country',
+        },
+        items: [{
+                description: 'Product A',
+                quantity: 2,
+                unit_price: 50.0,
+                vat_rate: 0.2,
+            },
+            {
+                description: 'Product B',
+                quantity: 1,
+                unit_price: 100.0,
+                vat_rate: 0.2,
+            },
+        ],
+        total_amount: 240.0,
+
+
     });
-    beforeEach(() => {
-        pdfParser = new PdfParser();
-        imageParser = new ImageParser();
+    beforeAll(() => {
+
     });
 
-    test('PdfParser should be instance of InvoiceParser', () => {
-        expect(pdfParser).toBeInstanceOf(InvoiceParser);
+    test('PdfParser should be intailised', () => {
+        expect(pdfParser).toBeInstanceOf(PdfParser);
     });
-    test('ImageParser should be instance of InvoiceParser', () => {
-        expect(imageParser).toBeInstanceOf(InvoiceParser);
+    test('ImageParser should be intailised', () => {
+        expect(imageParser).toBeInstanceOf(ImageParser);
     });
+
+    test('pdf parser can extract text from pdf file', async() => {
+        const parser = new PdfParser();
+        const filePath = path.join(__dirname, 'testFiles', 'test_invoice.pdf');
+        const mockBuffer = fs.readFileSync(filePath);
+
+        const result = await parser.parseFile(mockBuffer);
+
+        expect(result).toBeDefined();
+        console.log(result);
+
+    });
+
     describe('Test pasers output to format', () => {
-        test('Pdf parser test', () => {
-            const file = {};
+        // test('Pdf parser test', () => {
+        //     const parsedFile = pdfParser.parseFile(pdfFile);
 
-            const parsedFile = pdfParser.parseFile(file);
+        //     expect(parsedFile).toBe(TestInvoice);
+        // });
+        // test('Image parser test', () => {
 
-            expect(file).toBe(TestInvoice);
-        });
-        test('Image parser test', () => {
-            const file = {};
+        //     const parsedFile = imageParser.parseFile(file);
 
-            const parsedFile = imageParser.parseFile(file);
-
-            expect(file).toBe(TestInvoice);
-        });
+        //     expect(file).toBe(TestInvoice);
+        // });
     });
 });

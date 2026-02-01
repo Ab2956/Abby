@@ -1,7 +1,8 @@
 const InoviceSchema = require("../models/InvoiceModel");
-const PdfParser = require("../invoiceSystem/PdfParser");
+const PdfParser = require("../invoiceSystem/pdfParser");
 const ImageParser = require("../invoiceSystem/imageParser");
 const userServices = require("../services/userServices");
+const { parse } = require("dotenv");
 const pdfParser = new PdfParser();
 const imageParser = new ImageParser();
 
@@ -21,19 +22,15 @@ class InvoiceController {
             }
             if (file.mimetype == "application/pdf") {
                 const parsedFile = await pdfParser.parseFile();
+                await userServices.addInvoice(parsedFile);
+
             } else if (file.mimetype.startsWith("image/")) {
                 const parsedFile = await imageParser.parseFile();
+                await userServices.addInvoice(parsedFile);
+
+            } else {
+                throw new Error('Unsupported file type');
             }
-
-            new InvoiceSchema = {
-                // parsed file to be formatted to schema
-            };
-
-            await userServices.addInvoice(fileToAdd);
-
-            // TODO: Implement invoice parsing logic here using strategy pattern
-            // if file is PDF, use PDFParser and if file is image, use ImageParser
-            // add parsed format into the users database collection
 
             return {};
         } catch (error) {

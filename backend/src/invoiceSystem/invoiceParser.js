@@ -1,7 +1,7 @@
 class invoiceParser {
     constructor() {};
 
-    async parseFile(Buffer) {
+    async parseFile(file) {
 
     }
 
