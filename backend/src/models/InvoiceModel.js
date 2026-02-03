@@ -11,20 +11,20 @@ const InvoiceSchema = new Schema({
         type: Date,
         required: true
     },
-    suplier: {
+    supplier: {
         type: {
-            suplier_name: {
+            supplier_name: {
                 type: String,
                 required: true
             },
-            suplier_address: {
+            supplier_address: {
                 type: String,
                 required: true
             },
-            suplier_contact: {
+            supplier_contact: {
                 type: String
             },
-            suplier_vat_number: {
+            supplier_vat_number: {
                 type: String,
                 required: true
             }
