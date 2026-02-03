@@ -6,6 +6,10 @@ class PdfParser extends InvoiceParser {
     async parseFile(buffer) {
         try {
             const data = await pdf(buffer);
+
+
+            //TODO : format into invoice schema
+            
             return data.text || data.textContent;
 
         } catch (error) {
