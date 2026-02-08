@@ -12,5 +12,16 @@ class obligationsController {
             res.status(500).json({ error: 'Failed to fetch obligations' });
         }
     }
+    async submitObligation(req, res) {
+        try {
+            const { vrn } = req.params;
+            const obligationData = req.body;
+            const result = await obligations.submitObligation(vrn, obligationData);
+            res.json(result);
+        } catch (error) {
+            console.error('Error submitting obligation:', error);
+            res.status(500).json({ error: 'Failed to submit obligation' });
+        }
+    }
 
 }
