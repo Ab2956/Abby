@@ -1,6 +1,7 @@
 const invoiceParser = require('./invoiceParser');
 const tesseract = require('tesseract.js');
 const invoiceSchema = require('../models/invoiceSchema');
+const extractionHelper = require('../utils/extractionHelper');
 
 class ImageParser extends invoiceParser {
 
@@ -11,21 +12,21 @@ class ImageParser extends invoiceParser {
         ).then(({ data: { text } }) => {
 
             const invoice = new invoiceSchema({
-                invoice_number: this.extractInvoiceNumber(text),
-                invoice_date: this.extractDate(text),
+                invoice_number: extractionHelper.extractInvoiceNumber(text),
+                invoice_date: extractionHelper.extractDate(text),
                 supplier: {
-                    supplier_name: this.extractSupplierName(text),
-                    supplier_address: this.extractSupplierAddress(text),
-                    supplier_contact: this.extractSupplierContact(text),
-                    supplier_vat_number: this.extractSupplierVat(text)
+                    supplier_name: extractionHelper.extractSupplierName(text),
+                    supplier_address: extractionHelper.extractSupplierAddress(text),
+                    supplier_contact: extractionHelper.extractSupplierContact(text),
+                    supplier_vat_number: extractionHelper.extractSupplierVat(text)
                 },
                 customer: {
-                    customer_name: this.extractCustomerName(text),
-                    customer_address: this.extractCustomerAddress(text)
+                    customer_name: extractionHelper.extractCustomerName(text),
+                    customer_address: extractionHelper.extractCustomerAddress(text)
                 },
-                items: this.extractItems(text),
-                total_amount: this.extractTotalAmount(text),
-                vat: this.extractVat(text)
+                items: extractionHelper.extractItems(text),
+                total_amount: extractionHelper.extractTotalAmount(text),
+                vat: extractionHelper.extractVat(text)
             });
             return invoice;
         }).catch(err => console.error('Error processing image:', err));
