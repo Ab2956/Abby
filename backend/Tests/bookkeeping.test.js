@@ -1,1 +1,1 @@
-requir("dotenv").config();
+require("dotenv").config();

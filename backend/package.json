@@ -33,6 +33,7 @@
     "redis": "^5.10.0",
     "simple-oauth2": "^5.1.0",
     "superagent": "^10.2.3",
+    "tesseract.js": "^7.0.0",
     "winston": "^3.18.3"
   },
   "devDependencies": {
