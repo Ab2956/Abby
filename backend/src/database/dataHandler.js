@@ -7,7 +7,6 @@ class DatabaseHandler {
     async getUsers() {
         return await db.getCollection('users');
     }
-
     async findUser(query) {
         const userCollection = await this.getUsers();
         return await userCollection.findOne(query);
@@ -19,17 +18,15 @@ class DatabaseHandler {
     }
     async updateUser(userId, updateData) {
         const userCollection = await this.getUsers();
-        return await userCollection.updateOne(
-            { _id: new ObjectId(userId)},
-            { $set: updateData }
-        );
+        return await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: updateData });
     }
+    async getInvoices() {
+        return await db.getCollection('invoices');
+    }
+
     async addInvoice(userId, invoiceData) {
-        const userCollection = await this.getUsers();
-        return await userCollection.updateOne(
-            { _id: new ObjectId(userId) },
-            { $push: { invoices: invoiceData } }
-        );
+        const invoiceCollection = await this.getInvoices();
+        return await invoiceCollection.updateOne({ _id: new ObjectId(userId) }, { $push: { invoices: invoiceData } });
     }
 }
 module.exports = new DatabaseHandler();
