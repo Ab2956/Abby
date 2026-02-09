@@ -5,9 +5,6 @@ const extractionHelper = require('../utils/extractionHelper');
 
 class ImageParser extends invoiceParser {
 
-    constructor() {
-        super();
-    }
     parseFile() {
 
     };

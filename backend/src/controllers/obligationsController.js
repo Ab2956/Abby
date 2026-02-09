@@ -23,5 +23,6 @@ class obligationsController {
             res.status(500).json({ error: 'Failed to submit obligation' });
         }
     }
-
 }
+
+module.exports = new obligationsController();
