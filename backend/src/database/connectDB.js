@@ -17,7 +17,6 @@ async function createConnection() {
     try {
         await client.connect();
         dbInstance = client.db("abby_database");
-        console.log("Connected to MongoDB");
         return dbInstance;
     } catch (err) {
         console.error("MongoDB connection error:", err);
