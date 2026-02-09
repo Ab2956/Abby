@@ -1,6 +1,7 @@
 class ExtractionHelper {
 
-    
+    // my extaction methods used in the parsers both use this helper
+    // using regex
     extractInvoiceNumber(text) {
         const patterns = [
             /Invoice\s*Number[:\s]+(\S+)/i,
@@ -12,7 +13,6 @@ class ExtractionHelper {
         return  this.tryPatterns(text, patterns);
     }
 
-    
     extractDate(text) {
         const patterns = [
             /Invoice\s*Date[:\s]+([\d\s\w\/\-]+?)(?=\n|Supply)/i,
@@ -24,7 +24,6 @@ class ExtractionHelper {
         return dateStr ? new Date(dateStr.trim()) : null;
     }
 
-    
     extractSupplierName(text) {
         const patterns = [
             /Supplier[:\s]*\n\s*([^\n]+)/i,
@@ -36,7 +35,6 @@ class ExtractionHelper {
         return ( this.tryPatterns(text, patterns))?.trim();
     }
 
-    
     extractSupplierAddress(text) {
         const patterns = [
             /Supplier\s*Address[:\s]+([^\n]+(?:\n[^\n]+)*?)(?=\n\s*(?:VAT|Billed|Customer|Invoice))/is,
@@ -52,7 +50,6 @@ class ExtractionHelper {
         return  this.tryPatterns(text, [patterns[0], patterns[2]])?.trim();
     }
 
-    
     extractSupplierContact(text) {
         const patterns = [
             /Supplier\s*Contact[:\s]+([^\n]+)/i,
@@ -63,7 +60,6 @@ class ExtractionHelper {
         return ( this.tryPatterns(text, patterns))?.trim();
     }
 
-    
     extractSupplierVat(text) {
         const patterns = [
             /VAT\s*No\.?[:\s]+(\S+)/i,
@@ -73,7 +69,6 @@ class ExtractionHelper {
         ];
         return  this.tryPatterns(text, patterns);
     }
-
     
     extractCustomerName(text) {
         const patterns = [
@@ -86,7 +81,6 @@ class ExtractionHelper {
         return ( this.tryPatterns(text, patterns))?.trim();
     }
 
-    
     extractCustomerAddress(text) {
         const patterns = [
             /Customer\s*Address[:\s]+([^\n]+(?:\n[^\n]+)*?)(?=\n\s*Invoice)/is,
@@ -102,7 +96,6 @@ class ExtractionHelper {
         return ( this.tryPatterns(text, [patterns[0], patterns[2]]))?.trim();
     }
 
-    
     extractItems(text) {
         const items = [];
         
@@ -148,7 +141,6 @@ class ExtractionHelper {
         return items;
     }
 
-    
     extractTotalAmount(text) {
         const patterns = [
             /Total\s*Due[:\s]+£?([\d,\.]+)/i,
@@ -161,7 +153,6 @@ class ExtractionHelper {
         return amount ? parseFloat(amount.replace(/,/g, '')) : null;
     }
 
-    
     extractVat(text) {
         const patterns = [
             /VAT\s*\([\d]+%\)[:\s]+£?([\d,\.]+)/i,
@@ -174,7 +165,6 @@ class ExtractionHelper {
     }
 
     // Helper method to try multiple patterns
-    
     tryPatterns(text, patterns) {
         for (const pattern of patterns) {
             const match = text.match(pattern);

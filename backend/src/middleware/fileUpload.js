@@ -1,11 +1,13 @@
 const multer = require("multer");
 
+// middleware for handling file uploads using multer
+
 const storage = multer.diskStorage({
     destination: async(req, file, cb) => {
         cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now + '-' + file.originalname);
+        cb(null, Date.now() + '-' + file.originalname);
     }
 });
 
@@ -17,7 +19,7 @@ const upload = multer({
         if (allowedFiles.includes(file.mimetype)) {
             cb(null, true);
         } else {
-            cb(new Error('Invalide file type'))
+            cb(new Error('Invalid file type'))
         }
     }
 });

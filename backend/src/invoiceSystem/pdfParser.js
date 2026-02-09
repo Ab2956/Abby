@@ -5,16 +5,18 @@ const extractionHelper = require('../utils/extractionHelper');
 
 class PdfParser extends InvoiceParser {
 
+    // pdf parser which inherits invoice parser
+
     async parseFile(buffer) {
         try {
-            const data = await pdf(buffer);
-            const text = data.text || data.textContent;
+            const data = await pdf(buffer); // using pdf-parse to extract text from a pdf file
+            const text = data.text || data.textContent; 
 
             console.log('PDF Text:', text);
 
-            const invoice = new invoiceSchema({
+            const invoice = new invoiceSchema({ // extracting the data to format into invoice schema
 
-               invoice_number: extractionHelper.extractInvoiceNumber(text),
+                invoice_number: extractionHelper.extractInvoiceNumber(text),
                 invoice_date: extractionHelper.extractDate(text),
                 supplier: {
                     supplier_name: extractionHelper.extractSupplierName(text),
@@ -30,6 +32,7 @@ class PdfParser extends InvoiceParser {
                 total_amount: extractionHelper.extractTotalAmount(text),
                 vat: extractionHelper.extractVat(text)
             });
+
             console.log('Extracted Data:', JSON.stringify(invoice, null, 2));
             await invoice.validate();
 

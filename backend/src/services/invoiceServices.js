@@ -1,4 +1,4 @@
-const dataHandler = require('../dataHandler/dataHandler');
+const dataHandler = require('../database/dataHandler');
 
 class InvoiceServices {
 
@@ -11,4 +11,4 @@ class InvoiceServices {
         return await dataHandler.addInvoice(invoice);
     }
 
-}
+} module.exports = new InvoiceServices();
