@@ -61,18 +61,18 @@ describe('Invoice Parsers', () => {
         console.log(result);
 
     });
+    test('image parser can extract text from image file', async() => {
+        const imageParser = new ImageParser();
+        // link to image file test
+        // buffer image in param
+
+        // call method to parse
+
+        // exoect the result to be defined and log result
+        // later add test schema to check against
+    });
 
     describe('Test pasers output to format', () => {
-        // test('Pdf parser test', () => {
-        //     const parsedFile = pdfParser.parseFile(pdfFile);
 
-        //     expect(parsedFile).toBe(TestInvoice);
-        // });
-        // test('Image parser test', () => {
-
-        //     const parsedFile = imageParser.parseFile(file);
-
-        //     expect(file).toBe(TestInvoice);
-        // });
     });
-});
+});;
