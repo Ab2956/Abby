@@ -1,6 +1,6 @@
 const invoiceParser = require('./invoiceParser');
 const tesseract = require('tesseract.js');
-const invoiceSchema = require('../models/invoiceSchema');
+const invoiceSchema = require('../models/InvoiceModel');
 const extractionHelper = require('../utils/extractionHelper');
 
 class ImageParser extends invoiceParser {
@@ -25,6 +25,7 @@ class ImageParser extends invoiceParser {
                     customer_address: extractionHelper.extractCustomerAddress(text)
                 },
                 items: extractionHelper.extractItems(text),
+                // add desc and others
                 total_amount: extractionHelper.extractTotalAmount(text),
                 vat: extractionHelper.extractVat(text)
             });
