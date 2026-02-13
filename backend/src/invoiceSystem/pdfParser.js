@@ -36,7 +36,7 @@ class PdfParser extends InvoiceParser {
             console.log('Extracted Data:', JSON.stringify(invoice, null, 2));
             await invoice.validate();
 
-            return invoice;
+            return invoice.toObject();
 
         } catch (error) {
             throw new Error(`PDF parsing failed: ${error.message}`);

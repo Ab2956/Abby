@@ -11,35 +11,6 @@ describe('Invoice Parsers', () => {
     const pdfParser = new PdfParser();
     const imageParser = new ImageParser();
 
-    const TestInvoice = new invoviceSchema({
-        invoice_number: 'INV-001',
-        invoice_date: new Date('2023-01-01'),
-        suplier: {
-            suplier_name: 'Abby',
-            suplier_address: '123 Supplier St, City, Country',
-            suplier_vat_number: 'VAT123456',
-        },
-        customer: {
-            customer_name: 'Customer LLC',
-            customer_address: '456 Customer Ave, City, Country',
-        },
-        items: [{
-                description: 'Product A',
-                quantity: 2,
-                unit_price: 50.0,
-                vat_rate: 0.2,
-            },
-            {
-                description: 'Product B',
-                quantity: 1,
-                unit_price: 100.0,
-                vat_rate: 0.2,
-            },
-        ],
-        total_amount: 240.0,
-
-
-    });
     beforeAll(() => {
 
     });
