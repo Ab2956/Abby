@@ -32,6 +32,7 @@ class UserServices {
             throw error;
         }
     }
+
     async getUserByEmail(email) {
         try {
             return await databaseHandler.findUser({ email });
@@ -40,6 +41,7 @@ class UserServices {
             throw error;
         }
     }
+    
     async updateUser(userId, updateData) {
         try {
             return await databaseHandler.updateUser(userId, updateData);

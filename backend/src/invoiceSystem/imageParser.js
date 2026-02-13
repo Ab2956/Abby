@@ -9,7 +9,7 @@ class ImageParser extends invoiceParser {
 
     async parseFile(buffer) {
         try {
-        const { data: { text } } = await tesseract.recognize(buffer, 'eng', { logger: m => console.log(m) }); // using testeract to extract text from image
+        const { data: { text } } = await tesseract.recognize(buffer, 'eng', { logger: m => console.log(m) }); // using tesseract to extract text from image
         console.log('Extracted Text:', text);
 
         const invoice = new invoiceSchema({ // extracting the data to format into invoice schema
