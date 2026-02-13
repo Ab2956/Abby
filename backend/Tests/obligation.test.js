@@ -39,6 +39,7 @@ describe('Test Obligations', () => {
             if (obligations && Object.prototype.hasOwnProperty.call(obligations, 'obligations')) {
                 expect(Array.isArray(obligations.obligations)).toBe(true);
             }
+            console.log('Obligations:', JSON.stringify(obligations, null, 2));
         } catch (error) {
             if (error.message.includes('INVALID_CREDENTIALS')) {
                 console.warn('Access token expired. Run OAuth flow to get new tokens.');
