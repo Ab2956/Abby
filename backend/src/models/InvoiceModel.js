@@ -71,7 +71,7 @@ const InvoiceSchema = new Schema({
         required: true
     },
 
-    vat: {
+    vat_amount: {
         type: Number,
     },
 

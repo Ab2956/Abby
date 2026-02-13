@@ -30,7 +30,7 @@ class PdfParser extends InvoiceParser {
                 },
                 items: extractionHelper.extractItems(text),
                 total_amount: extractionHelper.extractTotalAmount(text),
-                vat: extractionHelper.extractVat(text)
+                vat_amount: extractionHelper.extractVatAmount(text)
             });
 
             console.log('Extracted Data:', JSON.stringify(invoice, null, 2));

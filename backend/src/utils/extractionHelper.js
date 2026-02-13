@@ -153,7 +153,7 @@ class ExtractionHelper {
         return amount ? parseFloat(amount.replace(/,/g, '')) : null;
     }
 
-    extractVat(text) {
+    extractVatAmount(text) {
         const patterns = [
             /VAT\s*\([\d]+%\)[:\s]+£?([\d,\.]+)/i,
             /VAT\s*Amount[:\s]+£?([\d,\.]+)/i,
