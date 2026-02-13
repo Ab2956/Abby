@@ -1,5 +1,6 @@
 const db = require('../database/connectDB');
 const { ObjectId } = require('mongodb');
+const { decryptToken } = require('../utils/tokenEncryption');
 // data layer for database functions 
 class DatabaseHandler {
     constructor() {};
@@ -20,6 +21,15 @@ class DatabaseHandler {
         const userCollection = await this.getUsers();
         return await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: updateData });
     }
+    async getRefreshToken(userId) {
+        const userCollection = await this.getUsers();
+        const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+        if (user && user.refresh_token) {
+            // Decrypt the token before returning
+            return decryptToken(user.refresh_token);
+        }
+        return null;
+    }
     //Invoice functions
     async getInvoices() {
         return await db.getCollection('invoices');
@@ -28,6 +38,9 @@ class DatabaseHandler {
     async addInvoice(userId, invoiceData) {
         const invoiceCollection = await this.getInvoices();
         return await invoiceCollection.updateOne({ _id: new ObjectId(userId) }, { $push: { invoices: invoiceData } });
+    }
+    async getVatTotalbyUserId(userId) {
+    
     }
     //Bookkeeping functions
     async getRecipts() {

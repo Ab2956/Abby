@@ -1,11 +1,17 @@
+const datahandler = require('../database/dataHandler');
 
 class vatService {
 
     async calculateTotalVat() {
-        // Logic to calculate total VAT from the database
-        // This is a placeholder implementation and should be replaced with actual logic
-        const totalVat = 0; // Replace with actual calculation
-        return totalVat;
+        try {
+            
+            // Implement logic to calculate total VAT from the database
+            const totalVat = await datahandler.getVatTotalbyUserId(userId);
+            return totalVat;
+        } catch (error) {
+            console.error("Error calculating total VAT:", error);
+            throw error;
+        }   
     }
 }
 module.exports = new vatService();
