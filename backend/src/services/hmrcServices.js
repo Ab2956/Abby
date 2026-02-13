@@ -10,15 +10,19 @@ class HmrcService {
         );
     }
     async getObligations(vrn, from, to, status) {
-        return this.httpClient.get(`/obligations/vat/${vrn}/obligations`, {
-            from,
-            to,
-            status
-        });
-
+        try {
+            return await this.httpClient.get(`/organisations/vat/${vrn}/obligations`, {
+                from,
+                to,
+                status
+            });
+        } catch (error) {
+            const errorMsg = error.response?.data ? JSON.stringify(error.response.data) : error.message;
+            throw new Error(`Failed to get obligations: ${errorMsg}`);
+        }
     }
     async submitObligations(vrn, payload) {
-        return this.httpClient.post(`/obligations/vat/${vrn}/obligations`,
+        return this.httpClient.post(`/organisations/vat/${vrn}/returns`,
             payload);
 
     }

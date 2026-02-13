@@ -44,15 +44,20 @@ module.exports = {
 
     getRefreshToken: async(refreshToken) => {
         const client = new OAuthClient("https://test-api.service.hmrc.gov.uk");
-        const params = new URLSearchParams({
-            grant_type: "refresh_token",
-            client_id: process.env.CLIENT_ID,
-            client_secret: process.env.CLIENT_SECRET,
-            refresh_token: refreshToken
-        });
-        return await client.post("/oauth/token", params, {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        });
+        try {
+            const params = new URLSearchParams({
+                grant_type: "refresh_token",
+                client_id: process.env.CLIENT_ID,
+                client_secret: process.env.CLIENT_SECRET,
+                refresh_token: refreshToken
+            });
+            return await client.post("/oauth/token", params, {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            });
+        } catch (error) {
+            const errorMsg = error.response?.data ? JSON.stringify(error.response.data) : error.message;
+            throw new Error(`Failed to refresh token: ${errorMsg}`);
+        }
     },
 
 };

@@ -50,6 +50,7 @@ exports.callback = async(req, res) => {
     const tokenData = await authServices.getTokenData(code);
     const { access_token, refresh_token, expires_in } = tokenData;
     const hashed_refresh = await bcrypt.hash(refresh_token, 10);
+    console.log("Token Data:", tokenData);
 
     const updateData = {
         hrmc_connected: true,
