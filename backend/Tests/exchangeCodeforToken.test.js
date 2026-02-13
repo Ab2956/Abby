@@ -40,4 +40,22 @@ describe('Test exchange token auth', () => {
 
         await expect(authServices.getTokenData(code)).rejects.toThrow('Failed: exchange token');
     });
+
+    it('exchange refresh token for access token', async() => {
+        postMock.mockResolvedValue({
+            access_token: 'new-access-token',
+            refresh_token: 'new-refresh-token',
+            expires_in: 3600
+        });
+
+        const refreshToken = 'mock-refresh-token';
+        const tokenData = await authServices.getRefreshToken(refreshToken);
+
+        expect(tokenData).toEqual({
+            access_token: 'new-access-token',
+            refresh_token: 'new-refresh-token',
+            expires_in: 3600
+        });
+        expect(tokenData.access_token).toBe('new-access-token');
+    });
 });
