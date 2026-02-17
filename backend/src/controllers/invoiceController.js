@@ -9,11 +9,6 @@ const imageParser = new ImageParser();
 class InvoiceController {
     constructor() {}
 
-    /**
-     * Handle file upload
-     * @param {Object} file - File object from multer middleware
-     * @returns {Promise<Object>} Upload result
-     */
     async handleUpload(file) {
 
         try {
