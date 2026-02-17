@@ -12,8 +12,6 @@ class PdfParser extends InvoiceParser {
             const data = await pdf(buffer); // using pdf-parse to extract text from a pdf file
             const text = data.text || data.textContent; 
 
-            console.log('PDF Text:', text);
-
             const invoice = new invoiceSchema({ // extracting the data to format into invoice schema
 
                 invoice_number: extractionHelper.extractInvoiceNumber(text),
@@ -32,8 +30,6 @@ class PdfParser extends InvoiceParser {
                 total_amount: extractionHelper.extractTotalAmount(text),
                 vat_amount: extractionHelper.extractVatAmount(text)
             });
-
-            console.log('Extracted Data:', JSON.stringify(invoice, null, 2));
             await invoice.validate();
 
             return invoice.toObject();
