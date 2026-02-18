@@ -22,15 +22,15 @@ class DatabaseHandler {
         return await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: updateData });
     }
     async getRefreshToken(userId) {
-        const userCollection = await this.getUsers();
-        const user = await userCollection.findOne({ _id: new ObjectId(userId) });
-        if (user && user.refresh_token) {
-            // Decrypt the token before returning
-            return decryptToken(user.refresh_token);
+            const userCollection = await this.getUsers();
+            const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+            if (user && user.refresh_token) {
+                // Decrypt the token before returning
+                return decryptToken(user.refresh_token);
+            }
+            return null;
         }
-        return null;
-    }
-    //Invoice functions
+        //Invoice functions
 
     async getInvoiceCollection() {
         return await db.getCollection('invoices');
@@ -50,18 +50,32 @@ class DatabaseHandler {
         };
         return await invoiceCollection.insertOne(invoice);
     }
-    
+
     async getVatTotalbyUserId(userId) {
-        const invoices = await this.getInvoices(userId);
-        return invoices.reduce((total, invoice) => total + (invoice.vat_amount || 0), 0);
-    }
-    //Bookkeeping functions
+            const invoices = await this.getInvoices(userId);
+            return invoices.reduce((total, invoice) => total + (invoice.vat_amount || 0), 0);
+        }
+        //Bookkeeping functions
     async getRecipts() {
         return await db.getCollection('recipts');
     }
+    async getReciptsByUserId(userId = null) {
+        const reciptCollection = await this.getRecipts();
+        const query = userId ? { userId: new ObjectId(userId) } : {};
+        return await reciptCollection.find(query).toArray();
+    }
     async addRecpit(userId, reciptData) {
         const reciptCollection = await this.getRecipts();
-        return await reciptCollection.updateOne({ _id: new ObjectId(userId) }, { $push: { recipts: reciptData } });
+        const recpit = {
+            ...reciptData,
+            userId: new ObjectId(userId),
+            created_at: new Date()
+        }
+        return await reciptCollection.insertOne(recpit);
+    }
+    async deleteRecipt(reciptId) {
+        const reciptCollection = await this.getRecipts();
+        return await reciptCollection.deleteOne({ _id: new ObjectId(reciptId) });
     }
 }
 module.exports = new DatabaseHandler();
