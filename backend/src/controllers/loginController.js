@@ -26,7 +26,6 @@ async function login(req, res) {
     }
 };
 async function getProfile(req, res) {
-
     const user = await dataHandler.findUser({ email: req.user.email });
 
     res.json({ email: user.email });
