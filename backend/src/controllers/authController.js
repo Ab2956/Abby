@@ -1,6 +1,5 @@
 const authServices = require('../services/authServices');
 const userServices = require('../services/userServices.js');
-const bcrypt = require('bcrypt');
 const redisCache = require("../utils/redisCache.js");
 const crypto = require('crypto');
 const { encryptToken } = require('../utils/tokenEncryption');
@@ -24,6 +23,7 @@ exports.loginToOAuth = async(req, res) => {
 };
 exports.testOAuth = async(req, res) => {
     const testEmail = "romwan.newton@example.com"; // Hardcoded for testing
+    const password = "testpassword"; // Hardcoded for testing
     const user = await userServices.getUserByEmail(testEmail);
     
     if (!user) {
@@ -51,7 +51,7 @@ exports.callback = async(req, res) => {
     const tokenData = await authServices.getTokenData(code);
     const { access_token, refresh_token, expires_in } = tokenData;
     const encrypted_refresh = encryptToken(refresh_token);
-    console.log("Token Data:", tokenData);
+    console.log("Token Data:", tokenData, );
 
     const updateData = {
         hrmc_connected: true,

@@ -61,5 +61,11 @@ describe('User Tests', () => {
             }
             await userServices.addUser(newUser);
 
+        }),
+        it("can get refresh token for user", async() => {
+            const userId = "68fa2057b845e279d8dc41a9"; 
+            const refreshToken = await userServices.getRefreshToken(userId);
+            console.log("Refresh Token:", refreshToken);
+            expect(refreshToken).not.toBeNull();
         })
 });

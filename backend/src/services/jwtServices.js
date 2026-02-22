@@ -5,11 +5,11 @@ const SECRET = process.env.JWT_SECRET;
 class jwtServices{
     constructor(){}
 
-   static createJWT(payload ){
+   static createJWT(payload){
     return jwt.sign(
         {payload}, 
         SECRET, 
-        {expiresIn: "1h"});
+        {expiresIn: "4h"});
 }
 
 static verifyJWT(token){

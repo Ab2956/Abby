@@ -1,10 +1,9 @@
 const InoviceSchema = require("../models/InvoiceModel");
-const PdfParser = require("../invoiceSystem/pdfParser");
-const ImageParser = require("../invoiceSystem/imageParser");
+const {pdfParser} = require("../invoiceSystem/pdfParser");
+const {imageParser} = require("../invoiceSystem/imageParser");
 const userServices = require("../services/userServices");
 const { parse } = require("dotenv");
-const pdfParser = new PdfParser();
-const imageParser = new ImageParser();
+
 
 class InvoiceController {
     constructor() {}

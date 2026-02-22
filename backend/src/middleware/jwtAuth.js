@@ -9,13 +9,13 @@ function jwtVerification(req, res, next){
         return res.status(401).json({error: "No token"})
     }
 
-   try {
-    const decoded = jwtService.verifyJWT(token, process.env.JWT_SECRET);
-        req.user = decoded ;
-        next();
-    } catch (error) {
-        return res.status(403).json({error: "Invalid token"});
+    const decoded = jwtService.verifyJWT(token);
+
+    if(!decoded){
+        return res.status(403).json({error: "Invalid token"})
     }
+    req.user = decoded.payload;
+    next();
 }
 module.exports = {jwtVerification};
 

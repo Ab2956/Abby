@@ -26,10 +26,16 @@ class DatabaseHandler {
             const user = await userCollection.findOne({ _id: new ObjectId(userId) });
             if (user && user.refresh_token) {
                 // Decrypt the token before returning
-                return decryptToken(user.refresh_token);
+                const refreshToken = decryptToken(user.refresh_token);
+                return refreshToken;
             }
             return null;
         }
+    async updateRefreshToken(userId, encryptedToken, expiresIn) {
+        const userCollection = await this.getUsers();
+        return await userCollection.updateOne({ _id: new ObjectId(userId) }, 
+        { $set: { refresh_token: encryptedToken, token_expiration: Date.now() + (expiresIn * 1000) } });
+    }
         //Invoice functions
 
     async getInvoiceCollection() {
