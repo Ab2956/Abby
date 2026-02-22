@@ -14,8 +14,8 @@ class ImageParser extends invoiceParser {
 
         const invoice = new invoiceSchema({ // extracting the data to format into invoice schema
 
-            invoice_number: this.extractInvoiceNumber(text),
-            invoice_date: this.extractDate(text),
+            invoice_number: extractionHelper.extractInvoiceNumber(text),
+            invoice_date: extractionHelper.extractDate(text),
             supplier: {
                 supplier_name: extractionHelper.extractSupplierName(text),
                 supplier_address: extractionHelper.extractSupplierAddress(text),

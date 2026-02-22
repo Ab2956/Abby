@@ -36,12 +36,17 @@ describe('Invoice Parsers', () => {
 
     });
     test('image parser can extract text from image file', async() => {
-        // const imageParser = new ImageParser();
-        // const mockBuffer = fs.readFileSync(filePath);
-        // const result = await imageParser.parseFile(mockBuffer);
+        const imageParser = new ImageParser();
+        const filePath = path.join(__dirname, 'testFiles', 'test_invoice_png.png');
 
-        // expect(result).toBeDefined();
-        // console.log(result);
+        const mockBuffer = fs.readFileSync(filePath);
+        expect(mockBuffer).toBeInstanceOf(Buffer);
+        expect(mockBuffer.length).toBeGreaterThan(0);
+        const result = await imageParser.parseFile(mockBuffer);
+
+        expect(result).toBeDefined();
+        expect(result.invoice_number).toBe('1001');
+        console.log(result);
     });
 
     describe('Test pasers output to format', () => {
