@@ -56,7 +56,6 @@ describe('Test HMRC API headers', () => {
                 },
             }
         );
-
         console.log('Validation result:', JSON.stringify(response.data, null, 2));
 
         expect(response.status).toBe(200);

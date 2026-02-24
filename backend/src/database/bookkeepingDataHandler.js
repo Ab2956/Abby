@@ -1,5 +1,6 @@
-const db = require('./connectDB');
+const db = require('../database/connectDB');
 const { ObjectId } = require('mongodb');
+
 class bookkeepingDataHandler {
     constructor() {
     }

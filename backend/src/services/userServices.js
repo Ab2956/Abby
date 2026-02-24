@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const databaseHandler = require('../database/dataHandler');
+const userDataHandler = require('../database/userDataHandler');
 const tokenEncryption = require('../utils/tokenEncryption');
 const e = require('express');
 const { encryptToken, decryptToken } = tokenEncryption;
@@ -16,7 +16,7 @@ class UserServices {
             if (!userData.email || !userData.password || !userData.vrn) {
                 throw new Error("missing email or password or vrn");
             }
-            const existing = await databaseHandler.findUser({ email });
+            const existing = await userDataHandler.findUser({ email });
             if (existing) {
                 throw new Error("email already exists");
             }
@@ -28,7 +28,7 @@ class UserServices {
                 token_expiration,
             })
 
-            return await databaseHandler.addUser(user);
+            return await userDataHandler.addUser(user);
 
         } catch (error) {
             console.log("AddUser", error);
@@ -38,7 +38,7 @@ class UserServices {
 
     async getUserByEmail(email) {
         try {
-            return await databaseHandler.findUser({ email });
+            return await userDataHandler.findUser({ email });
         } catch (error) {
             console.log("GetUserByEmail", error);
             throw error;
@@ -47,7 +47,7 @@ class UserServices {
     
     async updateUser(userId, updateData) {
         try {
-            return await databaseHandler.updateUser(userId, updateData);
+            return await userDataHandler.updateUser(userId, updateData);
         } catch (error) {
             console.log("UpdateUser", error);
             throw error;
@@ -55,7 +55,7 @@ class UserServices {
     }
     async getRefreshToken(userId) {
         try {
-            return await databaseHandler.getRefreshToken(userId);
+            return await userDataHandler.getRefreshToken(userId);
         } catch (error) {
             console.log("GetRefreshToken", error);
             throw error;
@@ -64,7 +64,7 @@ class UserServices {
     async updateRefreshToken(userId, refreshToken, expiresIn) {
         try {
             const encryptedToken = await encryptToken(refreshToken);
-            return await databaseHandler.updateRefreshToken(userId, encryptedToken, expiresIn);
+            return await userDataHandler.updateRefreshToken(userId, encryptedToken, expiresIn);
         } catch (error) {
             console.log("UpdateRefreshToken", error);
             throw error;

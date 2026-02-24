@@ -1,10 +1,8 @@
-const dataHandler = require('../database/dataHandler');
 const invoiceDataHandler = require('../database/invoiceDataHandler');
 
 class InvoiceServices {
 
-
-    async getInoiceById(id) {
+    async getInvoiceById(id) {
 
     }
 

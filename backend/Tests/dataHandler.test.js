@@ -1,25 +1,21 @@
 require('dotenv').config();
-const dataHandler = require('../src/database/dataHandler');
+//const dataHandler = require('../src/database/dataHandler');
+const userDataHandler = require('../src/database/userDataHandler');
 const userServices = require('../src/services/userServices');
 const connectDB = require('../src/database/connectDB');
 
 describe('User Services', () => {
-    beforeAll(() => {
-        connectDB.createConnection();
-    });
+   
     afterEach(() => {
         jest.clearAllMocks();
     });
-    afterAll(async () => {
-        await connectDB.closeConnection();
-    });
-
+    
 
     describe('updateUser', () => {
         it('should update user data successfully', async () => {
             const userId = '68fa2057b845e279d8dc41a9';
             const updateData = { refresh_token: 'new_refresh_token' };
-            const mockUpdateUser = jest.spyOn(dataHandler, 'updateUser').mockResolvedValue({
+            const mockUpdateUser = jest.spyOn(userDataHandler, 'updateUser').mockResolvedValue({
                 acknowledged: true,
                 modifiedCount: 1,
             });
@@ -36,7 +32,7 @@ describe('User Services', () => {
             const updateData = { refresh_token: 'new_refresh_token' };
             const mockError = new Error('Update failed');
 
-            jest.spyOn(dataHandler, 'updateUser').mockRejectedValue(mockError);
+            jest.spyOn(userDataHandler, 'updateUser').mockRejectedValue(mockError);
             await expect(userServices.updateUser(userId, updateData)).rejects.toThrow('Update failed');
         });
     });

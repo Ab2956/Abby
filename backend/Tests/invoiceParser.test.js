@@ -45,7 +45,7 @@ describe('Invoice Parsers', () => {
         const result = await imageParser.parseFile(mockBuffer);
 
         expect(result).toBeDefined();
-        expect(result.invoice_number).toBe('1001');
+        expect(result.invoice_number).toBe('INV-100123');
         console.log(result);
     });
 

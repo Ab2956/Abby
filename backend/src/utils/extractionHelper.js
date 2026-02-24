@@ -21,11 +21,20 @@ class ExtractionHelper {
             /Issued[:\s]+([\d\s\w\/\-]+)/i
         ];
         const dateStr =  this.tryPatterns(text, patterns);
+        if (!dateStr) return null;
+        const parts = dateStr.trim().match(/(\d{1,2})[\/\-\s](\d{1,2})[\/\-\s](\d{2,4})/);
+        if (parts) {
+            const day = parseInt(parts[1], 10);
+            const month = parseInt(parts[2], 10) - 1;
+            const year = parseInt(parts[3], 10);
+            return new Date(year, month, day);
+        }
         return dateStr ? new Date(dateStr.trim()) : null;
     }
 
     extractSupplierName(text) {
         const patterns = [
+            /^([^\n]+?)\s*INVOICE/im,
             /Supplier[:\s]*\n\s*([^\n]+)/i,
             /From[:\s]+([^\n]+)/i,
             /Supplier\s*Name[:\s]+([^\n]+)/i,
@@ -38,9 +47,16 @@ class ExtractionHelper {
     extractSupplierAddress(text) {
         const patterns = [
             /Supplier\s*Address[:\s]+([^\n]+(?:\n[^\n]+)*?)(?=\n\s*(?:VAT|Billed|Customer|Invoice))/is,
-            /Supplier[:\s]*\n\s*[^\n]+\n\s*(.+?)\n\s*(.+?)\n\s*(.+?)(?=\n\s*VAT)/is,
             /Address[:\s]+([^\n]+)/i
         ];
+
+        const addressMatch = text.match(/INVOICE[^\n]*\n(?:[^\n]*Invoice\s*Number[^\n]*\n)?([^\n]+(?:\n[^\n]+)*?)(?=\n\s*(?:Phone|Tel|Email|VAT|Invoice\s*Date))/is);
+        if (addressMatch) {
+            const lines = addressMatch[1].trim().split('\n').map(l => l.trim()).filter(l => l && !l.match(/invoice\s*number/i));
+            if (lines.length > 0) {
+                return lines.join(', ');
+            }
+        }
         
         const match = text.match(patterns[1]);
         if (match) {
@@ -74,18 +90,38 @@ class ExtractionHelper {
         const patterns = [
             /Billed\s*To[:\s]*\n\s*([^\n]+)/i,
             /Customer\s*Name[:\s]+([^\n]+)/i,
-            /Bill\s*To[:\s]+([^\n]+)/i,
             /Client[:\s]+([^\n]+)/i,
-            /To[:\s]+([^\n]+)/i
         ];
+        const billToMatch = text.match(/Bill\s*To[:\s]*(?:Ship\s*To[:\s]*)?\s*\n\s*([^\n]+)/i);
+        if (billToMatch) {
+            const nameLine = billToMatch[1].trim();
+            const splitNames = nameLine.split(/\s{3,}/);
+            return splitNames[0].trim();
+        }
         return ( this.tryPatterns(text, patterns))?.trim();
     }
 
     extractCustomerAddress(text) {
+        const shippedToMatch = text.match(/Bill\s*To[:\s]*(?:Ship\s*To[:\s]*)?\s*\n\s*[^\n]+\n([\s\S]*?)(?=\n\s*(?:[A-Za-z][\w\s]*\d+\s+£|Subtotal|Total|Description|Item|Qty|Product))/i);
+        if (shippedToMatch) {
+            const lines = shippedToMatch[1].trim().split('\n')
+            const addressLines = [];
+            for (const line of lines) {
+                const trimmed = line.trim();
+                if (!trimmed) continue;
+                // If line has two columns separated by multiple spaces, take the first
+                const parts = trimmed.split(/\s{3,}/);
+                if (parts[0].trim()) {
+                    addressLines.push(parts[0].trim());
+                }
+            }
+            if (addressLines.length > 0) {
+                return addressLines.join(', ');
+            }
+        }
         const patterns = [
             /Customer\s*Address[:\s]+([^\n]+(?:\n[^\n]+)*?)(?=\n\s*Invoice)/is,
             /Billed\s*To[:\s]*\n\s*[^\n]+\n\s*(.+?)\n\s*(.+?)\n\s*(.+?)(?=\n\s*Invoice)/is,
-            /Bill\s*To\s*Address[:\s]+([^\n]+)/i
         ];
         
         const match = text.match(patterns[1]);

@@ -1,17 +1,17 @@
-const dataHandler = require('../database/dataHandler');
+const bookkeepingDataHandler = require('../database/bookkeepingDataHandler');
 
 class BookkeepingService {
 
     async addRecipt(userId, recipt) {
 
-        return await dataHandler.addRecpit(userId, recipt);
+        return await bookkeepingDataHandler.addRecpit(userId, recipt);
 
     }
     async getRecipts(userId) {
-        return await dataHandler.getReciptsByUserId(userId);
+        return await bookkeepingDataHandler.getReciptsByUserId(userId);
     }
     async deleteRecipt(reciptId) {
-        return await dataHandler.deleteRecipt(reciptId);
+        return await bookkeepingDataHandler.deleteRecipt(reciptId);
     }
 }
 
