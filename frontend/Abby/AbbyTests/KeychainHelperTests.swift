@@ -1,17 +1,6 @@
-//
-//  KeychainHelperTests.swift
-//  AbbyTests
-//
-//  Tests for the KeychainHelper utility:
-//  - Save and retrieve a token
-//  - Overwrite an existing token
-//  - Delete a token
-//  - Retrieve returns nil when no token exists
-//
-
 import Testing
 import Foundation
-@testable import Abby
+@testable import AbbyIOS
 
 struct KeychainHelperTests {
     

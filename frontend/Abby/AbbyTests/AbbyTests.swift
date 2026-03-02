@@ -6,7 +6,7 @@
 //
 
 import Testing
-@testable import Abby
+@testable import AbbyIOS
 
 struct AbbyTests {
 

@@ -15,6 +15,8 @@
 		255375582F54F10000CC536E /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 259399622EE3724300CC608D /* LoginController.swift */; };
 		255375592F54F1EA00CC536E /* OauthServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 259399612EE36F1000CC608D /* OauthServices.swift */; };
 		2553755A2F54F21400CC536E /* keychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 255375562F54EE0D00CC536E /* keychainHelper.swift */; };
+		255375612F56122600CC536E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 259399672EE60D9200CC608D /* Constants.swift */; };
+		255375622F56122C00CC536E /* AbbyShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AEF7322F425D7D003F2CC3 /* AbbyShape.swift */; };
 		259399642EE60CB900CC608D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 253862882EC6287500CA2D97 /* LoginView.swift */; };
 		259399692EE60DE900CC608D /* HomePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 259399682EE60DE900CC608D /* HomePageView.swift */; };
 		2593996D2EECBC6900CC608D /* StartUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2593996C2EECBC5E00CC608D /* StartUpView.swift */; };
@@ -326,12 +328,14 @@
 				255375572F54F0BD00CC536E /* ApiServices.swift in Sources */,
 				259399642EE60CB900CC608D /* LoginView.swift in Sources */,
 				255375582F54F10000CC536E /* LoginController.swift in Sources */,
+				255375622F56122C00CC536E /* AbbyShape.swift in Sources */,
 				25AEF7362F42790C003F2CC3 /* CreateAccountView.swift in Sources */,
 				253862582EC6252200CA2D97 /* AbbyApp.swift in Sources */,
 				255375592F54F1EA00CC536E /* OauthServices.swift in Sources */,
 				2593996D2EECBC6900CC608D /* StartUpView.swift in Sources */,
 				259399692EE60DE900CC608D /* HomePageView.swift in Sources */,
 				2553755A2F54F21400CC536E /* keychainHelper.swift in Sources */,
+				255375612F56122600CC536E /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -546,6 +550,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CMR97X44CQ;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
 				MARKETING_VERSION = 1.0;
@@ -564,6 +569,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CMR97X44CQ;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
 				MARKETING_VERSION = 1.0;
@@ -581,6 +587,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CMR97X44CQ;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Adam-Brows.AbbyUITests";
@@ -597,6 +604,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CMR97X44CQ;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Adam-Brows.AbbyUITests";

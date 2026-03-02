@@ -1,6 +1,6 @@
 import Testing
 import Foundation
-@testable import Abby
+@testable import AbbyIOS
 
 @MainActor
 struct CreateAccountTests {

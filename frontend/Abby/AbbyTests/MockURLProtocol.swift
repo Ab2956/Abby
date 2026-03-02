@@ -1,11 +1,3 @@
-//
-//  MockURLProtocol.swift
-//  AbbyTests
-//
-//  Intercepts URLSession requests so tests can return canned responses
-//  without hitting a real server.
-//
-
 import Foundation
 
 class MockURLProtocol: URLProtocol {

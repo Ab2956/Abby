@@ -1,11 +1,9 @@
 import Testing
 import Foundation
-@testable import Abby
+@testable import AbbyIOS
 
 @MainActor
 struct LoginTests {
-    
-    // MARK: - Helpers
     
     /// Create an ApiServices instance backed by a mock session
     private func makeApi(session: URLSession) -> ApiServices {
@@ -22,7 +20,7 @@ struct LoginTests {
         )!
     }
     
-    // MARK: - Login Success
+    // Login Success
     
     @Test func loginSuccess_setsIsLoggedInTrue() async throws {
         // Arrange: mock server returns a JWT token
@@ -96,7 +94,7 @@ struct LoginTests {
         )
     }
     
-    // MARK: - Login Failure — Invalid Credentials
+    // Login Failure — Invalid Credentials
     
     @Test func loginFailure_invalidCredentials_setsErrorMessage() async throws {
         let session = makeMockSession()
@@ -120,7 +118,7 @@ struct LoginTests {
         #expect(controller.isLoading == false)
     }
     
-    // MARK: - Login Failure — No User
+    // Login Failure — No User
     
     @Test func loginFailure_noUser_setsErrorMessage() async throws {
         let session = makeMockSession()
@@ -143,7 +141,7 @@ struct LoginTests {
         #expect(controller.errorMessage != nil)
     }
     
-    // MARK: - Logout
+    // Logout
     
     @Test func logout_clearsTokenAndResetsState() async throws {
         let controller = LoginController()
@@ -169,7 +167,7 @@ struct LoginTests {
         #expect(token == nil)
     }
     
-    // MARK: - hasStoredToken
+    // hasStoredToken
     
     @Test func hasStoredToken_returnsTrueWhenTokenExists() async throws {
         // Clean slate
@@ -196,7 +194,7 @@ struct LoginTests {
         )
     }
     
-    // MARK: - Loading State
+    // Loading State
     
     @Test func login_isLoadingFalseAfterCompletion() async throws {
         let session = makeMockSession()
