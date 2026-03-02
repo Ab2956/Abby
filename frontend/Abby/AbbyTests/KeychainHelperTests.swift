@@ -1,80 +1,71 @@
-import Testing
-import Foundation
+import XCTest
 @testable import AbbyIOS
 
-struct KeychainHelperTests {
+final class KeychainHelperTests: XCTestCase {
     
-    // Use unique service/account per test to avoid cross-contamination
     private let testService = "com.abby.tests.keychain"
     private let testAccount = "testToken"
     
-    private func cleanup() {
+    override func setUp() {
+        super.setUp()
         KeychainHelper.shared.delete(service: testService, account: testAccount)
+    }
+    
+    override func tearDown() {
+        KeychainHelper.shared.delete(service: testService, account: testAccount)
+        super.tearDown()
     }
     
     // MARK: - Save & Retrieve
     
-    @Test func saveAndRetrieve_roundTrips() async throws {
-        defer { cleanup() }
-        cleanup()
-        
+    func testSaveAndRetrieve_roundTrips() {
         let token = "my-secret-token-123"
         let saved = KeychainHelper.shared.save(token: token, service: testService, account: testAccount)
         
-        #expect(saved == true)
+        XCTAssertTrue(saved)
         
         let retrieved = KeychainHelper.shared.get(service: testService, account: testAccount)
-        #expect(retrieved == token)
+        XCTAssertEqual(retrieved, token)
     }
     
     // MARK: - Overwrite Existing Token
     
-    @Test func save_overwritesExistingToken() async throws {
-        defer { cleanup() }
-        cleanup()
-        
+    func testSave_overwritesExistingToken() {
         _ = KeychainHelper.shared.save(token: "old-token", service: testService, account: testAccount)
         _ = KeychainHelper.shared.save(token: "new-token", service: testService, account: testAccount)
         
         let retrieved = KeychainHelper.shared.get(service: testService, account: testAccount)
-        #expect(retrieved == "new-token")
+        XCTAssertEqual(retrieved, "new-token")
     }
     
     // MARK: - Delete
     
-    @Test func delete_removesToken() async throws {
-        cleanup()
-        
+    func testDelete_removesToken() {
         _ = KeychainHelper.shared.save(token: "to-delete", service: testService, account: testAccount)
         
-        // Confirm it exists
-        #expect(KeychainHelper.shared.get(service: testService, account: testAccount) != nil)
+        XCTAssertNotNil(KeychainHelper.shared.get(service: testService, account: testAccount))
         
-        // Delete
         KeychainHelper.shared.delete(service: testService, account: testAccount)
         
-        // Confirm gone
         let retrieved = KeychainHelper.shared.get(service: testService, account: testAccount)
-        #expect(retrieved == nil)
+        XCTAssertNil(retrieved)
     }
     
     // MARK: - Get Returns Nil When Empty
     
-    @Test func get_returnsNilWhenNoToken() async throws {
-        cleanup()
-        
+    func testGet_returnsNilWhenNoToken() {
         let retrieved = KeychainHelper.shared.get(service: testService, account: testAccount)
-        #expect(retrieved == nil)
+        XCTAssertNil(retrieved)
     }
     
     // MARK: - Different Services Are Isolated
     
-    @Test func differentServices_areIsolated() async throws {
+    func testDifferentServices_areIsolated() {
         let serviceA = "com.abby.tests.a"
         let serviceB = "com.abby.tests.b"
         let account = "shared-account"
         
-        defer {
+        addTeardownBlock {
             KeychainHelper.shared.delete(service: serviceA, account: account)
             KeychainHelper.shared.delete(service: serviceB, account: account)
         }
@@ -82,40 +73,34 @@ struct KeychainHelperTests {
         _ = KeychainHelper.shared.save(token: "tokenA", service: serviceA, account: account)
         _ = KeychainHelper.shared.save(token: "tokenB", service: serviceB, account: account)
         
-        #expect(KeychainHelper.shared.get(service: serviceA, account: account) == "tokenA")
-        #expect(KeychainHelper.shared.get(service: serviceB, account: account) == "tokenB")
+        XCTAssertEqual(KeychainHelper.shared.get(service: serviceA, account: account), "tokenA")
+        XCTAssertEqual(KeychainHelper.shared.get(service: serviceB, account: account), "tokenB")
     }
     
     // MARK: - Empty String Token
     
-    @Test func save_emptyString_canBeRetrieved() async throws {
-        defer { cleanup() }
-        cleanup()
-        
+    func testSave_emptyString_canBeRetrieved() {
         let saved = KeychainHelper.shared.save(token: "", service: testService, account: testAccount)
-        #expect(saved == true)
+        XCTAssertTrue(saved)
         
         let retrieved = KeychainHelper.shared.get(service: testService, account: testAccount)
-        #expect(retrieved == "")
+        XCTAssertEqual(retrieved, "")
     }
     
     // MARK: - Long Token
     
-    @Test func save_longToken_roundTrips() async throws {
-        defer { cleanup() }
-        cleanup()
-        
+    func testSave_longToken_roundTrips() {
         let longToken = String(repeating: "a", count: 5000)
         _ = KeychainHelper.shared.save(token: longToken, service: testService, account: testAccount)
         
         let retrieved = KeychainHelper.shared.get(service: testService, account: testAccount)
-        #expect(retrieved == longToken)
+        XCTAssertEqual(retrieved, longToken)
     }
     
     // MARK: - Constants Integration
     
-    @Test func constantsKeychainIdentifiers_areNotEmpty() async throws {
-        #expect(!Constants.keychainService.isEmpty)
-        #expect(!Constants.keychainAccount.isEmpty)
+    func testConstantsKeychainIdentifiers_areNotEmpty() {
+        XCTAssertFalse(Constants.keychainService.isEmpty)
+        XCTAssertFalse(Constants.keychainAccount.isEmpty)
     }
 }

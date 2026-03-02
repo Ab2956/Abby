@@ -1,13 +1,20 @@
-import Testing
-import Foundation
+import XCTest
 @testable import AbbyIOS
 
-struct ApiServicesTests {
+final class ApiServicesTests: XCTestCase {
     
-    // MARK: - Helpers
+    private var api: ApiServices!
     
-    private func makeApi() -> ApiServices {
-        return ApiServices(session: makeMockSession())
+    override func setUp() {
+        super.setUp()
+        api = ApiServices(session: makeMockSession())
+        KeychainHelper.shared.delete(service: Constants.keychainService, account: Constants.keychainAccount)
+    }
+    
+    override func tearDown() {
+        MockURLProtocol.requestHandler = nil
+        KeychainHelper.shared.delete(service: Constants.keychainService, account: Constants.keychainAccount)
+        super.tearDown()
     }
     
     private func mockResponse(path: String, statusCode: Int) -> HTTPURLResponse {
@@ -21,23 +28,21 @@ struct ApiServicesTests {
     
     // MARK: - URL Construction
     
-    @Test func login_usesCorrectURL() async throws {
+    func testLogin_usesCorrectURL() async throws {
         var capturedURL: URL?
         
         MockURLProtocol.requestHandler = { request in
             capturedURL = request.url
             let response = self.mockResponse(path: "/login", statusCode: 200)
-            let data = try JSONSerialization.data(withJSONObject: "token")
+            let data = try! JSONSerialization.data(withJSONObject: "token")
             return (response, data)
         }
         
-        let api = makeApi()
         _ = try await api.login(email: "a@b.com", password: "123")
-        
-        #expect(capturedURL?.absoluteString == "\(Constants.baseURL)/login")
+        XCTAssertEqual(capturedURL?.absoluteString, "\(Constants.baseURL)/login")
     }
     
-    @Test func createAccount_usesCorrectURL() async throws {
+    func testCreateAccount_usesCorrectURL() async throws {
         var capturedURL: URL?
         
         MockURLProtocol.requestHandler = { request in
@@ -46,245 +51,199 @@ struct ApiServicesTests {
             return (response, Data("{\"message\":\"ok\"}".utf8))
         }
         
-        let api = makeApi()
         try await api.createAccount(email: "a@b.com", password: "123", vrn: "456")
-        
-        #expect(capturedURL?.absoluteString == "\(Constants.baseURL)/registerAccount")
+        XCTAssertEqual(capturedURL?.absoluteString, "\(Constants.baseURL)/registerAccount")
     }
     
     // MARK: - Login Token Parsing
     
-    @Test func login_parsesJSONEncodedToken() async throws {
+    func testLogin_parsesJSONEncodedToken() async throws {
         let expectedToken = "eyJhbGciOiJIUzI1NiJ9.payload.sig"
         
         MockURLProtocol.requestHandler = { _ in
             let response = self.mockResponse(path: "/login", statusCode: 200)
-            // Backend does res.json(token) which wraps in quotes
-            let data = try JSONSerialization.data(withJSONObject: expectedToken)
+            let data = try! JSONSerialization.data(withJSONObject: expectedToken)
             return (response, data)
         }
         
-        let api = makeApi()
         let token = try await api.login(email: "a@b.com", password: "pass")
-        
-        #expect(token == expectedToken)
+        XCTAssertEqual(token, expectedToken)
     }
     
-    @Test func login_parsesRawStringToken() async throws {
+    func testLogin_parsesRawStringToken() async throws {
         let expectedToken = "raw-token-no-json-quotes"
         
         MockURLProtocol.requestHandler = { _ in
             let response = self.mockResponse(path: "/login", statusCode: 200)
-            // Some edge case: token sent as plain text, not JSON
             let data = Data(expectedToken.utf8)
             return (response, data)
         }
         
-        let api = makeApi()
         let token = try await api.login(email: "a@b.com", password: "pass")
-        
-        #expect(token == expectedToken)
+        XCTAssertEqual(token, expectedToken)
     }
     
     // MARK: - Login Error Responses
     
-    @Test func login_401_throwsInvalidCredentials() async throws {
+    func testLogin_401_throwsInvalidCredentials() async {
         MockURLProtocol.requestHandler = { _ in
             let response = self.mockResponse(path: "/login", statusCode: 401)
             let data = Data("{\"error\":\"Invalid password\"}".utf8)
             return (response, data)
         }
         
-        let api = makeApi()
-        
         do {
             _ = try await api.login(email: "a@b.com", password: "wrong")
-            #expect(Bool(false), "Should have thrown")
+            XCTFail("Should have thrown")
         } catch let error as ApiError {
-            #expect(error == .invalidCredentials)
+            XCTAssertEqual(error, .invalidCredentials)
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
         }
     }
     
-    @Test func login_404_noUser_throwsNoUser() async throws {
+    func testLogin_404_noUser_throwsNoUser() async {
         MockURLProtocol.requestHandler = { _ in
             let response = self.mockResponse(path: "/login", statusCode: 404)
             let data = Data("{\"error\":\"no user create an account\"}".utf8)
             return (response, data)
         }
         
-        let api = makeApi()
-        
         do {
             _ = try await api.login(email: "nobody@test.com", password: "pass")
-            #expect(Bool(false), "Should have thrown")
+            XCTFail("Should have thrown")
         } catch let error as ApiError {
-            #expect(error == .noUser)
+            XCTAssertEqual(error, .noUser)
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
         }
     }
     
-    @Test func login_500_throwsServerError() async throws {
+    func testLogin_500_throwsServerError() async {
         MockURLProtocol.requestHandler = { _ in
             let response = self.mockResponse(path: "/login", statusCode: 500)
             let data = Data("{\"error\":\"Internal server error\"}".utf8)
             return (response, data)
         }
         
-        let api = makeApi()
-        
         do {
             _ = try await api.login(email: "a@b.com", password: "pass")
-            #expect(Bool(false), "Should have thrown")
+            XCTFail("Should have thrown")
         } catch let error as ApiError {
             if case .serverError = error {
                 // correct
             } else {
-                #expect(Bool(false), "Expected serverError, got \(error)")
+                XCTFail("Expected serverError, got \(error)")
             }
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
         }
     }
     
-    @Test func login_emptyToken_throwsServerError() async throws {
+    func testLogin_emptyToken_throwsServerError() async {
         MockURLProtocol.requestHandler = { _ in
             let response = self.mockResponse(path: "/login", statusCode: 200)
-            let data = Data("\"\"".utf8) // empty JSON string
+            let data = Data("\"\"".utf8)
             return (response, data)
         }
         
-        let api = makeApi()
-        
         do {
             _ = try await api.login(email: "a@b.com", password: "pass")
-            #expect(Bool(false), "Should have thrown")
+            XCTFail("Should have thrown")
         } catch let error as ApiError {
             if case .serverError(let msg) = error {
-                #expect(msg == "Empty token received")
+                XCTAssertEqual(msg, "Empty token received")
             } else {
-                #expect(Bool(false), "Expected serverError, got \(error)")
+                XCTFail("Expected serverError, got \(error)")
             }
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
         }
     }
     
     // MARK: - Create Account Errors
     
-    @Test func createAccount_400_throwsServerError() async throws {
+    func testCreateAccount_400_throwsServerError() async {
         MockURLProtocol.requestHandler = { _ in
             let response = self.mockResponse(path: "/registerAccount", statusCode: 400)
             let data = Data("email already exists".utf8)
             return (response, data)
         }
         
-        let api = makeApi()
-        
         do {
             try await api.createAccount(email: "dup@test.com", password: "pass", vrn: "123")
-            #expect(Bool(false), "Should have thrown")
+            XCTFail("Should have thrown")
         } catch let error as ApiError {
             if case .serverError = error {
                 // correct
             } else {
-                #expect(Bool(false), "Expected serverError, got \(error)")
+                XCTFail("Expected serverError, got \(error)")
             }
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
         }
     }
     
     // MARK: - Authenticated Request Builder
     
-    @Test func authenticatedRequest_attachesBearerToken() async throws {
+    func testAuthenticatedRequest_attachesBearerToken() {
         let testToken = "my-test-jwt"
+        _ = KeychainHelper.shared.save(token: testToken, service: Constants.keychainService, account: Constants.keychainAccount)
         
-        // Store a token in Keychain
-        _ = KeychainHelper.shared.save(
-            token: testToken,
-            service: Constants.keychainService,
-            account: Constants.keychainAccount
-        )
-        defer {
-            KeychainHelper.shared.delete(
-                service: Constants.keychainService,
-                account: Constants.keychainAccount
-            )
-        }
-        
-        let api = ApiServices()
         let request = api.authenticatedRequest(path: "/profile")
         
-        #expect(request != nil)
-        #expect(request?.url?.absoluteString == "\(Constants.baseURL)/profile")
-        #expect(request?.httpMethod == "GET")
-        #expect(request?.value(forHTTPHeaderField: "Authorization") == "Bearer \(testToken)")
-        #expect(request?.value(forHTTPHeaderField: "Content-Type") == "application/json")
+        XCTAssertNotNil(request)
+        XCTAssertEqual(request?.url?.absoluteString, "\(Constants.baseURL)/profile")
+        XCTAssertEqual(request?.httpMethod, "GET")
+        XCTAssertEqual(request?.value(forHTTPHeaderField: "Authorization"), "Bearer \(testToken)")
+        XCTAssertEqual(request?.value(forHTTPHeaderField: "Content-Type"), "application/json")
     }
     
-    @Test func authenticatedRequest_returnsNilWithNoToken() async throws {
-        // Ensure no token in Keychain
-        KeychainHelper.shared.delete(
-            service: Constants.keychainService,
-            account: Constants.keychainAccount
-        )
-        
-        let api = ApiServices()
+    func testAuthenticatedRequest_returnsNilWithNoToken() {
         let request = api.authenticatedRequest(path: "/profile")
-        
-        #expect(request == nil)
+        XCTAssertNil(request)
     }
     
-    @Test func authenticatedRequest_usesSpecifiedMethod() async throws {
-        _ = KeychainHelper.shared.save(
-            token: "tok",
-            service: Constants.keychainService,
-            account: Constants.keychainAccount
-        )
-        defer {
-            KeychainHelper.shared.delete(
-                service: Constants.keychainService,
-                account: Constants.keychainAccount
-            )
-        }
-        
-        let api = ApiServices()
+    func testAuthenticatedRequest_usesSpecifiedMethod() {
+        _ = KeychainHelper.shared.save(token: "tok", service: Constants.keychainService, account: Constants.keychainAccount)
         let request = api.authenticatedRequest(path: "/data", method: "POST")
-        
-        #expect(request?.httpMethod == "POST")
+        XCTAssertEqual(request?.httpMethod, "POST")
     }
     
     // MARK: - Request Body Validation
     
-    @Test func login_sendsCorrectJSONBody() async throws {
+    func testLogin_sendsCorrectJSONBody() async throws {
         var capturedBody: [String: String]?
         
         MockURLProtocol.requestHandler = { request in
-            capturedBody = try JSONSerialization.jsonObject(with: request.httpBody!) as? [String: String]
+            capturedBody = try? JSONSerialization.jsonObject(with: request.httpBody!) as? [String: String]
             let response = self.mockResponse(path: "/login", statusCode: 200)
-            let data = try JSONSerialization.data(withJSONObject: "tok")
+            let data = try! JSONSerialization.data(withJSONObject: "tok")
             return (response, data)
         }
         
-        let api = makeApi()
         _ = try await api.login(email: "user@test.com", password: "mypassword")
-        
-        #expect(capturedBody?["email"] == "user@test.com")
-        #expect(capturedBody?["password"] == "mypassword")
+        XCTAssertEqual(capturedBody?["email"], "user@test.com")
+        XCTAssertEqual(capturedBody?["password"], "mypassword")
     }
     
-    @Test func login_setsContentTypeJSON() async throws {
+    func testLogin_setsContentTypeJSON() async throws {
         var capturedContentType: String?
         
         MockURLProtocol.requestHandler = { request in
             capturedContentType = request.value(forHTTPHeaderField: "Content-Type")
             let response = self.mockResponse(path: "/login", statusCode: 200)
-            let data = try JSONSerialization.data(withJSONObject: "tok")
+            let data = try! JSONSerialization.data(withJSONObject: "tok")
             return (response, data)
         }
         
-        let api = makeApi()
         _ = try await api.login(email: "a@b.com", password: "p")
-        
-        #expect(capturedContentType == "application/json")
+        XCTAssertEqual(capturedContentType, "application/json")
     }
 }
 
 // MARK: - ApiError Equatable conformance for tests
-extension ApiError: Equatable {
+extension ApiError: @retroactive Equatable {
     public static func == (lhs: ApiError, rhs: ApiError) -> Bool {
         switch (lhs, rhs) {
         case (.badURL, .badURL): return true

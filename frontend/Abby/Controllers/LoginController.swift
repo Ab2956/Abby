@@ -16,8 +16,13 @@ class LoginController: ObservableObject {
     @Published var isLoading = false
     
     let oauth = OauthServices()
+    var apiService: ApiServices
     
-    // Check if the user already has a valid token stored
+    init(apiService: ApiServices = .shared) {
+        self.apiService = apiService
+    }
+    
+    // checking for valid token when loading
     var hasStoredToken: Bool {
         KeychainHelper.shared.get(
             service: Constants.keychainService,
@@ -25,14 +30,14 @@ class LoginController: ObservableObject {
         ) != nil
     }
     
-    // MARK: - Email / Password Login
+    // login
     
     func login(email: String, password: String) async {
         errorMessage = nil
         isLoading = true
         
         do {
-            let token = try await ApiServices.shared.login(email: email, password: password)
+            let token = try await apiService.login(email: email, password: password)
             
             _ = KeychainHelper.shared.save(
                 token: token,
@@ -51,16 +56,13 @@ class LoginController: ObservableObject {
         isLoading = false
     }
     
-    // MARK: - Create Account
-    
+    // create Account
     func createAccount(email: String, password: String, vrn: String) async {
         errorMessage = nil
         isLoading = true
         
         do {
-            try await ApiServices.shared.createAccount(email: email, password: password, vrn: vrn)
-            
-            // Auto-login after successful registration
+            try await apiService.createAccount(email: email, password: password, vrn: vrn)
             await login(email: email, password: password)
             
         } catch {
@@ -71,7 +73,7 @@ class LoginController: ObservableObject {
         isLoading = false
     }
     
-    // MARK: - Logout
+    // logout
     
     func logout() {
         KeychainHelper.shared.delete(
@@ -81,7 +83,7 @@ class LoginController: ObservableObject {
         isLoggedIn = false
     }
     
-    // MARK: - OAuth Login
+    // OAuth Login
     
     func loginOauth(from viewController: UIViewController) {
         guard let url = oauth.getOauthRedirectURL() else {

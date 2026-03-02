@@ -1,152 +1,117 @@
-import Testing
-import Foundation
+import XCTest
 @testable import AbbyIOS
 
 @MainActor
-struct LoginTests {
+final class LoginTests: XCTestCase {
     
-    /// Create an ApiServices instance backed by a mock session
-    private func makeApi(session: URLSession) -> ApiServices {
-        return ApiServices(session: session)
+    private var mockSession: URLSession!
+    
+    override func setUp() {
+        super.setUp()
+        mockSession = makeMockSession()
+        KeychainHelper.shared.delete(service: Constants.keychainService, account: Constants.keychainAccount)
     }
     
-    /// Build a mock HTTP response for a given URL string
-    private func mockResponse(url: String, statusCode: Int) -> HTTPURLResponse {
+    override func tearDown() {
+        MockURLProtocol.requestHandler = nil
+        KeychainHelper.shared.delete(service: Constants.keychainService, account: Constants.keychainAccount)
+        super.tearDown()
+    }
+    
+    private func mockResponse(path: String, statusCode: Int) -> HTTPURLResponse {
         HTTPURLResponse(
-            url: URL(string: url)!,
+            url: URL(string: Constants.baseURL + path)!,
             statusCode: statusCode,
             httpVersion: nil,
             headerFields: nil
         )!
     }
     
-    // Login Success
-    
-    @Test func loginSuccess_setsIsLoggedInTrue() async throws {
-        // Arrange: mock server returns a JWT token
-        let fakeToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test.signature"
-        let session = makeMockSession()
-        
-        MockURLProtocol.requestHandler = { request in
-            #expect(request.url?.path == "/login")
-            #expect(request.httpMethod == "POST")
-            
-            // Verify the request body contains email and password
-            let body = try JSONSerialization.jsonObject(with: request.httpBody!) as! [String: String]
-            #expect(body["email"] == "test@example.com")
-            #expect(body["password"] == "password123")
-            
-            let response = self.mockResponse(url: Constants.baseURL + "/login", statusCode: 200)
-            // Backend returns token as a JSON string: "token..."
-            let data = try JSONSerialization.data(withJSONObject: fakeToken)
-            return (response, data)
-        }
-        
-        let api = makeApi(session: session)
-        
-        // Act
-        let token = try await api.login(email: "test@example.com", password: "password123")
-        
-        // Assert
-        #expect(token == fakeToken)
+    private func makeController() -> LoginController {
+        return LoginController(apiService: ApiServices(session: mockSession))
     }
     
-    @Test func loginSuccess_controllerSavesTokenAndNavigates() async throws {
-        let fakeToken = "jwt-token-abc"
-        let session = makeMockSession()
+    // MARK: - Login Success
+    
+    func testLoginSuccess_setsIsLoggedInTrue() async {
+        let fakeToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test.signature"
         
-        MockURLProtocol.requestHandler = { _ in
-            let response = self.mockResponse(url: Constants.baseURL + "/login", statusCode: 200)
-            let data = try JSONSerialization.data(withJSONObject: fakeToken)
+        MockURLProtocol.requestHandler = { request in
+            XCTAssertEqual(request.url?.path, "/login")
+            XCTAssertEqual(request.httpMethod, "POST")
+            
+            let body = try! JSONSerialization.jsonObject(with: request.httpBody!) as! [String: String]
+            XCTAssertEqual(body["email"], "test@example.com")
+            XCTAssertEqual(body["password"], "password123")
+            
+            let response = self.mockResponse(path: "/login", statusCode: 200)
+            let data = try! JSONSerialization.data(withJSONObject: fakeToken)
             return (response, data)
         }
         
-        // Inject the mock session into the shared ApiServices for this test
-        let originalSession = ApiServices.shared.session
-        ApiServices.shared.session = session
-        defer { ApiServices.shared.session = originalSession }
-        
-        let controller = LoginController()
-        
-        // Pre-conditions
-        #expect(controller.isLoggedIn == false)
-        #expect(controller.errorMessage == nil)
-        
-        // Act
+        let controller = makeController()
         await controller.login(email: "test@example.com", password: "password123")
         
-        // Assert
-        #expect(controller.isLoggedIn == true)
-        #expect(controller.errorMessage == nil)
-        #expect(controller.isLoading == false)
+        XCTAssertTrue(controller.isLoggedIn)
+        XCTAssertNil(controller.errorMessage)
+        XCTAssertFalse(controller.isLoading)
+    }
+    
+    func testLoginSuccess_savesTokenToKeychain() async {
+        let fakeToken = "jwt-token-abc"
         
-        // Verify token was saved to Keychain
+        MockURLProtocol.requestHandler = { _ in
+            let response = self.mockResponse(path: "/login", statusCode: 200)
+            let data = try! JSONSerialization.data(withJSONObject: fakeToken)
+            return (response, data)
+        }
+        
+        let controller = makeController()
+        await controller.login(email: "test@example.com", password: "password123")
+        
         let savedToken = KeychainHelper.shared.get(
             service: Constants.keychainService,
             account: Constants.keychainAccount
         )
-        #expect(savedToken == fakeToken)
-        
-        // Clean up Keychain
-        KeychainHelper.shared.delete(
-            service: Constants.keychainService,
-            account: Constants.keychainAccount
-        )
+        XCTAssertEqual(savedToken, fakeToken)
     }
     
-    // Login Failure — Invalid Credentials
+    // MARK: - Login Failure
     
-    @Test func loginFailure_invalidCredentials_setsErrorMessage() async throws {
-        let session = makeMockSession()
-        
+    func testLoginFailure_invalidCredentials_setsErrorMessage() async {
         MockURLProtocol.requestHandler = { _ in
-            let response = self.mockResponse(url: Constants.baseURL + "/login", statusCode: 401)
+            let response = self.mockResponse(path: "/login", statusCode: 401)
             let data = Data("{\"error\":\"Invalid password\"}".utf8)
             return (response, data)
         }
         
-        let originalSession = ApiServices.shared.session
-        ApiServices.shared.session = session
-        defer { ApiServices.shared.session = originalSession }
-        
-        let controller = LoginController()
-        
+        let controller = makeController()
         await controller.login(email: "test@example.com", password: "wrong")
         
-        #expect(controller.isLoggedIn == false)
-        #expect(controller.errorMessage != nil)
-        #expect(controller.isLoading == false)
+        XCTAssertFalse(controller.isLoggedIn)
+        XCTAssertNotNil(controller.errorMessage)
+        XCTAssertFalse(controller.isLoading)
     }
     
-    // Login Failure — No User
-    
-    @Test func loginFailure_noUser_setsErrorMessage() async throws {
-        let session = makeMockSession()
-        
+    func testLoginFailure_noUser_setsErrorMessage() async {
         MockURLProtocol.requestHandler = { _ in
-            let response = self.mockResponse(url: Constants.baseURL + "/login", statusCode: 404)
+            let response = self.mockResponse(path: "/login", statusCode: 404)
             let data = Data("{\"error\":\"no user create an account\"}".utf8)
             return (response, data)
         }
         
-        let originalSession = ApiServices.shared.session
-        ApiServices.shared.session = session
-        defer { ApiServices.shared.session = originalSession }
-        
-        let controller = LoginController()
-        
+        let controller = makeController()
         await controller.login(email: "nobody@example.com", password: "pass")
         
-        #expect(controller.isLoggedIn == false)
-        #expect(controller.errorMessage != nil)
+        XCTAssertFalse(controller.isLoggedIn)
+        XCTAssertNotNil(controller.errorMessage)
     }
     
-    // Logout
+    // MARK: - Logout
     
-    @Test func logout_clearsTokenAndResetsState() async throws {
-        let controller = LoginController()
+    func testLogout_clearsTokenAndResetsState() {
+        let controller = makeController()
         
-        // Simulate a logged-in state
         _ = KeychainHelper.shared.save(
             token: "some-token",
             service: Constants.keychainService,
@@ -154,71 +119,45 @@ struct LoginTests {
         )
         controller.isLoggedIn = true
         
-        // Act
         controller.logout()
         
-        // Assert
-        #expect(controller.isLoggedIn == false)
-        
+        XCTAssertFalse(controller.isLoggedIn)
         let token = KeychainHelper.shared.get(
             service: Constants.keychainService,
             account: Constants.keychainAccount
         )
-        #expect(token == nil)
+        XCTAssertNil(token)
     }
     
-    // hasStoredToken
+    // MARK: - hasStoredToken
     
-    @Test func hasStoredToken_returnsTrueWhenTokenExists() async throws {
-        // Clean slate
-        KeychainHelper.shared.delete(
-            service: Constants.keychainService,
-            account: Constants.keychainAccount
-        )
-        
-        let controller = LoginController()
-        #expect(controller.hasStoredToken == false)
-        
+    func testHasStoredToken_returnsFalseWhenEmpty() {
+        let controller = makeController()
+        XCTAssertFalse(controller.hasStoredToken)
+    }
+    
+    func testHasStoredToken_returnsTrueWhenTokenExists() {
         _ = KeychainHelper.shared.save(
             token: "token",
             service: Constants.keychainService,
             account: Constants.keychainAccount
         )
-        
-        #expect(controller.hasStoredToken == true)
-        
-        // Clean up
-        KeychainHelper.shared.delete(
-            service: Constants.keychainService,
-            account: Constants.keychainAccount
-        )
+        let controller = makeController()
+        XCTAssertTrue(controller.hasStoredToken)
     }
     
-    // Loading State
+    // MARK: - Loading State
     
-    @Test func login_isLoadingFalseAfterCompletion() async throws {
-        let session = makeMockSession()
-        
+    func testLogin_isLoadingFalseAfterCompletion() async {
         MockURLProtocol.requestHandler = { _ in
-            let response = self.mockResponse(url: Constants.baseURL + "/login", statusCode: 200)
-            let data = try JSONSerialization.data(withJSONObject: "token")
+            let response = self.mockResponse(path: "/login", statusCode: 200)
+            let data = try! JSONSerialization.data(withJSONObject: "token")
             return (response, data)
         }
         
-        let originalSession = ApiServices.shared.session
-        ApiServices.shared.session = session
-        defer {
-            ApiServices.shared.session = originalSession
-            KeychainHelper.shared.delete(
-                service: Constants.keychainService,
-                account: Constants.keychainAccount
-            )
-        }
-        
-        let controller = LoginController()
-        
+        let controller = makeController()
         await controller.login(email: "a@b.com", password: "123456")
         
-        #expect(controller.isLoading == false)
+        XCTAssertFalse(controller.isLoading)
     }
 }
