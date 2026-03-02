@@ -4,18 +4,18 @@
 //
 //  Created by Adam Brows on 05/12/2025.
 //
-import  Foundation
+import Foundation
 
-class OauthServices{
+class OauthServices {
     
-    private let oauthURL = "localhost:8080/loginAuth"
-    private let oauthCallback = "localhost:8080/callback"
+    private var oauthURL: String { "\(Constants.baseURL)/loginAuth" }
+    private var oauthCallback: String { "\(Constants.baseURL)/callback" }
     
-    func getOauthRedirectURL() -> URL?{
-        return URL(string: oauthURL);
+    func getOauthRedirectURL() -> URL? {
+        return URL(string: oauthURL)
     }
     
-    func getOauthCallback() -> URL?{
-        return URL(string: oauthCallback);
+    func getOauthCallback() -> URL? {
+        return URL(string: oauthCallback)
     }
 }

@@ -10,7 +10,7 @@ async function login(req, res) {
         let user = await dataHandler.findUser({ email });
 
         if (!user) {
-            res.send("no user create an account")
+            return res.status(404).json({ error: "no user create an account" });
         } 
         
         const validPassword = await bcrypt.compare(password, user.password);

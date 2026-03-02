@@ -8,11 +8,32 @@
 import SwiftUI
 
 struct HomePageView: View {
+    @ObservedObject var loginController: LoginController
+    
     var body: some View {
-        Text("Abby")
+        NavigationStack {
+            VStack(spacing: 20) {
+                Text("Abby")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                
+                Text("You are logged in.")
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+            }
+            .padding()
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Logout") {
+                        loginController.logout()
+                    }
+                }
+            }
+        }
     }
 }
 
 #Preview {
-    HomePageView()
+    HomePageView(loginController: LoginController())
 }

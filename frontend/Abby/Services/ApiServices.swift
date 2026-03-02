@@ -6,45 +6,143 @@
 //
 import Foundation
 
-class ApiServices{
-        
-        static let shared = ApiServices()
-        public init() {}
-        
-        let baseURL = "localhost:8080/login"
-        
-        // Login
-        func login(email: String, password: String) async throws -> String {
-            
-            guard let url = URL(string: "\(baseURL)/login") else {
-                throw URLError(.badURL)
-            }
-            
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            
-            let body = [
-                "email": email,
-                "password": password
-            ]
-            
-            request.httpBody = try JSONSerialization.data(withJSONObject: body)
-            
-            let (data, response) = try await URLSession.shared.data(for: request)
-            
-            guard let httpResponse = response as? HTTPURLResponse else {
-                throw URLError(.badServerResponse)
-            }
-            
-            
-            if let message = String(data: data, encoding: .utf8),
-               message.contains("no user") {
-                throw NSError(domain: "", code: 404, userInfo: [NSLocalizedDescriptionKey: message])
-            }
-            
-            let token = String(decoding: data, as: UTF8.self)
-            return token
+enum ApiError: LocalizedError {
+    case badURL
+    case badResponse(statusCode: Int)
+    case noUser
+    case invalidCredentials
+    case serverError(String)
+    
+    var errorDescription: String? {
+        switch self {
+        case .badURL: return "Invalid URL"
+        case .badResponse(let code): return "Bad server response (\(code))"
+        case .noUser: return "No account found. Please create an account."
+        case .invalidCredentials: return "Invalid email or password."
+        case .serverError(let msg): return msg
         }
     }
+}
+
+class ApiServices {
+    
+    static let shared = ApiServices()
+    public init() {}
+    
+    private var baseURL: String { Constants.baseURL }
+    
+    /// Retrieve the stored JWT token from Keychain
+    private var authToken: String? {
+        KeychainHelper.shared.get(
+            service: Constants.keychainService,
+            account: Constants.keychainAccount
+        )
+    }
+    
+    // MARK: - Login
+    
+    /// Returns the JWT token string on success
+    func login(email: String, password: String) async throws -> String {
+        
+        guard let url = URL(string: "\(baseURL)/login") else {
+            throw ApiError.badURL
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body: [String: String] = [
+            "email": email,
+            "password": password
+        ]
+        
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw ApiError.badResponse(statusCode: 0)
+        }
+        
+        // Handle error status codes
+        if httpResponse.statusCode == 401 {
+            throw ApiError.invalidCredentials
+        }
+        
+        if httpResponse.statusCode >= 400 {
+            let message = String(data: data, encoding: .utf8) ?? "Unknown error"
+            if message.contains("no user") {
+                throw ApiError.noUser
+            }
+            throw ApiError.serverError(message)
+        }
+        
+        // The backend returns the JWT as a raw JSON string: "eyJhbG..."
+        // JSONSerialization will parse the quoted string into a Swift String
+        let token: String
+        if let parsed = try? JSONSerialization.jsonObject(with: data) as? String {
+            token = parsed
+        } else {
+            // Fallback: treat raw bytes as the token
+            token = String(decoding: data, as: UTF8.self)
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .trimmingCharacters(in: CharacterSet(charactersIn: "\""))
+        }
+        
+        guard !token.isEmpty else {
+            throw ApiError.serverError("Empty token received")
+        }
+        
+        return token
+    }
+    
+    // MARK: - Create Account
+    
+    func createAccount(email: String, password: String, vrn: String) async throws {
+        
+        guard let url = URL(string: "\(baseURL)/registerAccount") else {
+            throw ApiError.badURL
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body: [String: String] = [
+            "email": email,
+            "password": password,
+            "vrn": vrn
+        ]
+        
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw ApiError.badResponse(statusCode: 0)
+        }
+        
+        if httpResponse.statusCode >= 400 {
+            let message = String(data: data, encoding: .utf8) ?? "Account creation failed"
+            throw ApiError.serverError(message)
+        }
+    }
+    
+    // MARK: - Authenticated Request Helper
+    
+    /// Build a URLRequest with the JWT Authorization header attached
+    func authenticatedRequest(path: String, method: String = "GET") -> URLRequest? {
+        guard let url = URL(string: "\(baseURL)\(path)"),
+              let token = authToken else {
+            return nil
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = method
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        return request
+    }
+}
 

@@ -10,14 +10,14 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @State private var isActive = false
+    @StateObject private var loginController = LoginController()
+    @State private var showSplash = true
     @State private var opacity = 1.0
     
     var body: some View {
-        if isActive {
-            LoginView()
-        } else {
-            ZStack{
+        if showSplash {
+            // Splash screen
+            ZStack {
                 Color(UIColor.gray)
                     .ignoresSafeArea()
                 VStack {
@@ -31,17 +31,29 @@ struct ContentView: View {
                     withAnimation(.easeIn(duration: 1.3)) {
                         self.opacity = 1.0
                     }
-                    
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         withAnimation {
-                            self.isActive = true
+                            // If there's already a stored token, skip login
+                            if loginController.hasStoredToken {
+                                loginController.isLoggedIn = true
+                            }
+                            self.showSplash = false
                         }
                     }
                 }
             }
+        } else if loginController.isLoggedIn {
+            // Main app — user is authenticated
+            HomePageView(loginController: loginController)
+        } else {
+            // Login / registration flow
+            NavigationStack {
+                LoginView(loginController: loginController)
+            }
         }
     }
 }
-#Preview{
+
+#Preview {
     ContentView()
 }
