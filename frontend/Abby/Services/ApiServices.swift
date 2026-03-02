@@ -27,7 +27,13 @@ enum ApiError: LocalizedError {
 class ApiServices {
     
     static let shared = ApiServices()
-    public init() {}
+    
+    /// URLSession used for all requests. Override in tests with a mock session.
+    var session: URLSession
+    
+    public init(session: URLSession = .shared) {
+        self.session = session
+    }
     
     private var baseURL: String { Constants.baseURL }
     
@@ -39,7 +45,6 @@ class ApiServices {
         )
     }
     
-    // MARK: - Login
     
     /// Returns the JWT token string on success
     func login(email: String, password: String) async throws -> String {
@@ -59,7 +64,7 @@ class ApiServices {
         
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
         
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await session.data(for: request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
             throw ApiError.badResponse(statusCode: 0)
@@ -78,13 +83,10 @@ class ApiServices {
             throw ApiError.serverError(message)
         }
         
-        // The backend returns the JWT as a raw JSON string: "eyJhbG..."
-        // JSONSerialization will parse the quoted string into a Swift String
         let token: String
         if let parsed = try? JSONSerialization.jsonObject(with: data) as? String {
             token = parsed
         } else {
-            // Fallback: treat raw bytes as the token
             token = String(decoding: data, as: UTF8.self)
                 .trimmingCharacters(in: .whitespacesAndNewlines)
                 .trimmingCharacters(in: CharacterSet(charactersIn: "\""))
@@ -97,7 +99,7 @@ class ApiServices {
         return token
     }
     
-    // MARK: - Create Account
+    // create Account
     
     func createAccount(email: String, password: String, vrn: String) async throws {
         
@@ -117,7 +119,7 @@ class ApiServices {
         
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
         
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await session.data(for: request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
             throw ApiError.badResponse(statusCode: 0)
@@ -129,7 +131,7 @@ class ApiServices {
         }
     }
     
-    // MARK: - Authenticated Request Helper
+    // authenticated Request Helper
     
     /// Build a URLRequest with the JWT Authorization header attached
     func authenticatedRequest(path: String, method: String = "GET") -> URLRequest? {
