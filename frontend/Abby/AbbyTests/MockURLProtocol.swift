@@ -37,5 +37,7 @@ class MockURLProtocol: URLProtocol {
 func makeMockSession() -> URLSession {
     let config = URLSessionConfiguration.ephemeral
     config.protocolClasses = [MockURLProtocol.self]
+    config.requestCachePolicy = .reloadIgnoringLocalCacheData
+    config.urlCache = nil
     return URLSession(configuration: config)
 }

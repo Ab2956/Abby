@@ -13,6 +13,7 @@ final class LoginTests: XCTestCase {
     }
     
     override func tearDown() {
+        mockSession.invalidateAndCancel()
         MockURLProtocol.requestHandler = nil
         KeychainHelper.shared.delete(service: Constants.keychainService, account: Constants.keychainAccount)
         super.tearDown()
