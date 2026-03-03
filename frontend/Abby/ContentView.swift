@@ -43,10 +43,8 @@ struct ContentView: View {
                 }
             }
         } else if loginController.isLoggedIn {
-            // Main app — user is authenticated
             HomePageView(loginController: loginController)
         } else {
-            // Login / registration flow
             NavigationStack {
                 LoginView(loginController: loginController)
             }
