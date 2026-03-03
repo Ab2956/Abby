@@ -1,11 +1,11 @@
 require('dotenv').config();
 const express = require('express');
-const db = require('../backend/src/database/connectDB');
-const authRoutes = require('../backend/src/routes/auth');
-const logibnRoutes = require('../backend/src/routes/login');
-const invoiceRoutes = require('../backend/src/routes/invoice');
-const bookkeepingRoutes = require('../backend/src/routes/bookkeeping');
-const vatRoutes = require('../backend/src/routes/vat');
+const db = require('./src/database/connectDB');
+const authRoutes = require('./src/routes/auth');
+const logibnRoutes = require('./src/routes/login');
+const invoiceRoutes = require('./src/routes/invoice');
+const bookkeepingRoutes = require('./src/routes/bookkeeping');
+const vatRoutes = require('./src/routes/vat');
 
 
 const app = express();
