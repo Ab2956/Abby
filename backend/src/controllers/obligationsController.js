@@ -8,7 +8,7 @@ class obligationsController {
     async getObligations(req, res) {
         try {
 
-            const refreshToken = await authServices.getUserRefreshToken(req.user.userId);
+            const refreshToken = await authServices.getRefreshToken(req.user.userId);
             if (!refreshToken) {
                 return res.status(401).json({ error: 'No refresh token found, please connect to HMRC' });
             }
@@ -34,7 +34,7 @@ class obligationsController {
     }
     async submitObligation(req, res) {
         try {
-            const refreshToken = await authServices.getUserRefreshToken(req.user.userId);
+            const refreshToken = await authServices.getRefreshToken(req.user.userId);
             if (!refreshToken) {
                 return res.status(401).json({ error: 'No refresh token found, please connect to HMRC' });
             }
