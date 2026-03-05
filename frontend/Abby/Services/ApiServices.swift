@@ -242,6 +242,11 @@ class ApiServices {
         }
 
         if httpResponse.statusCode >= 400 {
+            // Try to extract the error message from JSON response
+            if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let errorMsg = json["error"] as? String {
+                throw ApiError.serverError(errorMsg)
+            }
             let message = String(data: data, encoding: .utf8) ?? "Unknown error"
             throw ApiError.serverError(message)
         }
