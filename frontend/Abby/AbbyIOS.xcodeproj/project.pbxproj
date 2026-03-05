@@ -22,6 +22,16 @@
 		2593996D2EECBC6900CC608D /* StartUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2593996C2EECBC5E00CC608D /* StartUpView.swift */; };
 		25AEF7342F4267B2003F2CC3 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25AEF7332F4267B2003F2CC3 /* Launch Screen.storyboard */; };
 		25AEF7362F42790C003F2CC3 /* CreateAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AEF7352F4278FD003F2CC3 /* CreateAccountView.swift */; };
+		25B3F0022F68A10000DE3A01 /* InvoiceUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B3F0012F68A10000DE3A01 /* InvoiceUploadView.swift */; };
+		25B3F0042F68A10000DE3A02 /* InvoiceCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B3F0032F68A10000DE3A02 /* InvoiceCreationView.swift */; };
+		25B3F0062F68A10000DE3A03 /* ReceiptUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B3F0052F68A10000DE3A03 /* ReceiptUploadView.swift */; };
+		25B3F0082F68A10000DE3A04 /* ReceiptCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B3F0072F68A10000DE3A04 /* ReceiptCreationView.swift */; };
+		25B3F00A2F68A10000DE3A05 /* ObligationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B3F0092F68A10000DE3A05 /* ObligationsView.swift */; };
+		25B3F00C2F68A10000DE3A06 /* MTDSubmissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B3F00B2F68A10000DE3A06 /* MTDSubmissionsView.swift */; };
+		25C4A0012F68B20000DE3A07 /* InvoiceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C4A0022F68B20000DE3A07 /* InvoiceController.swift */; };
+		25C4A0032F68B20000DE3A08 /* ReceiptController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C4A0042F68B20000DE3A08 /* ReceiptController.swift */; };
+		25C4A0052F68B20000DE3A09 /* MTDController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C4A0062F68B20000DE3A09 /* MTDController.swift */; };
+		25C4A0072F68B20000DE3A0A /* ObligationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C4A0082F68B20000DE3A0A /* ObligationsController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +77,16 @@
 		25AEF7372F427AF5003F2CC3 /* InvoiceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceModel.swift; sourceTree = "<group>"; };
 		25AEF7382F427B06003F2CC3 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		25AEF7392F427B21003F2CC3 /* BookkeepingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookkeepingModel.swift; sourceTree = "<group>"; };
+		25B3F0012F68A10000DE3A01 /* InvoiceUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceUploadView.swift; sourceTree = "<group>"; };
+		25B3F0032F68A10000DE3A02 /* InvoiceCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceCreationView.swift; sourceTree = "<group>"; };
+		25B3F0052F68A10000DE3A03 /* ReceiptUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptUploadView.swift; sourceTree = "<group>"; };
+		25B3F0072F68A10000DE3A04 /* ReceiptCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptCreationView.swift; sourceTree = "<group>"; };
+		25B3F0092F68A10000DE3A05 /* ObligationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObligationsView.swift; sourceTree = "<group>"; };
+		25B3F00B2F68A10000DE3A06 /* MTDSubmissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTDSubmissionsView.swift; sourceTree = "<group>"; };
+		25C4A0022F68B20000DE3A07 /* InvoiceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceController.swift; sourceTree = "<group>"; };
+		25C4A0042F68B20000DE3A08 /* ReceiptController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptController.swift; sourceTree = "<group>"; };
+		25C4A0062F68B20000DE3A09 /* MTDController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTDController.swift; sourceTree = "<group>"; };
+		25C4A0082F68B20000DE3A0A /* ObligationsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObligationsController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -132,6 +152,10 @@
 			isa = PBXGroup;
 			children = (
 				259399622EE3724300CC608D /* LoginController.swift */,
+				25C4A0022F68B20000DE3A07 /* InvoiceController.swift */,
+				25C4A0042F68B20000DE3A08 /* ReceiptController.swift */,
+				25C4A0062F68B20000DE3A09 /* MTDController.swift */,
+				25C4A0082F68B20000DE3A0A /* ObligationsController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -143,6 +167,12 @@
 				2593996C2EECBC5E00CC608D /* StartUpView.swift */,
 				253862882EC6287500CA2D97 /* LoginView.swift */,
 				259399682EE60DE900CC608D /* HomePageView.swift */,
+				25B3F0012F68A10000DE3A01 /* InvoiceUploadView.swift */,
+				25B3F0032F68A10000DE3A02 /* InvoiceCreationView.swift */,
+				25B3F0052F68A10000DE3A03 /* ReceiptUploadView.swift */,
+				25B3F0072F68A10000DE3A04 /* ReceiptCreationView.swift */,
+				25B3F0092F68A10000DE3A05 /* ObligationsView.swift */,
+				25B3F00B2F68A10000DE3A06 /* MTDSubmissionsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -336,6 +366,16 @@
 				259399692EE60DE900CC608D /* HomePageView.swift in Sources */,
 				2553755A2F54F21400CC536E /* keychainHelper.swift in Sources */,
 				255375612F56122600CC536E /* Constants.swift in Sources */,
+				25B3F0022F68A10000DE3A01 /* InvoiceUploadView.swift in Sources */,
+				25B3F0042F68A10000DE3A02 /* InvoiceCreationView.swift in Sources */,
+				25B3F0062F68A10000DE3A03 /* ReceiptUploadView.swift in Sources */,
+				25B3F0082F68A10000DE3A04 /* ReceiptCreationView.swift in Sources */,
+				25B3F00A2F68A10000DE3A05 /* ObligationsView.swift in Sources */,
+				25B3F00C2F68A10000DE3A06 /* MTDSubmissionsView.swift in Sources */,
+				25C4A0012F68B20000DE3A07 /* InvoiceController.swift in Sources */,
+				25C4A0032F68B20000DE3A08 /* ReceiptController.swift in Sources */,
+				25C4A0052F68B20000DE3A09 /* MTDController.swift in Sources */,
+				25C4A0072F68B20000DE3A0A /* ObligationsController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

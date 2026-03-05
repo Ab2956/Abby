@@ -146,5 +146,104 @@ class ApiServices {
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return request
     }
-}
 
+    // MARK: - Authenticated GET / POST helpers
+
+    /// Perform an authenticated GET request and decode the JSON response
+    func authenticatedGet<T: Decodable>(path: String, queryItems: [URLQueryItem]? = nil) async throws -> T {
+        guard let token = authToken,
+              var components = URLComponents(string: "\(baseURL)\(path)") else {
+            throw ApiError.badURL
+        }
+
+        components.queryItems = queryItems
+
+        guard let url = components.url else { throw ApiError.badURL }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        let (data, response) = try await session.data(for: request)
+        try validateResponse(response, data: data)
+        return try JSONDecoder().decode(T.self, from: data)
+    }
+
+    /// Perform an authenticated POST request with a JSON body and decode the response
+    func authenticatedPost<T: Decodable>(path: String, body: Encodable) async throws -> T {
+        guard let token = authToken,
+              let url = URL(string: "\(baseURL)\(path)") else {
+            throw ApiError.badURL
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.httpBody = try JSONEncoder().encode(body)
+
+        let (data, response) = try await session.data(for: request)
+        try validateResponse(response, data: data)
+        return try JSONDecoder().decode(T.self, from: data)
+    }
+
+    /// Perform an authenticated multipart file upload and decode the response
+    func authenticatedUpload<T: Decodable>(path: String, fileData: Data, fileName: String, mimeType: String) async throws -> T {
+        guard let token = authToken,
+              let url = URL(string: "\(baseURL)\(path)") else {
+            throw ApiError.badURL
+        }
+
+        let boundary = UUID().uuidString
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        var body = Data()
+        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"file\"; filename=\"\(fileName)\"\r\n".data(using: .utf8)!)
+        body.append("Content-Type: \(mimeType)\r\n\r\n".data(using: .utf8)!)
+        body.append(fileData)
+        body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
+        request.httpBody = body
+
+        let (data, response) = try await session.data(for: request)
+        try validateResponse(response, data: data)
+        return try JSONDecoder().decode(T.self, from: data)
+    }
+
+    /// Perform an authenticated DELETE request
+    func authenticatedDelete(path: String) async throws {
+        guard let token = authToken,
+              let url = URL(string: "\(baseURL)\(path)") else {
+            throw ApiError.badURL
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        let (data, response) = try await session.data(for: request)
+        try validateResponse(response, data: data)
+    }
+
+    // MARK: - Response validation
+
+    private func validateResponse(_ response: URLResponse, data: Data) throws {
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw ApiError.badResponse(statusCode: 0)
+        }
+
+        if httpResponse.statusCode == 401 {
+            throw ApiError.invalidCredentials
+        }
+
+        if httpResponse.statusCode >= 400 {
+            let message = String(data: data, encoding: .utf8) ?? "Unknown error"
+            throw ApiError.serverError(message)
+        }
+    }
+}
