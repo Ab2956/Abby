@@ -36,5 +36,10 @@ class userDataHandler {
             return await userCollection.updateOne({ _id: new ObjectId(userId) }, 
             { $set: { refresh_token: encryptedToken, token_expiration: Date.now() + (expiresIn * 1000) } });
         }
+        async updateVrn(userId, encryptedVrn) {
+            const userCollection = await this.getUsers();
+            return await userCollection.updateOne({ _id: new ObjectId(userId) }, 
+            { $set: { vrn: encryptedVrn } });
+        }
 }
 module.exports = new userDataHandler();

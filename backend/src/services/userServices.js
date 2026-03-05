@@ -70,6 +70,15 @@ class UserServices {
             throw error;
         }
     }
+    async updateVrn(userId, vrn) {
+        try {
+            const encryptedVrn = await encryptToken(vrn);
+            return await userDataHandler.updateVrn(userId, encryptedVrn);
+        } catch (error) {
+            console.log("UpdateVrn", error);
+            throw error;
+        }
+    }
 }
 
 module.exports = new UserServices();

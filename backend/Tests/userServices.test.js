@@ -68,4 +68,11 @@ describe('User Tests', () => {
             console.log("Refresh Token:", refreshToken);
             expect(refreshToken).not.toBeNull();
         })
-});
+        it("can add vrn", async() => {
+            const userId = "68fa2057b845e279d8dc41a9";
+            const vrn = "125354193";    
+            await userServices.updateVrn(userId, vrn);
+            const updatedUser = await userServices.getUserByEmail("romwan.newton@example.com");
+            expect(updatedUser.vrn).toBeDefined();
+        });
+    });
