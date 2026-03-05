@@ -19,84 +19,88 @@ describe('Test Obligations', () => {
     const status = process.env.HMRC_OBLIGATIONS_STATUS || 'O';
 
     describe('getValidAccessToken', () => {
+        let origGetAccessToken, origUpdateAccessToken, origGetRefreshToken, origAuthGetRefresh;
+
+        beforeEach(() => {
+            // Save originals
+            origGetAccessToken = userDataHandler.getAccessToken;
+            origUpdateAccessToken = userDataHandler.updateAccessToken;
+            origGetRefreshToken = userDataHandler.getRefreshToken;
+            origAuthGetRefresh = authServices.getRefreshToken;
+        });
+
+        afterEach(() => {
+            // Restore originals — never leave mocks in place
+            userDataHandler.getAccessToken = origGetAccessToken;
+            userDataHandler.updateAccessToken = origUpdateAccessToken;
+            userDataHandler.getRefreshToken = origGetRefreshToken;
+            authServices.getRefreshToken = origAuthGetRefresh;
+        });
 
         it('returns cached access token when not expired', async () => {
-            // Store a fake encrypted access token with future expiry
             const fakeToken = 'cached-access-token-123';
             const encrypted = encryptToken(fakeToken);
-            await userDataHandler.updateAccessToken(
-                userId, encrypted, encryptToken('fake-refresh'), 3600
-            );
+
+            // Mock: DB returns a valid cached token with future expiry
+            userDataHandler.getAccessToken = jest.fn().mockResolvedValue({
+                access_token: encrypted,
+                token_expiration: Date.now() + 3600 * 1000
+            });
 
             const token = await userServices.getValidAccessToken(userId);
             expect(token).toBe(fakeToken);
+            expect(userDataHandler.getAccessToken).toHaveBeenCalledWith(userId);
         });
 
         it('refreshes token when forceRefresh is true', async () => {
-            // Store a valid cached token
-            const cachedToken = 'old-access-token';
-            await userDataHandler.updateAccessToken(
-                userId, encryptToken(cachedToken), encryptToken('fake-refresh'), 3600
-            );
-
             const newAccessToken = 'new-access-token-456';
             const newRefreshToken = 'new-refresh-token-456';
 
-            // Mock authServices.getRefreshToken to return new tokens
-            const originalGetRefresh = authServices.getRefreshToken;
+            // Mock: DB returns a decrypted refresh token
+            userDataHandler.getRefreshToken = jest.fn().mockResolvedValue('stored-refresh-token');
+            // Mock: HMRC returns new tokens
             authServices.getRefreshToken = jest.fn().mockResolvedValue({
                 access_token: newAccessToken,
                 refresh_token: newRefreshToken,
                 expires_in: 3600
             });
+            // Mock: DB update succeeds
+            userDataHandler.updateAccessToken = jest.fn().mockResolvedValue({});
 
             const token = await userServices.getValidAccessToken(userId, true);
             expect(token).toBe(newAccessToken);
-            expect(authServices.getRefreshToken).toHaveBeenCalled();
-
-            // Restore original
-            authServices.getRefreshToken = originalGetRefresh;
+            expect(authServices.getRefreshToken).toHaveBeenCalledWith('stored-refresh-token');
+            expect(userDataHandler.updateAccessToken).toHaveBeenCalled();
         });
 
         it('refreshes token when cached token is expired', async () => {
-            // Store token with past expiry
-            const userCollection = await db.getCollection('users');
-            const { ObjectId } = require('mongodb');
-            await userCollection.updateOne(
-                { _id: new ObjectId(userId) },
-                { $set: { 
-                    access_token: encryptToken('expired-token'),
-                    token_expiration: Date.now() - 10000 // expired 10s ago
-                }}
-            );
-
             const freshToken = 'fresh-access-token-789';
-            const originalGetRefresh = authServices.getRefreshToken;
+
+            // Mock: DB returns expired token
+            userDataHandler.getAccessToken = jest.fn().mockResolvedValue({
+                access_token: encryptToken('expired-token'),
+                token_expiration: Date.now() - 10000 // expired 10s ago
+            });
+            // Mock: DB returns a refresh token
+            userDataHandler.getRefreshToken = jest.fn().mockResolvedValue('stored-refresh-token');
+            // Mock: HMRC returns fresh tokens
             authServices.getRefreshToken = jest.fn().mockResolvedValue({
                 access_token: freshToken,
                 refresh_token: 'fresh-refresh-789',
                 expires_in: 3600
             });
+            userDataHandler.updateAccessToken = jest.fn().mockResolvedValue({});
 
             const token = await userServices.getValidAccessToken(userId);
             expect(token).toBe(freshToken);
             expect(authServices.getRefreshToken).toHaveBeenCalled();
-
-            authServices.getRefreshToken = originalGetRefresh;
         });
 
         it('throws when no refresh token exists and token expired', async () => {
-            // Clear refresh token
-            const userCollection = await db.getCollection('users');
-            const { ObjectId } = require('mongodb');
-            await userCollection.updateOne(
-                { _id: new ObjectId(userId) },
-                { $set: { 
-                    access_token: null,
-                    refresh_token: '',
-                    token_expiration: 0
-                }}
-            );
+            // Mock: no cached token
+            userDataHandler.getAccessToken = jest.fn().mockResolvedValue(null);
+            // Mock: no refresh token
+            userDataHandler.getRefreshToken = jest.fn().mockResolvedValue(null);
 
             await expect(userServices.getValidAccessToken(userId))
                 .rejects.toThrow('No refresh token found');
