@@ -3,6 +3,11 @@ const userServices = require('../services/userServices');
 
 class obligationsController {
 
+    constructor() {
+        this.getObligations = this.getObligations.bind(this);
+        this.submitObligation = this.submitObligation.bind(this);
+    }
+
     async getHmrcService(userId, forceRefresh = false) {
         const accessToken = await userServices.getValidAccessToken(userId, forceRefresh);
         return new HmrcService(accessToken);
