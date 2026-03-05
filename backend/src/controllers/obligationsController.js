@@ -17,8 +17,13 @@ class obligationsController {
             const accessToken = tokenData.access_token;
 
             const hmrcService = new HmrcService(accessToken);
-        
-            const { vrn, from, to, status } = req.query;
+
+            const vrn = await userServices.getVrn(req.user.userId);
+            if (!vrn) {
+                return res.status(400).json({ error: 'No VRN found for user, please update your profile' });
+            }
+
+            const { from, to, status } = req.query;
             const obligationsData = await hmrcService.getObligations(vrn, from, to, status);
             res.json(obligationsData);
 
@@ -29,7 +34,20 @@ class obligationsController {
     }
     async submitObligation(req, res) {
         try {
-            const { vrn } = req.params;
+            const refreshToken = await authServices.getUserRefreshToken(req.user.userId);
+            if (!refreshToken) {
+                return res.status(401).json({ error: 'No refresh token found, please connect to HMRC' });
+            }
+
+            const tokenData = await userServices.getRefreshToken(refreshToken);
+            const accessToken = tokenData.access_token;
+            const hmrcService = new HmrcService(accessToken);
+
+            const vrn = await userServices.getVrn(req.user.userId);
+            if (!vrn) {
+                return res.status(400).json({ error: 'No VRN found for user, please update your profile' });
+            }
+
             const obligationData = req.body;
             const result = await hmrcService.submitObligation(vrn, obligationData);
             res.json(result);

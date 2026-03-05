@@ -79,6 +79,20 @@ class UserServices {
             throw error;
         }
     }
+    async getVrn(userId) {
+        try {
+            const user = await userDataHandler.getUserById(userId);
+            if (user && user.vrn) {
+                const vrn = await decryptToken(user.vrn);
+                return vrn;
+            }
+            return null;
+        } catch (error) {
+            console.log("GetVrn", error);
+            throw error;
+        }
+    }
+
 }
 
 module.exports = new UserServices();

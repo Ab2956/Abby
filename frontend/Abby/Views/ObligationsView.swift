@@ -10,8 +10,6 @@ import SwiftUI
 struct ObligationsView: View {
     @StateObject private var controller = ObligationsController()
 
-    // User's VRN – in production, fetch from stored user profile
-    @State private var vrn = ""
     @State private var fromDate = "2025-04-06"
     @State private var toDate = "2026-04-05"
 
@@ -104,7 +102,7 @@ struct ObligationsView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     Task {
-                        await controller.fetchObligations(vrn: vrn, from: fromDate, to: toDate)
+                        await controller.fetchObligations(from: fromDate, to: toDate)
                     }
                 } label: {
                     Image(systemName: "arrow.clockwise")
@@ -112,7 +110,7 @@ struct ObligationsView: View {
             }
         }
         .task {
-            await controller.fetchObligations(vrn: vrn, from: fromDate, to: toDate)
+            await controller.fetchObligations(from: fromDate, to: toDate)
         }
     }
 }

@@ -11,7 +11,7 @@ import PhotosUI
 @MainActor
 class ReceiptController: ObservableObject {
 
-    // MARK: - Published state
+    // Published state
 
     @Published var isLoading = false
     @Published var errorMessage: String?
@@ -35,7 +35,7 @@ class ReceiptController: ObservableObject {
         self.apiService = apiService
     }
 
-    // MARK: - Receipt Upload (with image)
+    // Receipt Upload (with image)
 
     /// Upload a receipt image to the backend, then save with user-verified data
     func uploadReceipt() async {
@@ -84,7 +84,7 @@ class ReceiptController: ObservableObject {
         }
     }
 
-    // MARK: - Receipt Creation (manual)
+    // Receipt Creation (manual)
 
     /// Save a manually created receipt to the backend
     func createReceipt() async {
@@ -105,7 +105,7 @@ class ReceiptController: ObservableObject {
         isLoading = false
     }
 
-    // MARK: - Fetch Receipts
+    // Fetch Receipts
 
     /// Fetch all receipts from the backend
     func fetchReceipts() async {
@@ -121,7 +121,7 @@ class ReceiptController: ObservableObject {
         isLoading = false
     }
 
-    // MARK: - Delete Receipt
+    // Delete Receipt
 
     /// Delete a receipt by ID
     func deleteReceipt(id: String) async {
@@ -135,7 +135,7 @@ class ReceiptController: ObservableObject {
         }
     }
 
-    // MARK: - Helpers
+    // Helpers
 
     func resetUpload() {
         receiptImage = nil

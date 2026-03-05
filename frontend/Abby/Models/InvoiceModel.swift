@@ -7,7 +7,7 @@
 
 import Foundation
 
-// MARK: - Invoice Line Item
+// Invoice Line Item
 
 struct InvoiceLineItem: Identifiable, Codable {
     var id = UUID()
@@ -24,7 +24,7 @@ struct InvoiceLineItem: Identifiable, Codable {
     }
 }
 
-// MARK: - Invoice
+// Invoice
 
 struct Invoice: Identifiable, Codable {
     var id: String?
@@ -44,7 +44,7 @@ struct Invoice: Identifiable, Codable {
     }
 }
 
-// MARK: - Invoice Upload Response
+// Invoice Upload Response
 
 struct InvoiceUploadResponse: Codable {
     let success: Bool

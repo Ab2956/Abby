@@ -7,7 +7,7 @@
 
 import Foundation
 
-// MARK: - Receipt
+// Receipt
 
 struct Receipt: Identifiable, Codable {
     var id: String?
@@ -30,13 +30,13 @@ struct Receipt: Identifiable, Codable {
     }
 }
 
-// MARK: - Receipt Response
+// Receipt Response
 
 struct ReceiptResponse: Codable {
     let message: String?
 }
 
-// MARK: - MTD Quarter
+// MTD Quarter
 
 struct MTDQuarter: Identifiable, Codable {
     var id = UUID()
@@ -61,7 +61,7 @@ struct MTDExpense: Codable {
     var disallowableAmount: Double = 0
 }
 
-// MARK: - MTD Submission Response
+// MTD Submission Response
 
 struct MTDSubmissionResponse: Codable {
     let success: Bool?
@@ -81,7 +81,7 @@ struct MTDSummary: Codable {
     let netProfit: Double?
 }
 
-// MARK: - Obligation
+// Obligation
 
 struct ObligationItem: Identifiable, Codable {
     var id = UUID()

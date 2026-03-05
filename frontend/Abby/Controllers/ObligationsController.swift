@@ -10,7 +10,7 @@ import SwiftUI
 @MainActor
 class ObligationsController: ObservableObject {
 
-    // MARK: - Published state
+    // Published state
 
     @Published var isLoading = false
     @Published var errorMessage: String?
@@ -23,15 +23,14 @@ class ObligationsController: ObservableObject {
         self.apiService = apiService
     }
 
-    // MARK: - Fetch obligations from HMRC via backend
+    // Fetch obligations from HMRC via backend
 
-    func fetchObligations(vrn: String, from: String, to: String) async {
+    func fetchObligations(from: String, to: String) async {
         isLoading = true
         errorMessage = nil
 
         do {
             let queryItems = [
-                URLQueryItem(name: "vrn", value: vrn),
                 URLQueryItem(name: "from", value: from),
                 URLQueryItem(name: "to", value: to),
             ]
@@ -51,7 +50,7 @@ class ObligationsController: ObservableObject {
         isLoading = false
     }
 
-    // MARK: - Filtered list for the view
+    // Filtered list for the view
 
     var filteredObligations: [ObligationViewModel] {
         switch selectedFilter {
@@ -66,7 +65,7 @@ class ObligationsController: ObservableObject {
     var overdueCount: Int { obligations.filter { $0.status == .overdue }.count }
     var fulfilledCount: Int { obligations.filter { $0.status == .fulfilled }.count }
 
-    // MARK: - Mapping
+    // Mapping
 
     private func mapObligations(from response: ObligationsResponse) -> [ObligationViewModel] {
         guard let groups = response.obligations else { return [] }
@@ -106,7 +105,7 @@ class ObligationsController: ObservableObject {
     }
 }
 
-// MARK: - View Models & Enums
+// View Models & Enums
 
 enum ObligationFilter: String, CaseIterable {
     case all = "All"

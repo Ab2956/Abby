@@ -11,7 +11,7 @@ import PhotosUI
 @MainActor
 class InvoiceController: ObservableObject {
 
-    // MARK: - Published state
+    // Published state
 
     @Published var isLoading = false
     @Published var errorMessage: String?
@@ -31,7 +31,7 @@ class InvoiceController: ObservableObject {
         self.apiService = apiService
     }
 
-    // MARK: - Invoice Upload
+    // Invoice Upload
 
     /// Upload an invoice image or PDF to the backend for OCR parsing
     func uploadInvoice(fileData: Data, fileName: String, mimeType: String) async {
@@ -85,7 +85,7 @@ class InvoiceController: ObservableObject {
         }
     }
 
-    // MARK: - Invoice Creation
+    // Invoice Creation
 
     /// Create a new invoice by sending it to the backend
     func createInvoice() async {
@@ -106,7 +106,7 @@ class InvoiceController: ObservableObject {
         isLoading = false
     }
 
-    // MARK: - Helpers
+    // Helpers
 
     func resetUpload() {
         selectedPhotoItem = nil

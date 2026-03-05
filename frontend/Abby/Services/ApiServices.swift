@@ -230,7 +230,7 @@ class ApiServices {
         try validateResponse(response, data: data)
     }
 
-    // MARK: - Response validation
+    // Response validation
 
     private func validateResponse(_ response: URLResponse, data: Data) throws {
         guard let httpResponse = response as? HTTPURLResponse else {

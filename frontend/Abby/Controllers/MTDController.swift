@@ -10,7 +10,7 @@ import SwiftUI
 @MainActor
 class MTDController: ObservableObject {
 
-    // MARK: - Published state
+    // Published state
 
     @Published var isLoading = false
     @Published var errorMessage: String?
@@ -24,7 +24,7 @@ class MTDController: ObservableObject {
         self.apiService = apiService
     }
 
-    // MARK: - Submit quarterly update
+    // Submit quarterly update
 
     /// Submit a single quarter's data to the backend, which formats and sends to HMRC
     func submitQuarter(index: Int) async {
@@ -82,7 +82,7 @@ class MTDController: ObservableObject {
         quarters[index].isSubmitting = false
     }
 
-    // MARK: - Load quarter data from backend
+    // Load quarter data from backend
 
     func loadQuarterData() async {
         isLoading = true
@@ -94,7 +94,7 @@ class MTDController: ObservableObject {
         isLoading = false
     }
 
-    // MARK: - Computed
+    // Computed properties
 
     var totalIncome: Double {
         quarters.reduce(0) { $0 + $1.turnover + $1.otherIncome }
@@ -109,7 +109,7 @@ class MTDController: ObservableObject {
     }
 }
 
-// MARK: - Quarter View Model
+// Quarter View Model
 
 struct MTDQuarterViewModel: Identifiable {
     let id = UUID()

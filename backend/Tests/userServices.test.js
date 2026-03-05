@@ -75,4 +75,10 @@ describe('User Tests', () => {
             const updatedUser = await userServices.getUserByEmail("romwan.newton@example.com");
             expect(updatedUser.vrn).toBeDefined();
         });
+        it("can get vrn", async() => {
+            const userId = "68fa2057b845e279d8dc41a9";
+            const vrn = await userServices.getVrn(userId);
+            console.log("VRN:", vrn);
+            expect(vrn).not.toBeNull();
+        });
     });

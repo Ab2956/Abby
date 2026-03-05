@@ -12,6 +12,10 @@ class userDataHandler {
             const userCollection = await this.getUsers();
             return await userCollection.findOne(query);
         }
+        async getUserById(userId) {
+            const userCollection = await this.getUsers();
+            return await userCollection.findOne({ _id: new ObjectId(userId) });
+        }
     
         async addUser(user) {
             const userCollection = await this.getUsers();
@@ -40,6 +44,15 @@ class userDataHandler {
             const userCollection = await this.getUsers();
             return await userCollection.updateOne({ _id: new ObjectId(userId) }, 
             { $set: { vrn: encryptedVrn } });
+        }
+        async getVrn(userId) {
+            const userCollection = await this.getUsers();
+            const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+            if (user && user.vrn) {
+                const vrn = decryptToken(user.vrn);
+                return vrn;
+            }
+            return null;
         }
 }
 module.exports = new userDataHandler();
