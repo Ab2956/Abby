@@ -1,21 +1,11 @@
-const authServices = require('../services/authServices');
 const HmrcService = require('../services/hmrcServices');
-const obligations = require('../services/hmrcServices');
 const userServices = require('../services/userServices');
 
 class obligationsController {
 
     async getObligations(req, res) {
         try {
-
-            const refreshToken = await userServices.getRefreshToken(req.user.userId);
-            if (!refreshToken) {
-                return res.status(401).json({ error: 'No refresh token found, please connect to HMRC' });
-            }
-
-            const tokenData = await authServices.getRefreshToken(refreshToken);
-            const accessToken = tokenData.access_token;
-
+            const accessToken = await userServices.getValidAccessToken(req.user.userId);
             const hmrcService = new HmrcService(accessToken);
 
             const vrn = await userServices.getVrn(req.user.userId);
@@ -34,13 +24,7 @@ class obligationsController {
     }
     async submitObligation(req, res) {
         try {
-            const refreshToken = await userServices.getRefreshToken(req.user.userId);
-            if (!refreshToken) {
-                return res.status(401).json({ error: 'No refresh token found, please connect to HMRC' });
-            }
-
-            const tokenData = await authServices.getRefreshToken(refreshToken);
-            const accessToken = tokenData.access_token;
+            const accessToken = await userServices.getValidAccessToken(req.user.userId);
             const hmrcService = new HmrcService(accessToken);
 
             const vrn = await userServices.getVrn(req.user.userId);

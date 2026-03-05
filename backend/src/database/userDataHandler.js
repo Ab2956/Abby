@@ -40,6 +40,26 @@ class userDataHandler {
             return await userCollection.updateOne({ _id: new ObjectId(userId) }, 
             { $set: { refresh_token: encryptedToken, token_expiration: Date.now() + (expiresIn * 1000) } });
         }
+        async getAccessToken(userId) {
+            const userCollection = await this.getUsers();
+            const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+            if (user && user.access_token && user.token_expiration) {
+                return {
+                    access_token: user.access_token,
+                    token_expiration: user.token_expiration
+                };
+            }
+            return null;
+        }
+        async updateAccessToken(userId, encryptedAccessToken, encryptedRefreshToken, expiresIn) {
+            const userCollection = await this.getUsers();
+            return await userCollection.updateOne({ _id: new ObjectId(userId) }, 
+            { $set: { 
+                access_token: encryptedAccessToken,
+                refresh_token: encryptedRefreshToken,
+                token_expiration: Date.now() + (expiresIn * 1000) 
+            } });
+        }
         async updateVrn(userId, encryptedVrn) {
             const userCollection = await this.getUsers();
             return await userCollection.updateOne({ _id: new ObjectId(userId) }, 

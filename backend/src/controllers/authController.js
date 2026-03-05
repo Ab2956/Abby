@@ -51,10 +51,12 @@ exports.callback = async(req, res) => {
     const tokenData = await authServices.getTokenData(code);
     const { access_token, refresh_token, expires_in } = tokenData;
     const encrypted_refresh = encryptToken(refresh_token);
+    const encrypted_access = encryptToken(access_token);
     console.log("Token Data:", tokenData, );
 
     const updateData = {
         hrmc_connected: true,
+        access_token: encrypted_access,
         refresh_token: encrypted_refresh,
         token_expiration: Date.now() + (expires_in * 1000)
     };
