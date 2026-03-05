@@ -68,7 +68,7 @@ class MtdServices {
         return Math.round(num * 100) / 100;
     }
 
-    async uploadQuarterData(userId, data) {
+    async uploadQuarterData(userId,quarter, taxYear, data) {
         // Process the data and store it in the database
   
         try {
@@ -88,7 +88,15 @@ class MtdServices {
                 submittedAt: new Date().toISOString(),
             };
 
-            return { message: 'Data uploaded successfully' };
+            return {
+                message: `Quarter ${quarter} data uploaded successfully`,
+                period: periodDates,
+                summary: {
+                    totalIncome: formattedData.periodIncome.turnover + formattedData.periodIncome.other,
+                    totalExpenses: Object.values(formattedData.periodExpenses)
+                        .reduce((sum, e) => sum + e.amount, 0),
+                },
+            };
         }
         catch (error) {
             console.error('Error uploading data:', error);
