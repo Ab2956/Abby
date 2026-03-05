@@ -15,4 +15,4 @@ class BookkeepingService {
     }
 }
 
-module.exports = BookkeepingService;
+module.exports = new BookkeepingService();

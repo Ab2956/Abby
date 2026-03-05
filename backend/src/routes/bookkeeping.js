@@ -6,6 +6,6 @@ const { jwtVerification } = require('../middleware/jwtAuth');
 
 router.post('/addRecipt', jwtVerification, bookkeepingController.addRecipt);
 router.get('/getRecipts', jwtVerification, bookkeepingController.getRecipts);
-router.get('/deleteRecipt', jwtVerification, bookkeepingController.deleteRecipt);
+router.get('/deleteRecipt/:id', jwtVerification, bookkeepingController.deleteRecipt);
 
 module.exports = router;

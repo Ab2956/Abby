@@ -1,7 +1,6 @@
 require("dotenv").config();
 
-const BookkeepingService = require("../src/services/bookkeepingServices");
-const bookkeepingService = new BookkeepingService();
+const bookkeepingService = require("../src/services/bookkeepingServices");
 const ReciptSchema = require("../src/models/BookkeepingModel")
 const db = require('../src/database/connectDB');
 
@@ -18,9 +17,10 @@ describe("Bookkeeping Tests", () => {
     const userId = '68fa2057b845e279d8dc41a9';
     const recipt = new ReciptSchema({
         date: "2024-06-01",
-        amount: 100,
+        totalAmount: 100,
         description: "Test1 recipt",
-        category: "Test category"
+        category: "Test category",
+        vendor: "Test vendor"
     });
 
     const reciptData = recipt.toObject();
