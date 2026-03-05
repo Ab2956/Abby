@@ -94,23 +94,25 @@ class UserServices {
         }
     }
 
-    async getValidAccessToken(userId) {
+    async getValidAccessToken(userId, forceRefresh = false) {
         try {
             // Check if we have a cached access token that hasn't expired
-            const tokenInfo = await userDataHandler.getAccessToken(userId);
-            if (tokenInfo && tokenInfo.access_token && tokenInfo.token_expiration) {
-                const bufferMs = 60 * 1000; // 1 minute buffer before expiry
-                if (tokenInfo.token_expiration > (Date.now() + bufferMs)) {
-                    // Token is still valid, decrypt and return it
-                    const accessToken = await decryptToken(tokenInfo.access_token);
-                    return accessToken;
+            if (!forceRefresh) {
+                const tokenInfo = await userDataHandler.getAccessToken(userId);
+                if (tokenInfo && tokenInfo.access_token && tokenInfo.token_expiration) {
+                    const bufferMs = 60 * 1000; // 1 minute buffer before expiry
+                    if (tokenInfo.token_expiration > (Date.now() + bufferMs)) {
+                        // Token is still valid, decrypt and return it
+                        const accessToken = await decryptToken(tokenInfo.access_token);
+                        return accessToken;
+                    }
                 }
             }
 
-            // Token expired or missing — refresh it
+            // Token expired, missing, or force refresh requested — refresh it
             const refreshToken = await this.getRefreshToken(userId);
             if (!refreshToken) {
-                throw new Error('No refresh token found, please connect to HMRC');
+                throw new Error('No refresh token found, please reconnect to HMRC');
             }
 
             const tokenData = await authServices.getRefreshToken(refreshToken);
