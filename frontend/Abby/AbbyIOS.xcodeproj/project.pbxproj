@@ -32,6 +32,8 @@
 		25C4A0032F68B20000DE3A08 /* ReceiptController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C4A0042F68B20000DE3A08 /* ReceiptController.swift */; };
 		25C4A0052F68B20000DE3A09 /* MTDController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C4A0062F68B20000DE3A09 /* MTDController.swift */; };
 		25C4A0072F68B20000DE3A0A /* ObligationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C4A0082F68B20000DE3A0A /* ObligationsController.swift */; };
+		25C4A00B2F68B20000DE3A0B /* InvoiceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AEF7372F427AF5003F2CC3 /* InvoiceModel.swift */; };
+		25C4A00C2F68B20000DE3A0C /* BookkeepingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AEF7392F427B21003F2CC3 /* BookkeepingModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -376,6 +378,8 @@
 				25C4A0032F68B20000DE3A08 /* ReceiptController.swift in Sources */,
 				25C4A0052F68B20000DE3A09 /* MTDController.swift in Sources */,
 				25C4A0072F68B20000DE3A0A /* ObligationsController.swift in Sources */,
+				25C4A00B2F68B20000DE3A0B /* InvoiceModel.swift in Sources */,
+				25C4A00C2F68B20000DE3A0C /* BookkeepingModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
