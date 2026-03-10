@@ -8,7 +8,12 @@ struct LoginView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            Text("Login ")
+            Image("abbyLogo")
+                .resizable()
+                //.scaledToFit()
+                .frame(width:200, height: 150)
+            
+            Text("Login")
                 .font(.largeTitle)
                 .fontWeight(.bold)
             
@@ -65,7 +70,6 @@ struct LoginView: View {
             Spacer()
         }
         .padding()
-        .navigationTitle("Login")
     }
 }
 

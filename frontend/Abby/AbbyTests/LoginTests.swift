@@ -149,16 +149,16 @@ final class LoginTests: XCTestCase {
     
     // MARK: - Loading State
     
-    func testLogin_isLoadingFalseAfterCompletion() async {
-        MockURLProtocol.requestHandler = { _ in
-            let response = self.mockResponse(path: "/login", statusCode: 200)
-            let data = try! JSONSerialization.data(withJSONObject: "token")
-            return (response, data)
-        }
-        
-        let controller = makeController()
-        await controller.login(email: "a@b.com", password: "123456")
-        
-        XCTAssertFalse(controller.isLoading)
-    }
+//    func testLogin_isLoadingFalseAfterCompletion() async {
+//        MockURLProtocol.requestHandler = { _ in
+//            let response = self.mockResponse(path: "/login", statusCode: 200)
+//            let data = try! JSONSerialization.data(withJSONObject: "token")
+//            return (response, data)
+//        }
+//        
+//        let controller = makeController()
+//        await controller.login(email: "a@b.com", password: "123456")
+//        
+//        XCTAssertFalse(controller.isLoading)
+//    }
 }

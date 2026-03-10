@@ -81,8 +81,7 @@ struct HomePageView: View {
                     VStack(spacing: 6) {
                         Image("abbyLogo")
                             .resizable()
-                            .scaledToFit()
-                            .frame(width: 80, height: 80)
+                            .frame(width: 150, height: 150)
 
                         Text("Abby")
                             .font(.largeTitle)
