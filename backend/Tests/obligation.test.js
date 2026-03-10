@@ -22,7 +22,6 @@ describe('Test Obligations', () => {
         let origGetAccessToken, origUpdateAccessToken, origGetRefreshToken, origAuthGetRefresh;
 
         beforeEach(() => {
-            // Save originals
             origGetAccessToken = userDataHandler.getAccessToken;
             origUpdateAccessToken = userDataHandler.updateAccessToken;
             origGetRefreshToken = userDataHandler.getRefreshToken;
@@ -30,7 +29,6 @@ describe('Test Obligations', () => {
         });
 
         afterEach(() => {
-            // Restore originals — never leave mocks in place
             userDataHandler.getAccessToken = origGetAccessToken;
             userDataHandler.updateAccessToken = origUpdateAccessToken;
             userDataHandler.getRefreshToken = origGetRefreshToken;
@@ -40,7 +38,7 @@ describe('Test Obligations', () => {
         it('returns cached access token when not expired', async () => {
             const fakeToken = 'cached-access-token-123';
             const encrypted = encryptToken(fakeToken);
-
+            
             // Mock: DB returns a valid cached token with future expiry
             userDataHandler.getAccessToken = jest.fn().mockResolvedValue({
                 access_token: encrypted,
@@ -81,9 +79,8 @@ describe('Test Obligations', () => {
                 access_token: encryptToken('expired-token'),
                 token_expiration: Date.now() - 10000 // expired 10s ago
             });
-            // Mock: DB returns a refresh token
+
             userDataHandler.getRefreshToken = jest.fn().mockResolvedValue('stored-refresh-token');
-            // Mock: HMRC returns fresh tokens
             authServices.getRefreshToken = jest.fn().mockResolvedValue({
                 access_token: freshToken,
                 refresh_token: 'fresh-refresh-789',
@@ -97,9 +94,7 @@ describe('Test Obligations', () => {
         });
 
         it('throws when no refresh token exists and token expired', async () => {
-            // Mock: no cached token
             userDataHandler.getAccessToken = jest.fn().mockResolvedValue(null);
-            // Mock: no refresh token
             userDataHandler.getRefreshToken = jest.fn().mockResolvedValue(null);
 
             await expect(userServices.getValidAccessToken(userId))
