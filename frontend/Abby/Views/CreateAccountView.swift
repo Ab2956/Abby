@@ -90,7 +90,6 @@ struct CreateAccountView: View {
             Spacer()
         }
         .padding()
-        .navigationTitle("Sign Up")
     }
     
     private var formValid: Bool {

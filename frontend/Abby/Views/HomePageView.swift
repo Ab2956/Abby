@@ -26,7 +26,9 @@ enum HomeDestination: Hashable {
 }
 
 struct HomePageView: View {
-    @ObservedObject var loginController: LoginController
+    @ObservedObject var loginController:
+    LoginController
+    @State private var selectedTab = "home"
 
     private let menuItems: [MenuItem] = [
         MenuItem(
@@ -75,19 +77,13 @@ struct HomePageView: View {
 
     var body: some View {
         NavigationStack {
+            
             ScrollView {
                 VStack(spacing: 24) {
                     // Header
                     VStack(spacing: 6) {
-                        Image("abbyLogo")
-                            .resizable()
-                            .frame(width: 150, height: 150)
 
-                        Text("Abby")
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-
-                        Text("What would you like to do?")
+                        Text("Your Accounting Buddy")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
@@ -123,7 +119,66 @@ struct HomePageView: View {
                             .foregroundColor(.red)
                     }
                 }
+                ToolbarItem(placement: .navigationBarLeading){
+                    Button {
+                        print("settings")
+                    }label:{
+                        Image(systemName: "gearshape")
+                    }
+                }
+                ToolbarItem(placement: .principal){
+                    Image("abbyLogo")
+                        .resizable()
+                        .padding(30)
+                        .frame(width: 250, height: 200)
+                }
             }
+            .toolbar{
+                ToolbarItemGroup(placement: .bottomBar){
+                    Button{
+                        print("Invoices")
+                    }
+                    label:{
+                        Image(systemName: "doc.text")
+                    }
+                    Spacer()
+                    
+                    Button{
+                        print("Receipts")
+                    }label:{
+                        Image(systemName: "receipt")
+                        
+                    }
+                    
+                    Spacer()
+                    Button{
+                        print("House")
+                    }label:{
+                        Image(systemName: selectedTab == "home" ? "house.fill" : "house")
+                            .foregroundColor(selectedTab == "home" ? .blue : .gray)
+                    }
+                    
+                    Spacer()
+                    Button{
+                        print("VAT")
+                    }
+                    label:{
+                        Image(systemName: "percent")
+                        
+                    }
+                    
+                    Spacer()
+                    Button{
+                        print("Profile")
+                        
+                    } label:{
+                        Image(systemName: "person")
+                    }
+                }
+            }
+            .toolbarBackground(.ultraThinMaterial, for: .bottomBar)
+            .toolbarBackground(.visible, for: .bottomBar)
+            
             .navigationDestination(for: HomeDestination.self) { destination in
                 switch destination {
                 case .invoiceUpload:
