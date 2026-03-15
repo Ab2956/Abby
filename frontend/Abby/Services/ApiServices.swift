@@ -47,7 +47,7 @@ class ApiServices {
     
     
     /// Returns the JWT token string on success
-    func login(email: String, password: String) async throws -> String {
+    func login(email: String, password: String) async throws -> LoginResponse {
         
         guard let url = URL(string: "\(baseURL)/login") else {
             throw ApiError.badURL
@@ -83,20 +83,7 @@ class ApiServices {
             throw ApiError.serverError(message)
         }
         
-        let token: String
-        if let parsed = try? JSONSerialization.jsonObject(with: data) as? String {
-            token = parsed
-        } else {
-            token = String(decoding: data, as: UTF8.self)
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-                .trimmingCharacters(in: CharacterSet(charactersIn: "\""))
-        }
-        
-        guard !token.isEmpty else {
-            throw ApiError.serverError("Empty token received")
-        }
-        
-        return token
+        return try JSONDecoder().decode(LoginResponse.self, from: data)
     }
     
     // create Account
@@ -250,5 +237,12 @@ class ApiServices {
             let message = String(data: data, encoding: .utf8) ?? "Unknown error"
             throw ApiError.serverError(message)
         }
+    }
+    
+    // MARK: - Profile
+
+    /// Fetch the current user's profile (requires stored JWT)
+    func fetchProfile() async throws -> ProfileResponse {
+        return try await authenticatedGet(path: "/profile")
     }
 }

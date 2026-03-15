@@ -14,4 +14,7 @@ struct Constants {
     // Keychain identifiers
     static let keychainService = "com.abby.auth"
     static let keychainAccount = "userToken"
+    
+    // OAuth
+    static let oauthCallbackScheme = "abby"
 }

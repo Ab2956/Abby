@@ -29,9 +29,18 @@ async function login(req, res) {
     }
 };
 async function getProfile(req, res) {
-    const user = await dataHandler.findUser({ email: req.user.email });
+    try {
+        const user = await dataHandler.findUser({ email: req.user.email });
 
-    res.json({ email: user.email });
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const isConnectedToHmrc = await userServices.isConnectedToHMRC(user._id);
+        res.json({ email: user.email, isConnectedToHmrc });
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+    }
 }
 
 

@@ -31,23 +31,27 @@ struct ContentView: View {
                     withAnimation(.easeIn(duration: 1.3)) {
                         self.opacity = 1.0
                     }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    Task {
+                        // Try to restore session from stored token
+                        if loginController.hasStoredToken {
+                            await loginController.restoreSession()
+                        }
                         withAnimation {
-                            // If there's already a stored token, skip login
-                            if loginController.hasStoredToken {
-                                loginController.isLoggedIn = true
-                            }
                             self.showSplash = false
                         }
                     }
                 }
             }
-        } else if loginController.isLoggedIn {
-            HomePageView(loginController: loginController)
-        } else {
+        }else if !loginController.isLoggedIn {
             NavigationStack {
                 LoginView(loginController: loginController)
             }
+            
+        } else if !loginController.isLinkedToHMRC {
+            LinkToHmrcView(loginController: loginController)
+            
+        } else {
+            HomePageView(loginController: loginController)
         }
     }
 }

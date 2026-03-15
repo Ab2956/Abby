@@ -34,6 +34,10 @@
 		25C4A0072F68B20000DE3A0A /* ObligationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C4A0082F68B20000DE3A0A /* ObligationsController.swift */; };
 		25C4A00B2F68B20000DE3A0B /* InvoiceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AEF7372F427AF5003F2CC3 /* InvoiceModel.swift */; };
 		25C4A00C2F68B20000DE3A0C /* BookkeepingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AEF7392F427B21003F2CC3 /* BookkeepingModel.swift */; };
+		25DB24312F67326B00B33334 /* LinkToHmrcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DB24302F67325F00B33334 /* LinkToHmrcView.swift */; };
+		25DB24332F67453D00B33334 /* LoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DB24322F67453400B33334 /* LoginResponse.swift */; };
+		25DB24482F674F3B00B33334 /* ProfileResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DB24472F674F3300B33334 /* ProfileResponse.swift */; };
+		25DB244A2F674FC500B33334 /* info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 25DB24492F674FBC00B33334 /* info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +93,10 @@
 		25C4A0042F68B20000DE3A08 /* ReceiptController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptController.swift; sourceTree = "<group>"; };
 		25C4A0062F68B20000DE3A09 /* MTDController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTDController.swift; sourceTree = "<group>"; };
 		25C4A0082F68B20000DE3A0A /* ObligationsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObligationsController.swift; sourceTree = "<group>"; };
+		25DB24302F67325F00B33334 /* LinkToHmrcView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkToHmrcView.swift; sourceTree = "<group>"; };
+		25DB24322F67453400B33334 /* LoginResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginResponse.swift; sourceTree = "<group>"; };
+		25DB24472F674F3300B33334 /* ProfileResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileResponse.swift; sourceTree = "<group>"; };
+		25DB24492F674FBC00B33334 /* info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -132,6 +140,7 @@
 		2538624B2EC6252200CA2D97 = {
 			isa = PBXGroup;
 			children = (
+				25DB24492F674FBC00B33334 /* info.plist */,
 				25AEF7332F4267B2003F2CC3 /* Launch Screen.storyboard */,
 				2593996A2EE60E0F00CC608D /* Models */,
 				253862572EC6252200CA2D97 /* AbbyApp.swift */,
@@ -165,6 +174,7 @@
 		253862852EC627F500CA2D97 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				25DB24302F67325F00B33334 /* LinkToHmrcView.swift */,
 				25AEF7352F4278FD003F2CC3 /* CreateAccountView.swift */,
 				2593996C2EECBC5E00CC608D /* StartUpView.swift */,
 				253862882EC6287500CA2D97 /* LoginView.swift */,
@@ -205,6 +215,8 @@
 		2593996A2EE60E0F00CC608D /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				25DB24472F674F3300B33334 /* ProfileResponse.swift */,
+				25DB24322F67453400B33334 /* LoginResponse.swift */,
 				25AEF7392F427B21003F2CC3 /* BookkeepingModel.swift */,
 				25AEF7382F427B06003F2CC3 /* UserModel.swift */,
 				25AEF7372F427AF5003F2CC3 /* InvoiceModel.swift */,
@@ -331,6 +343,7 @@
 			files = (
 				25AEF7342F4267B2003F2CC3 /* Launch Screen.storyboard in Resources */,
 				2538625E2EC6252800CA2D97 /* Assets.xcassets in Resources */,
+				25DB244A2F674FC500B33334 /* info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,8 +369,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				2538625A2EC6252200CA2D97 /* ContentView.swift in Sources */,
+				25DB24312F67326B00B33334 /* LinkToHmrcView.swift in Sources */,
 				2538625C2EC6252200CA2D97 /* Item.swift in Sources */,
 				255375572F54F0BD00CC536E /* ApiServices.swift in Sources */,
+				25DB24482F674F3B00B33334 /* ProfileResponse.swift in Sources */,
 				259399642EE60CB900CC608D /* LoginView.swift in Sources */,
 				255375582F54F10000CC536E /* LoginController.swift in Sources */,
 				255375622F56122C00CC536E /* AbbyShape.swift in Sources */,
@@ -365,6 +380,7 @@
 				253862582EC6252200CA2D97 /* AbbyApp.swift in Sources */,
 				255375592F54F1EA00CC536E /* OauthServices.swift in Sources */,
 				2593996D2EECBC6900CC608D /* StartUpView.swift in Sources */,
+				25DB24332F67453D00B33334 /* LoginResponse.swift in Sources */,
 				259399692EE60DE900CC608D /* HomePageView.swift in Sources */,
 				2553755A2F54F21400CC536E /* keychainHelper.swift in Sources */,
 				255375612F56122600CC536E /* Constants.swift in Sources */,
@@ -542,6 +558,7 @@
 				DEVELOPMENT_TEAM = CMR97X44CQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -570,6 +587,7 @@
 				DEVELOPMENT_TEAM = CMR97X44CQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
