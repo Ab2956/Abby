@@ -2,7 +2,7 @@ const datahandler = require('../database/dataHandler');
 
 class vatService {
 
-    async calculateTotalVat() {
+    async calculateTotalVat(userId) {
         try {
 
             const userInvoices = await datahandler.getInvoices(userId);
