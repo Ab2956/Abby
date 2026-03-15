@@ -23,7 +23,7 @@ const UserSchema = new Schema({
         type: Date,
         required: true
     },
-    hrmc_connected: {
+    hmrc_connected: {
         type: Boolean,
         required: true,
         default: false

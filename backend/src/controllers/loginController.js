@@ -11,16 +11,18 @@ async function login(req, res) {
 
         if (!user) {
             return res.status(404).json({ error: "no user create an account" });
-        } 
-        
+        }
+
         const validPassword = await bcrypt.compare(password, user.password);
-        
+
         if (!validPassword) {
             return res.status(401).json({ error: "Invalid password" });
         }
 
-        const token = jwtServices.createJWT({userId: user._id });
-        res.json(token);
+        let isConnectedToHmrc = await userServices.isConnectedToHMRC(user._id);
+
+        const token = jwtServices.createJWT({ userId: user._id });
+        res.json({ token, isConnectedToHmrc });
 
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });

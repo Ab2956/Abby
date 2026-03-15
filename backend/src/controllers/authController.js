@@ -9,7 +9,7 @@ exports.loginToOAuth = async(req, res) => {
     const userEmail = req.user.email;
     const user =  await userServices.getUserByEmail(userEmail);
 
-    if(user.hrmc_connected == false){
+    if(user.hmrc_connected == false){
         const state = crypto.randomBytes(32).toString('hex');
 
        await redisCache.set(state, user._id.toString(), 10 * 60);
@@ -55,7 +55,7 @@ exports.callback = async(req, res) => {
     console.log("Token Data:", tokenData, );
 
     const updateData = {
-        hrmc_connected: true,
+        hmrc_connected: true,
         access_token: encrypted_access,
         refresh_token: encrypted_refresh,
         token_expiration: Date.now() + (expires_in * 1000)

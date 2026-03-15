@@ -12,11 +12,11 @@ describe('User Tests', () => {
 
     });
 
-    afterEach(async () => {
+    afterEach(async() => {
         try {
             await usersCollection.deleteOne({ email: 'helloworld@gmail.com' });
         } catch (err) {
-            
+
         }
     });
 
@@ -63,22 +63,28 @@ describe('User Tests', () => {
 
         }),
         it("can get refresh token for user", async() => {
-            const userId = "68fa2057b845e279d8dc41a9"; 
+            const userId = "68fa2057b845e279d8dc41a9";
             const refreshToken = await userServices.getRefreshToken(userId);
             console.log("Refresh Token:", refreshToken);
             expect(refreshToken).not.toBeNull();
         })
-        it("can add vrn", async() => {
-            const userId = "68fa2057b845e279d8dc41a9";
-            const vrn = "125354193";    
-            await userServices.updateVrn(userId, vrn);
-            const updatedUser = await userServices.getUserByEmail("romwan.newton@example.com");
-            expect(updatedUser.vrn).toBeDefined();
-        });
-        it("can get vrn", async() => {
-            const userId = "68fa2057b845e279d8dc41a9";
-            const vrn = await userServices.getVrn(userId);
-            console.log("VRN:", vrn);
-            expect(vrn).not.toBeNull();
-        });
+    it("can add vrn", async() => {
+        const userId = "68fa2057b845e279d8dc41a9";
+        const vrn = "125354193";
+        await userServices.updateVrn(userId, vrn);
+        const updatedUser = await userServices.getUserByEmail("romwan.newton@example.com");
+        expect(updatedUser.vrn).toBeDefined();
     });
+    it("can get vrn", async() => {
+        const userId = "68fa2057b845e279d8dc41a9";
+        const vrn = await userServices.getVrn(userId);
+        console.log("VRN:", vrn);
+        expect(vrn).not.toBeNull();
+    });
+    it("can check if user is connected to HMRC", async() => {
+        const userId = "68fa2057b845e279d8dc41a9";
+        const isConnected = await userServices.isConnectedToHMRC(userId);
+        console.log("Is Connected to HMRC:", isConnected);
+        expect(isConnected).toBe(true);
+    });
+});

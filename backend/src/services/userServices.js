@@ -10,7 +10,7 @@ class UserServices {
 
     async addUser(userData) {
 
-        const { email, password,vrn, refresh_token = '', token_expiration = '' } = userData;
+        const { email, password, vrn, refresh_token = '', token_expiration = '' } = userData;
         const hashed_password = await bcrypt.hash(password, 10);
         const encrypted_vrn = await encryptToken(vrn);
         try {
@@ -37,6 +37,7 @@ class UserServices {
         }
     }
 
+
     async getUserByEmail(email) {
         try {
             return await userDataHandler.findUser({ email });
@@ -45,7 +46,7 @@ class UserServices {
             throw error;
         }
     }
-    
+
     async updateUser(userId, updateData) {
         try {
             return await userDataHandler.updateUser(userId, updateData);
@@ -90,6 +91,14 @@ class UserServices {
             return null;
         } catch (error) {
             console.log("GetVrn", error);
+            throw error;
+        }
+    }
+    async isConnectedToHMRC(userId) {
+        try {
+            return await userDataHandler.isConnectedToHMRC(userId);
+        } catch (error) {
+            console.log("IsConnectedToHMRC", error);
             throw error;
         }
     }
