@@ -49,7 +49,7 @@ async function createAccount(req, res) {
     const userData = { email, password, vrn };
 
     try {
-        userServices.addUser(userData);
+        await userServices.addUser(userData);
         res.status(200).json({ message: "Account created successfully" });
 
     } catch (error) {
