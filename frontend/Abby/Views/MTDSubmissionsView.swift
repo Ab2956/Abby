@@ -36,7 +36,7 @@ struct MTDSubmissionsView: View {
                 // Tax Year Picker
                 Picker("Tax Year", selection: $controller.selectedTaxYear) {
                     ForEach(taxYears, id: \.self) { year in
-                        Text("\(year)/\(year + 1 - 2000)").tag(year)
+                        Text("\(String(year))/\(String(year + 1 - 2000))").tag(year)
                     }
                 }
                 .pickerStyle(.segmented)
