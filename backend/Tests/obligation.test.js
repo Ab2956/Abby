@@ -22,6 +22,7 @@ describe('Test Obligations', () => {
         let origGetAccessToken, origUpdateAccessToken, origGetRefreshToken, origAuthGetRefresh;
 
         beforeEach(() => {
+        
             origGetAccessToken = userDataHandler.getAccessToken;
             origUpdateAccessToken = userDataHandler.updateAccessToken;
             origGetRefreshToken = userDataHandler.getRefreshToken;
@@ -125,7 +126,7 @@ describe('Test Obligations', () => {
             const origGetObligations = HmrcService.prototype.getObligations;
             HmrcService.prototype.getObligations = jest.fn().mockResolvedValue(mockObligations);
 
-            const req = { user: { userId }, query: { from, to, status } };
+            const req = { user: { userId }, query: { from, to, status }, headers: {}, socket: { remoteAddress: '127.0.0.1', remotePort: 12345 } };
             const res = mockRes();
 
             await obligationsController.getObligations(req, res);
@@ -157,7 +158,7 @@ describe('Test Obligations', () => {
                 return Promise.resolve(mockObligations);
             });
 
-            const req = { user: { userId }, query: { from, to, status } };
+            const req = { user: { userId }, query: { from, to, status }, headers: {}, socket: { remoteAddress: '127.0.0.1', remotePort: 12345 } };
             const res = mockRes();
 
             await obligationsController.getObligations(req, res);
@@ -179,7 +180,7 @@ describe('Test Obligations', () => {
             userServices.getValidAccessToken = jest.fn().mockResolvedValue('mock-token');
             userServices.getVrn = jest.fn().mockResolvedValue(null);
 
-            const req = { user: { userId }, query: { from, to, status } };
+            const req = { user: { userId }, query: { from, to, status }, headers: {}, socket: { remoteAddress: '127.0.0.1', remotePort: 12345 } };
             const res = mockRes();
 
             await obligationsController.getObligations(req, res);
@@ -201,7 +202,7 @@ describe('Test Obligations', () => {
             );
             userServices.getVrn = jest.fn().mockResolvedValue(vrn);
 
-            const req = { user: { userId }, query: { from, to, status } };
+            const req = { user: { userId }, query: { from, to, status }, headers: {}, socket: { remoteAddress: '127.0.0.1', remotePort: 12345 } };
             const res = mockRes();
 
             await obligationsController.getObligations(req, res);

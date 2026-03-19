@@ -3,11 +3,12 @@ const db = require('../database/dataHandler');
 const HMRC_BASE_URL = 'https://test-api.service.hmrc.gov.uk'
 
 class HmrcService {
-    constructor(accessToken) {
+    constructor(accessToken, fraudHeaders = {}) {
         this.httpClient = new HttpClient(
             HMRC_BASE_URL,
             accessToken
         );
+        this.fraudHeaders = fraudHeaders;
     }
     async getObligations(vrn, from, to, status) {
         try {
@@ -15,7 +16,7 @@ class HmrcService {
                 from,
                 to,
                 status
-            });
+            }, this.fraudHeaders);
         } catch (error) {
             const errorMsg = error.response?.data ? JSON.stringify(error.response.data) : error.message;
             throw new Error(`Failed to get obligations: ${errorMsg}`);
@@ -23,7 +24,7 @@ class HmrcService {
     }
     async submitObligations(vrn, payload) {
         return this.httpClient.post(`/organisations/vat/${vrn}/returns`,
-            payload);
+            payload, this.fraudHeaders);
 
     }
     

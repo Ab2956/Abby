@@ -59,6 +59,7 @@ class MTDController: ObservableObject {
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            DeviceInfoService.shared.applyHeaders(to: &request)
             request.httpBody = jsonData
 
             let (data, response) = try await apiService.session.data(for: request)

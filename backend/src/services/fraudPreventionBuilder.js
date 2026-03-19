@@ -1,29 +1,95 @@
+const os = require('os');
+
 class FraudPreventionBuilder {
     constructor() {
         this.headers = {};
     }
 
-    async buildHeaders(deviceInfo, userId) {
-        // needs to be percent encoded as per HMRC requirements
+    /**
+     * Percent-encode a value per HMRC requirements (RFC 3986).
+     * Encodes all characters except unreserved: A-Z a-z 0-9 - _ . ~
+     */
+    percentEncode(value) {
+        if (!value) return '';
+        return encodeURIComponent(String(value))
+            .replace(/!/g, '%21')
+            .replace(/'/g, '%27')
+            .replace(/\(/g, '%28')
+            .replace(/\)/g, '%29')
+            .replace(/\*/g, '%2A');
+    }
+
+    /**
+     * Get the server's local IP addresses.
+     */
+    getServerIPs() {
+        const interfaces = os.networkInterfaces();
+        const ips = [];
+        for (const name of Object.keys(interfaces)) {
+            for (const iface of interfaces[name]) {
+                if (!iface.internal) {
+                    ips.push(iface.address);
+                }
+            }
+        }
+        return ips.join(',') || '127.0.0.1';
+    }
+
+    /**
+     * Build fraud prevention headers from device info (sent by the iOS client)
+     * and server-side request context.
+     *
+     * @param {Object} deviceInfo - Device info from the mobile client headers
+     * @param {string} userId - The authenticated user ID
+     * @param {Object} req - Express request object (for server-derived headers)
+     */
+    async buildHeaders(deviceInfo, userId, req) {
+        const now = new Date().toISOString();
+
+        // Server-derived values
+        const clientPublicIP = req.headers['x-forwarded-for']?.split(',')[0]?.trim()
+            || req.socket?.remoteAddress
+            || '';
+        const clientPublicPort = String(req.socket?.remotePort || '');
+        const serverIP = this.getServerIPs();
+        const vendorForwarded = `by=${serverIP}&for=${clientPublicIP}`;
+
         return {
-            "Gov-Client-Connection-Method": deviceInfo.connectionMethod || "MOBILE_APP_VIA_SERVER",
-            "Gov-Client-Device-ID": deviceInfo.deviceId || "unknown-device-id",
-            "Gov-Client-Local-IPs": deviceInfo.localIPs || "unknown-local-ips",
-            "Gov-Client-Local-IPs-Timestamp": deviceInfo.localIPsTimestamp || new Date().toISOString(),
-            "Gov-Client-Public-IP": deviceInfo.publicIP || "unknown-public-ip",
-            "Gov-Client-Public-IP-Timestamp": deviceInfo.publicIPTimestamp || new Date().toISOString(),
-            "Gov-Client-Public-Port": deviceInfo.publicPort || "unknown-public-port",
-            "Gov-Client-Screens": deviceInfo.screens || "unknown-screens",
-            "Gov-Client-Timezone": deviceInfo.timezone || "unknown-timezone",
-            "Gov-Client-User-Agent": deviceInfo.userAgent || "unknown-user-agent",
-            "Gov-Client-User-IDs": `Abby=${userId}`,
-            "Gov-Client-Window-Size": deviceInfo.windowSize || "unknown-window-size",
-            "Gov-Vendor-Forwarded": deviceInfo.vendorForwarded || "unknown-vendor-forwarded",
-            "Gov-Vendor-License-IDs": deviceInfo.vendorLicenseIds || "unknown-vendor-license-ids",
-            "Gov-Vendor-Product-Name": deviceInfo.vendorProductName || "unknown-vendor-product-name",
-            "Gov-Vendor-Public-IP": deviceInfo.vendorPublicIP || "unknown-vendor-public-ip",
-            "Gov-Vendor-Version": deviceInfo.vendorVersion || "unknown-vendor-version",
+            "Gov-Client-Connection-Method": "MOBILE_APP_VIA_SERVER",
+            "Gov-Client-Device-ID": deviceInfo.deviceId || '',
+            "Gov-Client-Local-IPs": deviceInfo.localIPs || '',
+            "Gov-Client-Local-IPs-Timestamp": deviceInfo.localIPsTimestamp || now,
+            "Gov-Client-Public-IP": clientPublicIP,
+            "Gov-Client-Public-IP-Timestamp": now,
+            "Gov-Client-Public-Port": clientPublicPort,
+            "Gov-Client-Screens": deviceInfo.screens || '',
+            "Gov-Client-Timezone": deviceInfo.timezone || '',
+            "Gov-Client-User-Agent": deviceInfo.userAgent || '',
+            "Gov-Client-User-IDs": `Abby=${this.percentEncode(userId)}`,
+            "Gov-Client-Window-Size": deviceInfo.windowSize || '',
+            "Gov-Vendor-Forwarded": vendorForwarded,
+            "Gov-Vendor-License-IDs": `Abby=${this.percentEncode(process.env.VENDOR_LICENSE_ID || '')}`,
+            "Gov-Vendor-Product-Name": this.percentEncode("Abby"),
+            "Gov-Vendor-Public-IP": serverIP,
+            "Gov-Vendor-Version": `Abby=${this.percentEncode(process.env.APP_VERSION || '1.0.0')}`,
         };
     }
 
+    /**
+     * Extract device info from incoming request headers sent by the iOS client.
+     * The iOS app sends these as custom X-Device-* headers.
+     */
+    extractDeviceInfo(req) {
+        return {
+            deviceId: req.headers['x-device-id'] || '',
+            localIPs: req.headers['x-device-local-ips'] || '',
+            localIPsTimestamp: req.headers['x-device-local-ips-timestamp'] || '',
+            screens: req.headers['x-device-screens'] || '',
+            timezone: req.headers['x-device-timezone'] || '',
+            userAgent: req.headers['x-device-user-agent'] || '',
+            windowSize: req.headers['x-device-window-size'] || '',
+        };
+    }
 }
+
+module.exports = new FraudPreventionBuilder();

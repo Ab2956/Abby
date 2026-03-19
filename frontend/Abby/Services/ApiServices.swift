@@ -121,7 +121,7 @@ class ApiServices {
     // authenticated Request Helper
     
     /// Build a URLRequest with the JWT Authorization header attached
-    func authenticatedRequest(path: String, method: String = "GET") -> URLRequest? {
+    func authenticatedRequest(path: String, method: String = "GET", includeDeviceInfo: Bool = false) -> URLRequest? {
         guard let url = URL(string: "\(baseURL)\(path)"),
               let token = authToken else {
             return nil
@@ -131,13 +131,16 @@ class ApiServices {
         request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        if includeDeviceInfo {
+            DeviceInfoService.shared.applyHeaders(to: &request)
+        }
         return request
     }
 
     // MARK: - Authenticated GET / POST helpers
 
     /// Perform an authenticated GET request and decode the JSON response
-    func authenticatedGet<T: Decodable>(path: String, queryItems: [URLQueryItem]? = nil) async throws -> T {
+    func authenticatedGet<T: Decodable>(path: String, queryItems: [URLQueryItem]? = nil, includeDeviceInfo: Bool = false) async throws -> T {
         guard let token = authToken,
               var components = URLComponents(string: "\(baseURL)\(path)") else {
             throw ApiError.badURL
@@ -151,6 +154,9 @@ class ApiServices {
         request.httpMethod = "GET"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        if includeDeviceInfo {
+            DeviceInfoService.shared.applyHeaders(to: &request)
+        }
 
         let (data, response) = try await session.data(for: request)
         try validateResponse(response, data: data)
@@ -158,7 +164,7 @@ class ApiServices {
     }
 
     /// Perform an authenticated POST request with a JSON body and decode the response
-    func authenticatedPost<T: Decodable>(path: String, body: Encodable) async throws -> T {
+    func authenticatedPost<T: Decodable>(path: String, body: Encodable, includeDeviceInfo: Bool = false) async throws -> T {
         guard let token = authToken,
               let url = URL(string: "\(baseURL)\(path)") else {
             throw ApiError.badURL
@@ -168,6 +174,9 @@ class ApiServices {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        if includeDeviceInfo {
+            DeviceInfoService.shared.applyHeaders(to: &request)
+        }
         request.httpBody = try JSONEncoder().encode(body)
 
         let (data, response) = try await session.data(for: request)

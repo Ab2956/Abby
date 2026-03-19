@@ -10,12 +10,12 @@ class HttpClient{
             }
         });
     }
-    async get(path, params){
-        const response = await this.client.get(path,{params});
+    async get(path, params, extraHeaders = {}){
+        const response = await this.client.get(path, { params, headers: extraHeaders });
         return response.data;
     };
-    async post(path, body){
-        const response = await this.client.post(path,body);
+    async post(path, body, extraHeaders = {}){
+        const response = await this.client.post(path, body, { headers: extraHeaders });
         return response.data;
     };
 }

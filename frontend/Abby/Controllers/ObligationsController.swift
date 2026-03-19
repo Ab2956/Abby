@@ -37,7 +37,8 @@ class ObligationsController: ObservableObject {
 
             let response: ObligationsResponse = try await apiService.authenticatedGet(
                 path: "/vat",
-                queryItems: queryItems
+                queryItems: queryItems,
+                includeDeviceInfo: true
             )
 
             // Map the HMRC response to view models
