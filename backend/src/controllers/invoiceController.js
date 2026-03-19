@@ -31,6 +31,16 @@ class InvoiceController {
             throw new Error(`File upload failed: ${error.message}`);
         }
     }
+    async getAllUserInvoices(req, res) {
+        try {
+            const userId = req.user.userId;
+            const invoices = await userServices.getAllUserInvoices(userId);
+            res.status(200).json(invoices);
+        } catch (error) {
+            console.error('Error fetching invoices:', error);
+            res.status(500).json({ error: 'Failed to fetch invoices' });
+        }
+    }
 }
 
-module.exports = InvoiceController;
+module.exports = new InvoiceController();

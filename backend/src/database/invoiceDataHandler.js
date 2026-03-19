@@ -28,5 +28,9 @@ class invoiceDataHandler {
         const invoices = await this.getInvoices(userId);
         return invoices.reduce((total, invoice) => total + (invoice.vat_amount || 0), 0);
     }
+    async getAllUserInvoices(userId) {
+        const invoiceCollection = await this.getInvoiceCollection();
+        return await invoiceCollection.find({ userId: new ObjectId(userId) }).toArray();
+    }
 }
 module.exports = new invoiceDataHandler();

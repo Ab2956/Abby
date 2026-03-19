@@ -25,5 +25,6 @@ router.post('/uploadInvoice', jwtVerification, upload.single('file'), async(req,
         });
     }
 });
+router.get('/getAllUserInvoices', jwtVerification, invoiceController.getAllUserInvoices);
 
 module.exports = router;

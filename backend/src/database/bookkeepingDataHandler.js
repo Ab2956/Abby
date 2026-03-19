@@ -25,5 +25,9 @@ class bookkeepingDataHandler {
         const reciptCollection = await this.getRecipts();
         return await reciptCollection.deleteOne({ _id: new ObjectId(reciptId) });
     }
+    async getReciptById(reciptId) {
+        const reciptCollection = await this.getRecipts();
+        return await reciptCollection.findOne({ _id: new ObjectId(reciptId) }); 
+    }
 }
 module.exports = new bookkeepingDataHandler();
