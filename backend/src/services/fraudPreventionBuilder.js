@@ -5,10 +5,7 @@ class FraudPreventionBuilder {
         this.headers = {};
     }
 
-    /**
-     * Percent-encode a value per HMRC requirements (RFC 3986).
-     * Encodes all characters except unreserved: A-Z a-z 0-9 - _ . ~
-     */
+    // Percent encode values for headers
     percentEncode(value) {
         if (!value) return '';
         return encodeURIComponent(String(value))
@@ -35,14 +32,7 @@ class FraudPreventionBuilder {
         return ips.join(',') || '127.0.0.1';
     }
 
-    /**
-     * Build fraud prevention headers from device info (sent by the iOS client)
-     * and server-side request context.
-     *
-     * @param {Object} deviceInfo - Device info from the mobile client headers
-     * @param {string} userId - The authenticated user ID
-     * @param {Object} req - Express request object (for server-derived headers)
-     */
+// Build the headers required for HMRC API calls
     async buildHeaders(deviceInfo, userId, req) {
         const now = new Date().toISOString();
 
@@ -75,10 +65,7 @@ class FraudPreventionBuilder {
         };
     }
 
-    /**
-     * Extract device info from incoming request headers sent by the iOS client.
-     * The iOS app sends these as custom X-Device-* headers.
-     */
+    // extract the device info
     extractDeviceInfo(req) {
         return {
             deviceId: req.headers['x-device-id'] || '',

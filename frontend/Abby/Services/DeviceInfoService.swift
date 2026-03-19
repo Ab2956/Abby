@@ -1,12 +1,3 @@
-//
-//  DeviceInfoService.swift
-//  Abby
-//
-//  Collects device information required by HMRC fraud prevention headers.
-//  These are sent as custom X-Device-* request headers to the backend,
-//  which then maps them to the Gov-Client-* HMRC headers.
-//
-
 import UIKit
 import Network
 

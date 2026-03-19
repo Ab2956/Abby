@@ -33,5 +33,20 @@ class bookkeepingController {
             res.status(500).json({ error: 'Failed to delete recipt' });
         }
     }
+    async handleUpload(file) {
+        try {
+            if (!file || !file.buffer) {
+                throw new Error('No file provided');
+            }
+            if (file.mimetype == "application/pdf") {
+                const parsedFile = await pdfParser.parseFile(file.buffer);
+                await bookeepingService.addRecipt(parsedFile);
+            }
+        } catch (error) {
+            console.error('Error handling file upload:', error);
+            throw error;
+        }
+    }
+
 }
 module.exports = new bookkeepingController();
