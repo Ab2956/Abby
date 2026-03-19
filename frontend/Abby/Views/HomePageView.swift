@@ -76,124 +76,127 @@ struct HomePageView: View {
     ]
 
     var body: some View {
-        NavigationStack {
-            
-            ScrollView {
-                VStack(spacing: 24) {
-                    // Header
-                    VStack(spacing: 6) {
+        TabView(selection: $selectedTab) {
+            NavigationStack {
+                InvoicesView()
+            }
+            .tabItem {
+                Image(systemName: "doc.text")
+                Text("Invoices")
+            }
+            .tag("invoices")
 
-                        Text("Your Accounting Buddy")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding(.top, 8)
+            NavigationStack {
+                ReceiptsView()
+            }
+            .tabItem {
+                Image(systemName: "receipt")
+                Text("Receipts")
+            }
+            .tag("receipts")
 
-                    // Menu Grid
-                    LazyVGrid(
-                        columns: [
-                            GridItem(.flexible(), spacing: 16),
-                            GridItem(.flexible(), spacing: 16),
-                        ],
-                        spacing: 16
-                    ) {
-                        ForEach(menuItems) { item in
-                            NavigationLink(value: item.destination) {
-                                MenuCard(item: item)
-                            }
-                            .buttonStyle(.plain)
+            NavigationStack {
+                homeContent
+            }
+            .tabItem {
+                Image(systemName: "house.fill")
+                Text("Home")
+            }
+            .tag("home")
+
+            NavigationStack {
+                Text("VAT")
+                    .navigationTitle("VAT")
+            }
+            .tabItem {
+                Image(systemName: "percent")
+                Text("VAT")
+            }
+            .tag("vat")
+
+            NavigationStack {
+                Text("Profile")
+                    .navigationTitle("Profile")
+            }
+            .tabItem {
+                Image(systemName: "person")
+                Text("Profile")
+            }
+            .tag("profile")
+        }
+    }
+
+    // MARK: - Home Tab Content
+
+    private var homeContent: some View {
+        ScrollView {
+            VStack(spacing: 24) {
+                // Header
+                VStack(spacing: 6) {
+                    Text("Your Accounting Buddy")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.top, 8)
+
+                // Menu Grid
+                LazyVGrid(
+                    columns: [
+                        GridItem(.flexible(), spacing: 16),
+                        GridItem(.flexible(), spacing: 16),
+                    ],
+                    spacing: 16
+                ) {
+                    ForEach(menuItems) { item in
+                        NavigationLink(value: item.destination) {
+                            MenuCard(item: item)
                         }
+                        .buttonStyle(.plain)
                     }
-                    .padding(.horizontal)
                 }
-                .padding(.bottom, 24)
+                .padding(.horizontal)
             }
-            .background(Color(.systemGroupedBackground))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        loginController.logout()
-                    } label: {
-                        Image(systemName: "rectangle.portrait.and.arrow.right")
-                            .foregroundColor(.red)
-                    }
-                }
-                ToolbarItem(placement: .navigationBarLeading){
-                    Button {
-                        print("settings")
-                    }label:{
-                        Image(systemName: "gearshape")
-                    }
-                }
-                ToolbarItem(placement: .principal){
-                    Image("abbyLogo")
-                        .resizable()
-                        .padding(30)
-                        .frame(width: 250, height: 200)
+            .padding(.bottom, 24)
+        }
+        .background(Color(.systemGroupedBackground))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    loginController.logout()
+                } label: {
+                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                        .foregroundColor(.red)
                 }
             }
-            .toolbar{
-                ToolbarItemGroup(placement: .bottomBar){
-                    Button{
-                        print("Invoices")
-                    }
-                    label:{
-                        Image(systemName: "doc.text")
-                    }
-                    Spacer()
-                    
-                    Button{
-                        print("Receipts")
-                    }label:{
-                        Image(systemName: "receipt")
-                        
-                    }
-                    
-                    Spacer()
-                    Button{
-                        print("House")
-                    }label:{
-                        Image(systemName: selectedTab == "home" ? "house.fill" : "house")
-                            .foregroundColor(selectedTab == "home" ? .blue : .gray)
-                    }
-                    
-                    Spacer()
-                    Button{
-                        print("VAT")
-                    }
-                    label:{
-                        Image(systemName: "percent")
-                        
-                    }
-                    
-                    Spacer()
-                    Button{
-                        print("Profile")
-                        
-                    } label:{
-                        Image(systemName: "person")
-                    }
+            ToolbarItem(placement: .navigationBarLeading) {
+                NavigationLink {
+                    SettingsView()
+                } label: {
+                    Image(systemName: "gearshape")
                 }
             }
-            .toolbarBackground(.ultraThinMaterial, for: .bottomBar)
-            .toolbarBackground(.visible, for: .bottomBar)
-            
-            .navigationDestination(for: HomeDestination.self) { destination in
-                switch destination {
-                case .invoiceUpload:
-                    InvoiceUploadView()
-                case .invoiceCreation:
-                    InvoiceCreationView()
-                case .receiptUpload:
-                    ReceiptUploadView()
-                case .receiptCreation:
-                    ReceiptCreationView()
-                case .mtdSubmissions:
-                    MTDSubmissionsView()
-                case .obligations:
-                    ObligationsView()
-                }
+            ToolbarItem(placement: .principal) {
+                Image("abbyLogo")
+                    .resizable()
+                    .padding(30)
+                    .frame(width: 250, height: 200)
+            }
+        }
+        .navigationDestination(for: HomeDestination.self) { destination in
+            switch destination {
+            case .invoiceUpload:
+                InvoiceUploadView()
+            case .invoiceCreation:
+                InvoiceCreationView()
+            case .receiptUpload:
+                ReceiptUploadView()
+            case .receiptCreation:
+                ReceiptCreationView()
+            case .mtdSubmissions:
+                MTDSubmissionsView()
+            case .obligations:
+                ObligationsView()
             }
         }
     }
