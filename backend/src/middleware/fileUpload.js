@@ -1,7 +1,6 @@
 const multer = require("multer");
 
 // middleware for handling file uploads using multer
-// Use memory storage so file.buffer is available (no disk writes needed)
 
 const storage = multer.memoryStorage();
 

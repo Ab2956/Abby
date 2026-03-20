@@ -71,7 +71,7 @@ class InvoiceController: ObservableObject {
         }
     }
 
-    /// Read file data immediately using coordinated read (required for PDFs from Files app)
+    /// Read file data immediately 
     func loadFileFromURL(_ url: URL) {
         let accessing = url.startAccessingSecurityScopedResource()
         defer { if accessing { url.stopAccessingSecurityScopedResource() } }
