@@ -9,7 +9,7 @@ const imageParser = new ImageParser();
 class InvoiceController {
     constructor() {}
 
-    async handleUpload(file) {
+    async handleUpload(file, userId) {
 
         try {
             if (!file || !file.buffer) {
@@ -17,13 +17,13 @@ class InvoiceController {
             }
             if (file.mimetype == "application/pdf") {
                 const parsedFile = await pdfParser.parseFile(file.buffer);
-                await invoiceServices.addInvoice(parsedFile);
-                return { success: true, message: "Invoice uploaded successfully", invoice: parsedFile };
+                await invoiceServices.addInvoice(userId, parsedFile);
+                return { success: true, message: "Invoice uploaded successfully" };
 
             } else if (file.mimetype.startsWith("image/")) {
                 const parsedFile = await imageParser.parseFile(file.buffer);
-                await invoiceServices.addInvoice(parsedFile);
-                return { success: true, message: "Invoice uploaded successfully", invoice: parsedFile };
+                await invoiceServices.addInvoice(userId, parsedFile);
+                return { success: true, message: "Invoice uploaded successfully" };
 
             } else {
                 throw new Error('Unsupported file type');

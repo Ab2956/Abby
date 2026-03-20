@@ -13,7 +13,7 @@ router.post('/uploadInvoice', jwtVerification, upload.single('file'), async(req,
             });
         }
         // Handle file upload using the controller with strategy pattern
-        const result = await InvoiceController.handleUpload(req.file);
+        const result = await InvoiceController.handleUpload(req.file, req.user.userId);
 
         return res.status(200).json(result);
     } catch (err) {

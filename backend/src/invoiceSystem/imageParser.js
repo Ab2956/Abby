@@ -36,7 +36,7 @@ class ImageParser extends invoiceParser {
             await invoice.validate();
             console.log('Invoice data is valid');
 
-            return invoice;
+            return invoice.toObject();
 
         } catch (error) {
             console.error('Error during OCR processing:', error);
