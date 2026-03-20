@@ -73,18 +73,17 @@ class InvoiceController: ObservableObject {
 
     /// Read file data immediately 
     func loadFileFromURL(_ url: URL) {
-        guard url.startAccessingSecurityScopedResource() else {
-            errorMessage = "Cannot access file"
-            return
-        }
-        defer { url.stopAccessingSecurityScopedResource() }
+        let accessing = url.startAccessingSecurityScopedResource()
+        defer { if accessing { url.stopAccessingSecurityScopedResource() } }
 
         do {
-            selectedFileData = try Data(contentsOf: url)
+            let data = try Data(contentsOf: url)
+            selectedFileData = data
             selectedFileName = url.lastPathComponent
             selectedFileMimeType = url.pathExtension.lowercased() == "pdf" ? "application/pdf" : "image/jpeg"
             selectedFileURL = url
         } catch {
+            print("File load error: \(error) for URL: \(url)")
             errorMessage = error.localizedDescription
         }
     }
