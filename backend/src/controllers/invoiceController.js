@@ -18,16 +18,18 @@ class InvoiceController {
             if (file.mimetype == "application/pdf") {
                 const parsedFile = await pdfParser.parseFile(file.buffer);
                 await invoiceServices.addInvoice(parsedFile);
+                return { success: true, message: "Invoice uploaded successfully", invoice: parsedFile };
 
             } else if (file.mimetype.startsWith("image/")) {
                 const parsedFile = await imageParser.parseFile(file.buffer);
                 await invoiceServices.addInvoice(parsedFile);
+                return { success: true, message: "Invoice uploaded successfully", invoice: parsedFile };
 
             } else {
                 throw new Error('Unsupported file type');
             }
 
-            return {};
+            return { success: true, message: "Invoice uploaded successfully" };
         } catch (error) {
             throw new Error(`File upload failed: ${error.message}`);
         }
