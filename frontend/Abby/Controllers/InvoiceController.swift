@@ -71,18 +71,27 @@ class InvoiceController: ObservableObject {
         }
     }
 
-    /// Read file data immediately 
+    /// Read file data immediately using coordinated read (required for PDFs from Files app)
     func loadFileFromURL(_ url: URL) {
         let accessing = url.startAccessingSecurityScopedResource()
         defer { if accessing { url.stopAccessingSecurityScopedResource() } }
 
-        do {
-            let data = try Data(contentsOf: url)
-            selectedFileData = data
-            selectedFileName = url.lastPathComponent
-            selectedFileMimeType = url.pathExtension.lowercased() == "pdf" ? "application/pdf" : "image/jpeg"
-            selectedFileURL = url
-        } catch {
+        var coordinatorError: NSError?
+        var loadError: Error?
+
+        NSFileCoordinator().coordinate(readingItemAt: url, options: [], error: &coordinatorError) { coordinatedURL in
+            do {
+                let data = try Data(contentsOf: coordinatedURL)
+                self.selectedFileData = data
+                self.selectedFileName = coordinatedURL.lastPathComponent
+                self.selectedFileMimeType = coordinatedURL.pathExtension.lowercased() == "pdf" ? "application/pdf" : "image/jpeg"
+                self.selectedFileURL = url
+            } catch {
+                loadError = error
+            }
+        }
+
+        if let error = coordinatorError ?? loadError {
             print("File load error: \(error) for URL: \(url)")
             errorMessage = error.localizedDescription
         }

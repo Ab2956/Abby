@@ -1,9 +1,10 @@
 const InoviceSchema = require("../models/InvoiceModel");
-const {pdfParser} = require("../invoiceSystem/pdfParser");
-const {imageParser} = require("../invoiceSystem/imageParser");
+const {PdfParser} = require("../invoiceSystem/pdfParser");
+const {ImageParser} = require("../invoiceSystem/imageParser");
 const userServices = require("../services/userServices");
-const { parse } = require("dotenv");
 
+const pdfParser = new PdfParser();
+const imageParser = new ImageParser();
 
 class InvoiceController {
     constructor() {}
@@ -15,11 +16,11 @@ class InvoiceController {
                 throw new Error('No file provided');
             }
             if (file.mimetype == "application/pdf") {
-                const parsedFile = await pdfParser.parseFile();
+                const parsedFile = await pdfParser.parseFile(file.buffer);
                 await userServices.addInvoice(parsedFile);
 
             } else if (file.mimetype.startsWith("image/")) {
-                const parsedFile = await imageParser.parseFile();
+                const parsedFile = await imageParser.parseFile(file.buffer);
                 await userServices.addInvoice(parsedFile);
 
             } else {
