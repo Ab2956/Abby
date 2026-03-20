@@ -8,8 +8,8 @@
 import Foundation
 
 struct Constants {
-    // will need to change to ip for device testing
-    static let baseURL = "http://localhost:8080"
+    // static let baseURL = "http://localhost:8080"
+    static let baseURL = "https://abby-e4lz.onrender.com"
     
     // Keychain identifiers
     static let keychainService = "com.abby.auth"
