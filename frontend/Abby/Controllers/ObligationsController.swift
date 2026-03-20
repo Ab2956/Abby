@@ -45,6 +45,7 @@ class ObligationsController: ObservableObject {
             obligations = mapObligations(from: response)
 
         } catch {
+            print("Obligations fetch error: \(error)")
             errorMessage = error.localizedDescription
         }
 
