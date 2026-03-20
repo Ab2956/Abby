@@ -77,14 +77,5 @@ class userDataHandler {
         const user = await userCollection.findOne({ _id: new ObjectId(userId) });
         return user ? !!user.hmrc_connected : false;
     }
-     async addInvoice(userId, invoiceData) {
-        const invoiceCollection = await this.getInvoiceCollection();
-        const invoice = {
-            ...invoiceData,
-            userId: new ObjectId(userId),
-            created_at: new Date()
-        };
-        return await invoiceCollection.insertOne(invoice);
-    }
 }
 module.exports = new userDataHandler();

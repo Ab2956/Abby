@@ -36,17 +36,6 @@ class UserServices {
             throw error;
         }
     }
-    async addInvoice(invoiceData) {
-        try {
-            if (!invoiceData || !invoiceData.userId) {
-                throw new Error("Invalid invoice data: missing userId");
-            }
-            return await userDataHandler.addInvoice(invoiceData);
-        } catch (error) {
-            console.log("AddInvoice", error);
-            throw error;
-        }
-    }
 
 
     async getUserByEmail(email) {

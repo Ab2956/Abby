@@ -1,7 +1,7 @@
 const InoviceSchema = require("../models/InvoiceModel");
 const {PdfParser} = require("../invoiceSystem/pdfParser");
 const {ImageParser} = require("../invoiceSystem/imageParser");
-const userServices = require("../services/userServices");
+const invoiceServices = require("../services/invoiceServices");
 
 const pdfParser = new PdfParser();
 const imageParser = new ImageParser();
@@ -17,11 +17,11 @@ class InvoiceController {
             }
             if (file.mimetype == "application/pdf") {
                 const parsedFile = await pdfParser.parseFile(file.buffer);
-                await userServices.addInvoice(parsedFile);
+                await invoiceServices.addInvoice(parsedFile);
 
             } else if (file.mimetype.startsWith("image/")) {
                 const parsedFile = await imageParser.parseFile(file.buffer);
-                await userServices.addInvoice(parsedFile);
+                await invoiceServices.addInvoice(parsedFile);
 
             } else {
                 throw new Error('Unsupported file type');
