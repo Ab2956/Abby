@@ -1,5 +1,5 @@
 const InvoiceParser = require('./invoiceParser');
-const pdf = require('pdf-parse');
+const pdf = require('pdf-parse-new');
 const invoiceSchema = require('../models/InvoiceModel');
 const extractionHelper = require('../utils/extractionHelper');
 
