@@ -4,8 +4,6 @@ const upload = require("../middleware/fileUpload");
 const InvoiceController = require("../controllers/invoiceController");
 const { jwtVerification } = require('../middleware/jwtAuth');
 
-const invoiceController = new InvoiceController();
-
 router.post('/uploadInvoice', jwtVerification, upload.single('file'), async(req, res) => {
     try {
         if (!req.file) {
@@ -15,7 +13,7 @@ router.post('/uploadInvoice', jwtVerification, upload.single('file'), async(req,
             });
         }
         // Handle file upload using the controller with strategy pattern
-        const result = await invoiceController.handleUpload(req.file);
+        const result = await InvoiceController.handleUpload(req.file);
 
         return res.status(200).json(result);
     } catch (err) {
@@ -25,6 +23,6 @@ router.post('/uploadInvoice', jwtVerification, upload.single('file'), async(req,
         });
     }
 });
-router.get('/getAllUserInvoices', jwtVerification, invoiceController.getAllUserInvoices);
+router.get('/getAllUserInvoices', jwtVerification, InvoiceController.getAllUserInvoices);
 
 module.exports = router;
