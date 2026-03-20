@@ -20,6 +20,9 @@ class InvoiceController: ObservableObject {
     // Upload state
     @Published var selectedPhotoItem: PhotosPickerItem?
     @Published var selectedFileURL: URL?
+    @Published var selectedFileData: Data?
+    @Published var selectedFileName: String?
+    @Published var selectedFileMimeType: String?
     @Published var uploadedInvoice: Invoice?
 
     // Creation state
@@ -68,8 +71,8 @@ class InvoiceController: ObservableObject {
         }
     }
 
-    /// Load file data from a URL and upload it
-    func uploadFromFile(_ url: URL) async {
+    /// Read file data immediately 
+    func loadFileFromURL(_ url: URL) {
         guard url.startAccessingSecurityScopedResource() else {
             errorMessage = "Cannot access file"
             return
@@ -77,12 +80,22 @@ class InvoiceController: ObservableObject {
         defer { url.stopAccessingSecurityScopedResource() }
 
         do {
-            let data = try Data(contentsOf: url)
-            let mimeType = url.pathExtension.lowercased() == "pdf" ? "application/pdf" : "image/jpeg"
-            await uploadInvoice(fileData: data, fileName: url.lastPathComponent, mimeType: mimeType)
+            selectedFileData = try Data(contentsOf: url)
+            selectedFileName = url.lastPathComponent
+            selectedFileMimeType = url.pathExtension.lowercased() == "pdf" ? "application/pdf" : "image/jpeg"
+            selectedFileURL = url
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    /// Upload previously loaded file data
+    func uploadSelectedFile() async {
+        guard let data = selectedFileData, let name = selectedFileName, let mime = selectedFileMimeType else {
+            errorMessage = "No file selected"
+            return
+        }
+        await uploadInvoice(fileData: data, fileName: name, mimeType: mime)
     }
 
     // Invoice Creation
@@ -111,6 +124,9 @@ class InvoiceController: ObservableObject {
     func resetUpload() {
         selectedPhotoItem = nil
         selectedFileURL = nil
+        selectedFileData = nil
+        selectedFileName = nil
+        selectedFileMimeType = nil
         uploadedInvoice = nil
         errorMessage = nil
         successMessage = nil

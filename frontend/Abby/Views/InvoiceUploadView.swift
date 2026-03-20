@@ -110,8 +110,8 @@ struct InvoiceUploadView: View {
                     Task {
                         if let item = controller.selectedPhotoItem {
                             await controller.uploadFromPhotoPicker(item)
-                        } else if let url = controller.selectedFileURL {
-                            await controller.uploadFromFile(url)
+                        } else if controller.selectedFileData != nil {
+                            await controller.uploadSelectedFile()
                         }
                     }
                 } label: {
@@ -159,7 +159,9 @@ struct InvoiceUploadView: View {
         ) { result in
             switch result {
             case .success(let urls):
-                controller.selectedFileURL = urls.first
+                if let url = urls.first {
+                    controller.loadFileFromURL(url)
+                }
             case .failure(let error):
                 controller.errorMessage = error.localizedDescription
             }
