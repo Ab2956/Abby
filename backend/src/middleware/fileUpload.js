@@ -1,15 +1,9 @@
 const multer = require("multer");
 
 // middleware for handling file uploads using multer
+// Use memory storage so file.buffer is available (no disk writes needed)
 
-const storage = multer.diskStorage({
-    destination: async(req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
+const storage = multer.memoryStorage();
 
 const upload = multer({
     storage: storage,
