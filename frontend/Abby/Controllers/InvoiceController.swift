@@ -23,7 +23,7 @@ class InvoiceController: ObservableObject {
     @Published var selectedFileData: Data?
     @Published var selectedFileName: String?
     @Published var selectedFileMimeType: String?
-    @Published var uploadedInvoice: Invoice?
+    @Published var uploadedInvoice: Bool = false
 
     // Creation state
     @Published var invoice = Invoice()
@@ -49,7 +49,7 @@ class InvoiceController: ObservableObject {
                 fileName: fileName,
                 mimeType: mimeType
             )
-            uploadedInvoice = response.invoice
+            uploadedInvoice = response.success ?? true
             successMessage = response.message ?? "Invoice uploaded successfully"
         } catch {
             errorMessage = error.localizedDescription
@@ -135,7 +135,7 @@ class InvoiceController: ObservableObject {
         selectedFileData = nil
         selectedFileName = nil
         selectedFileMimeType = nil
-        uploadedInvoice = nil
+        uploadedInvoice = false
         errorMessage = nil
         successMessage = nil
     }

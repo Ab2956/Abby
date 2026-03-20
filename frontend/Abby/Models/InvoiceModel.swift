@@ -47,7 +47,6 @@ struct Invoice: Identifiable, Codable {
 // Invoice Upload Response
 
 struct InvoiceUploadResponse: Codable {
-    let success: Bool
+    let success: Bool?
     let message: String?
-    let invoice: Invoice?
 }
