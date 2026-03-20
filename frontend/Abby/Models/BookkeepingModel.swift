@@ -97,11 +97,7 @@ struct ObligationItem: Identifiable, Codable {
 }
 
 struct ObligationsResponse: Codable {
-    let obligations: [ObligationGroup]?
-}
-
-struct ObligationGroup: Codable {
-    let obligations: [ObligationDetail]
+    let obligations: [ObligationDetail]?
 }
 
 struct ObligationDetail: Codable {

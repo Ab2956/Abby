@@ -70,15 +70,14 @@ class ObligationsController: ObservableObject {
     // Mapping
 
     private func mapObligations(from response: ObligationsResponse) -> [ObligationViewModel] {
-        guard let groups = response.obligations else { return [] }
+        guard let items = response.obligations else { return [] }
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
 
         var result: [ObligationViewModel] = []
 
-        for group in groups {
-            for obligation in group.obligations {
+        for obligation in items {
                 let start = dateFormatter.date(from: obligation.start) ?? Date()
                 let end = dateFormatter.date(from: obligation.end) ?? Date()
                 let due = dateFormatter.date(from: obligation.due) ?? Date()
@@ -100,7 +99,6 @@ class ObligationsController: ObservableObject {
                     status: status,
                     periodKey: obligation.periodKey
                 ))
-            }
         }
 
         return result.sorted { $0.dueDate < $1.dueDate }
