@@ -29,8 +29,21 @@ describe('Test hmrcServices', () => {
             "Gov-Vendor-Product-Name": "Abby",
             "Gov-Vendor-Version": "Abby=1.0.0",
         };
-        const hmrcService = new HmrcService(accessToken, fraudHeaders);
-        const response = await hmrcService.getBusinessId('WW812708C');
-        console.log("Business Details:", response);
+        const extraHeaders = {
+            ...fraudHeaders,
+            'Gov-Test-Scenario': 'BUSINESS_DETAILS_FOUND'
+            };
+            const hmrcService = new HmrcService(accessToken, {
+                ...extraHeaders,
+                'Gov-Test-Scenario': 'NOT_FOUND'
+            });
+        
+        try {
+            const response = await hmrcService.getBusinessId('WW812708C');
+            console.log("Business Details:", response);
+        } catch (error) {
+            console.log("Error body:", JSON.stringify(error.response?.data));
+            throw error;
+        }
     });
 })

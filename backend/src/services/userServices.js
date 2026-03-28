@@ -2,10 +2,7 @@ const bcrypt = require('bcrypt');
 const userDataHandler = require('../database/userDataHandler');
 const tokenEncryption = require('../utils/tokenEncryption');
 const authServices = require('./authServices');
-const e = require('express');
 const { encryptToken, decryptToken } = tokenEncryption;
-const HttpClient = require('../utils/httpClient');
-const HMRC_BASE_URL = 'https://test-api.service.hmrc.gov.uk'
 
 class UserServices {
     constructor() {}
@@ -137,6 +134,28 @@ class UserServices {
             return access_token;
         } catch (error) {
             console.log("GetValidAccessToken", error);
+            throw error;
+        }
+    }
+    async updateNino(userId, nino) {
+        try {
+            const encryptedNino = await encryptToken(nino);
+            return await userDataHandler.updateNino(userId, encryptedNino);
+        } catch (error) {
+            console.log("UpdateNino", error);
+            throw error;
+        }
+    }
+    async getNino(userId) {
+        try {
+            const user = await userDataHandler.getUserById(userId);
+            if (user && user.nino) {
+                const nino = await decryptToken(user.nino);
+                return nino;
+            }
+            return null;
+        } catch (error) {
+            console.log("GetNino", error);
             throw error;
         }
     }

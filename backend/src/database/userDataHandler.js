@@ -77,5 +77,17 @@ class userDataHandler {
         const user = await userCollection.findOne({ _id: new ObjectId(userId) });
         return user ? !!user.hmrc_connected : false;
     }
+    async updateNino(userId, encryptedNino) {
+        const userCollection = await this.getUsers();
+        return await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { nino: encryptedNino } });
+    }
+    async getNino(userId) {
+        const userCollection = await this.getUsers();
+        const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+        if (user && user.nino) {
+            const nino = decryptToken(user.nino);
+            return nino;
+        }        return null;
+    }
 }
 module.exports = new userDataHandler();

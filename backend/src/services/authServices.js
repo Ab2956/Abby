@@ -12,7 +12,6 @@ module.exports = {
             "write:vat",
             "read:self-assessment",
             "write:self-assessment",
-            "read:income-tax-mtd-end-of-period-statement"
         ];
         const scope = encodeURIComponent(scopes.join(' '));
 

@@ -87,4 +87,17 @@ describe('User Tests', () => {
         console.log("Is Connected to HMRC:", isConnected);
         expect(isConnected).toBe(true);
     });
+    it("can add nino", async() => {
+        const userId = "68fa2057b845e279d8dc41a9";
+        const nino = "WW812708C";
+        await userServices.updateNino(userId, nino);
+        const updatedUser = await userServices.getUserByEmail("romwan.newton@example.com");
+        expect(updatedUser.nino).toBeDefined();
+    });
+    it("can get nino", async() => {
+        const userId = "68fa2057b845e279d8dc41a9";
+        const nino = await userServices.getNino(userId);
+        console.log("NINO:", nino);
+        expect(nino).not.toBeNull();
+    });
 });

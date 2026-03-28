@@ -244,7 +244,7 @@ describe('Test Obligations', () => {
                 if (obligations && Object.prototype.hasOwnProperty.call(obligations, 'obligations')) {
                     expect(Array.isArray(obligations.obligations)).toBe(true);
                 }
-                console.log('Obligations:', JSON.stringify(obligations, null, 2));
+                console.log('Live HMRC Obligations:', JSON.stringify(obligations, null, 2));
             } catch (error) {
                 console.warn('Live HMRC test failed (expected in CI):', error.message);
             }

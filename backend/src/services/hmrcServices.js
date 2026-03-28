@@ -1,6 +1,7 @@
 const HttpClient = require('../utils/httpClient')
 const db = require('../database/dataHandler');
 const HMRC_BASE_URL = 'https://test-api.service.hmrc.gov.uk'
+const mtdServices = require('./mtdServices');
 
 class HmrcService {
     constructor(accessToken, fraudHeaders = {}) {
@@ -30,7 +31,28 @@ class HmrcService {
     async getBusinessId(nino) {
         return this.httpClient.get(`/individuals/business/details/${nino}/list`, null, this.fraudHeaders);
     }
-    
 
+    async submitQuarterlyData(nino, businessId, quarter, taxYear, data) {
+
+        try {
+            const periodDates = mtdServices.getPeriodDates(quarter, taxYear);
+            const formattedData = mtdServices.formatForHmrc(data);
+            const extraHeaders = {
+                ...this.fraudHeaders,
+                'Gov-Test-Scenario': 'SUCCESSFUL_PERIOD_SUBMISSION'
+            };
+
+            return this.httpClient.post(`/individuals/business/self-employment/${nino}/${businessId}/period`, {
+                ...periodDates,
+                ...formattedData
+            }, extraHeaders);
+
+        } catch (error) {
+            const errorMsg = error.response?.data ? JSON.stringify(error.response.data) : error.message;
+            console.error('Error submitting data to HMRC:', errorMsg);
+            throw new Error('Failed to submit data to HMRC');
+        }
+    }
+    
 }
 module.exports = HmrcService;

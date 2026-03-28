@@ -1,4 +1,18 @@
-const HttpClient = require("../utils/httpClient");
+
+const VALID_EXPENSE_CATEGORIES = [
+    'costOfGoods',
+    'staffCosts',
+    'travelCosts',
+    'premisesRunningCosts',
+    'maintenanceCosts',
+    'adminCosts',
+    'interest',
+    'financialCharges',
+    'badDebt',
+    'professionalFees',
+    'depreciation',
+    'otherExpenses'
+];
 
 const QUARTER_PERIODS = {
         1:{ start: '04-06', end: '07-05' },
@@ -104,15 +118,14 @@ class MtdServices {
             throw new Error('Failed to upload data');
         }   
     }
-    async submitToHmrc(userId, quarter, taxYear, data) {
+    async submitVatReturn(userId, quarter, taxYear, data) {
         try {
             const periodDates = this.getPeriodDates(quarter, taxYear);
             const formattedData = this.formatForHmrc(data);
-
-        
         } catch (error) {
-            console.error('Error submitting to HMRC:', error);
-            throw new Error('Failed to submit to HMRC');
+            console.error('Error submitting VAT return to HMRC:', error);
+            throw new Error('Failed to submit VAT return to HMRC');
         }
     }
 }
+module.exports = new MtdServices();

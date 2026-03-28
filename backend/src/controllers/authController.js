@@ -32,6 +32,7 @@ exports.testOAuth = async(req, res) => {
 
     const state = crypto.randomBytes(32).toString('hex');
     await redisCache.set(state, user._id.toString(), 10 * 60);
+    console.log("Generated state:", state);
 
     const url = authServices.createUrl(state);
     console.log(url);
