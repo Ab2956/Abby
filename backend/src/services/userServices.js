@@ -4,6 +4,8 @@ const tokenEncryption = require('../utils/tokenEncryption');
 const authServices = require('./authServices');
 const e = require('express');
 const { encryptToken, decryptToken } = tokenEncryption;
+const HttpClient = require('../utils/httpClient');
+const HMRC_BASE_URL = 'https://test-api.service.hmrc.gov.uk'
 
 class UserServices {
     constructor() {}
@@ -138,7 +140,6 @@ class UserServices {
             throw error;
         }
     }
-
 }
 
 module.exports = new UserServices();

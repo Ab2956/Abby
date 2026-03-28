@@ -1,4 +1,5 @@
 const axios = require('axios');
+
 // helper class for authentication
 class oauthClient {
     constructor(baseUrl) {

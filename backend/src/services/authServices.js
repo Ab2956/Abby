@@ -3,6 +3,7 @@ const OAuthClient = require('../utils/oauthClient');
 
 module.exports = {
 
+    // func to create the authorization url with the required query params for the HMRC API
     createUrl: (state) => {
         const redirectUri = process.env.REDIRECT_URI;
         const client_id = process.env.CLIENT_ID;
@@ -10,7 +11,8 @@ module.exports = {
             "read:vat",
             "write:vat",
             "read:self-assessment",
-            "write:self-assessment"
+            "write:self-assessment",
+            "read:income-tax-mtd-end-of-period-statement"
         ];
         const scope = encodeURIComponent(scopes.join(' '));
 
@@ -21,6 +23,7 @@ module.exports = {
             `&state=${encodeURIComponent(state)}`;
     },
 
+    // func to exchange the authorization code for access and refresh tokens
     getTokenData: async(code) => {
         const client = new OAuthClient("https://test-api.service.hmrc.gov.uk");
         try {

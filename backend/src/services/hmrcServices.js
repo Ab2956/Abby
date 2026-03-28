@@ -27,6 +27,9 @@ class HmrcService {
             payload, this.fraudHeaders);
 
     }
+    async getBusinessId(nino) {
+        return this.httpClient.get(`/individuals/business/details/${nino}/list`, null, this.fraudHeaders);
+    }
     
 
 }

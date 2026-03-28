@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const ENCRYPTION_KEY = process.env.TOKEN_ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex');
 
-// encryption for the tokens using crypto
+// encryption for the tokens using crypto lib
 function encryptToken(token) {
     if (!token) return null;
     
@@ -15,6 +15,7 @@ function encryptToken(token) {
     return iv.toString('hex') + ':' + encrypted;
 }
 
+// decrypt func to get the original token back
 function decryptToken(encryptedToken) {
     if (!encryptedToken) return null;
     
@@ -34,3 +35,5 @@ function decryptToken(encryptedToken) {
 }
 
 module.exports = { encryptToken, decryptToken };
+
+

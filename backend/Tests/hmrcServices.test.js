@@ -1,7 +1,7 @@
 require('dotenv').config();
 const authServices = require('../src/services/authServices');
 const userServices = require('../src/services/userServices');
-const HttpClient = require('../src/utils/httpClient');
+const HmrcService = require('../src/services/hmrcServices');
 const db = require('../src/database/connectDB');
 
 describe('Test hmrcServices', () => {
@@ -19,5 +19,18 @@ describe('Test hmrcServices', () => {
 
         console.log("token data: " + refreshToken);
         return refreshToken;
+    });
+    it('Can get business details', async () => {
+        const accessToken = await userServices.getValidAccessToken("68fa2057b845e279d8dc41a9", true);
+        const fraudHeaders = {
+            "Gov-Client-Connection-Method": "MOBILE_APP_VIA_SERVER",
+            "Gov-Client-Device-ID": "test-device-id",
+            "Gov-Client-User-IDs": "Abby=test-user",
+            "Gov-Vendor-Product-Name": "Abby",
+            "Gov-Vendor-Version": "Abby=1.0.0",
+        };
+        const hmrcService = new HmrcService(accessToken, fraudHeaders);
+        const response = await hmrcService.getBusinessId('WW812708C');
+        console.log("Business Details:", response);
     });
 })
