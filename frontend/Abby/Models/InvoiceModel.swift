@@ -37,14 +37,14 @@ struct InvoiceItem: Codable, Identifiable {
 
 // Invoice Model
 struct Invoice: Codable, Identifiable {
-    var id: String? // MongoDB _id
-    var invoice_number: String
-    var invoice_date: Date
-    var supplier: Supplier
-    var customer: Customer
-    var items: [InvoiceItem]
-    var total_amount: Double
-    var vat_amount: Double?
+    var id: String? = nil// MongoDB _id
+    var invoice_number: String = ""
+    var invoice_date: Date = Date()
+    var supplier = Supplier(supplier_name: "", supplier_address: "", supplier_contact: nil, supplier_vat_number: "")
+    var customer = Customer(customer_name: "", customer_address: "")
+    var items: [InvoiceItem] = []
+    var total_amount: Double = 0.0
+    var vat_amount: Double? = nil
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"

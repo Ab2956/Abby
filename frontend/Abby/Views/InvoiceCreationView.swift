@@ -15,7 +15,7 @@ struct InvoiceCreationView: View {
         Form {
             // Client Details
             Section("Client Details") {
-                TextField("Client Name", text: $controller.invoice.clientName)
+                TextField("Client Name", text: $controller.invoice.customer)
                 TextField("Client Email", text: $controller.invoice.clientEmail)
                     .keyboardType(.emailAddress)
                     .autocapitalization(.none)
@@ -63,7 +63,7 @@ struct InvoiceCreationView: View {
                 }
 
                 Button {
-                    controller.invoice.lineItems.append(InvoiceLineItem())
+                    controller.invoice.lineItems.append(InvoiceItem())
                 } label: {
                     Label("Add Item", systemImage: "plus.circle.fill")
                 }
@@ -144,8 +144,8 @@ struct InvoiceCreationView: View {
     }
 
     private var formValid: Bool {
-        !controller.invoice.clientName.isEmpty &&
-        controller.invoice.lineItems.contains { !$0.description.isEmpty && $0.quantity > 0 && $0.unitPrice > 0 }
+        !controller.invoice.customer.isEmpty &&
+        controller.invoice.items.contains { !$0.description.isEmpty && $0.quantity > 0 && $0.unitPrice > 0 }
     }
 }
 

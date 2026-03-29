@@ -12,7 +12,7 @@ struct InvoicesView: View {
                 showDetail = true
             }) {
                 HStack {
-                    Text(invoice.invoice_number ?? "-")
+                    Text(invoice.invoice_number)
                         .fontWeight(.medium)
                     Spacer()
                     Text(invoice.invoice_date, style: .date)
@@ -55,19 +55,14 @@ struct InvoiceDetailView: View {
             }
             Divider()
             HStack {
-                Text("Subtotal:")
-                Spacer()
-                Text("£\(invoice.subtotal, specifier: "%.2f")")
-            }
-            HStack {
                 Text("VAT:")
                 Spacer()
-                Text("£\(invoice.totalVAT, specifier: "%.2f")")
+                Text("£\(invoice.vat_amount ?? 0.0, specifier: "%.2f")")
             }
             HStack {
                 Text("Total:")
                 Spacer()
-                Text("£\(invoice.grandTotal, specifier: "%.2f")")
+                Text("£\(invoice.total_amount, specifier: "%.2f")")
             }
             Spacer()
         }
