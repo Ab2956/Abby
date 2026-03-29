@@ -11,25 +11,35 @@ struct InvoiceCreationView: View {
     @StateObject private var controller = InvoiceController()
     @State private var showSuccess = false
 
+
     var body: some View {
         Form {
-            // Client Details
-            Section("Client Details") {
-                TextField("Client Name", text: $controller.invoice.customer)
-                TextField("Client Email", text: $controller.invoice.clientEmail)
-                    .keyboardType(.emailAddress)
-                    .autocapitalization(.none)
+            // Customer Details
+            Section("Customer Details") {
+                TextField("Customer Name", text: $controller.invoice.customer.customer_name)
+                TextField("Customer Address", text: $controller.invoice.customer.customer_address)
             }
 
-            // Dates
-            Section("Dates") {
-                DatePicker("Invoice Date", selection: $controller.invoice.invoiceDate, displayedComponents: .date)
-                DatePicker("Due Date", selection: $controller.invoice.dueDate, displayedComponents: .date)
+            // Supplier Details
+            Section("Supplier Details") {
+                TextField("Supplier Name", text: $controller.invoice.supplier.supplier_name)
+                TextField("Supplier Address", text: $controller.invoice.supplier.supplier_address)
+                TextField("Supplier VAT Number", text: $controller.invoice.supplier.supplier_vat_number)
+                TextField("Supplier Contact (Optional)", text: Binding(
+                    get: { controller.invoice.supplier.supplier_contact ?? "" },
+                    set: { controller.invoice.supplier.supplier_contact = $0.isEmpty ? nil : $0 }
+                ))
             }
 
-            // Line Items
+            // Invoice Details
+            Section("Invoice Details") {
+                TextField("Invoice Number", text: $controller.invoice.invoice_number)
+                DatePicker("Invoice Date", selection: $controller.invoice.invoice_date, displayedComponents: .date)
+            }
+
+            // Items
             Section {
-                ForEach($controller.invoice.lineItems) { $item in
+                ForEach($controller.invoice.items) { $item in
                     VStack(spacing: 8) {
                         TextField("Description", text: $item.description)
                         HStack {
@@ -37,17 +47,16 @@ struct InvoiceCreationView: View {
                                 .keyboardType(.decimalPad)
                                 .frame(width: 60)
 
-                            TextField("Unit Price (£)", value: $item.unitPrice, format: .currency(code: "GBP"))
+                            TextField("Unit Price (£)", value: $item.unit_price, format: .currency(code: "GBP"))
                                 .keyboardType(.decimalPad)
 
                             Spacer()
 
-                            Text("£\(item.total, specifier: "%.2f")")
+                            Text("£\(item.total_price, specifier: "%.2f")")
                                 .fontWeight(.medium)
                                 .foregroundColor(.secondary)
                         }
-
-                        Picker("VAT Rate", selection: $item.vatRate) {
+                        Picker("VAT Rate", selection: $item.vat_rate) {
                             Text("No VAT (0%)").tag(0.0)
                             Text("Reduced (5%)").tag(5.0)
                             Text("Standard (20%)").tag(20.0)
@@ -57,45 +66,31 @@ struct InvoiceCreationView: View {
                     .padding(.vertical, 4)
                 }
                 .onDelete { offsets in
-                    if controller.invoice.lineItems.count > 1 {
-                        controller.invoice.lineItems.remove(atOffsets: offsets)
+                    if controller.invoice.items.count > 1 {
+                        controller.invoice.items.remove(atOffsets: offsets)
                     }
                 }
 
                 Button {
-                    controller.invoice.lineItems.append(InvoiceItem())
+                    controller.invoice.items.append(InvoiceItem(description: "", quantity: 1, unit_price: 0, vat_rate: 20, total_price: 0))
                 } label: {
                     Label("Add Item", systemImage: "plus.circle.fill")
                 }
             } header: {
-                Text("Line Items")
-            }
-
-            // Notes
-            Section("Notes (Optional)") {
-                TextEditor(text: $controller.invoice.notes)
-                    .frame(minHeight: 60)
+                Text("Items")
             }
 
             // Totals
             Section("Totals") {
                 HStack {
-                    Text("Subtotal")
+                    Text("Total Amount")
                     Spacer()
-                    Text("£\(controller.invoice.subtotal, specifier: "%.2f")")
+                    Text("£\(controller.invoice.total_amount, specifier: "%.2f")")
                 }
                 HStack {
-                    Text("VAT")
+                    Text("VAT Amount")
                     Spacer()
-                    Text("£\(controller.invoice.totalVAT, specifier: "%.2f")")
-                }
-                HStack {
-                    Text("Total")
-                        .fontWeight(.bold)
-                    Spacer()
-                    Text("£\(controller.invoice.grandTotal, specifier: "%.2f")")
-                        .fontWeight(.bold)
-                        .foregroundColor(.blue)
+                    Text("£\(controller.invoice.vat_amount ?? 0, specifier: "%.2f")")
                 }
             }
 
@@ -144,8 +139,10 @@ struct InvoiceCreationView: View {
     }
 
     private var formValid: Bool {
-        !controller.invoice.customer.isEmpty &&
-        controller.invoice.items.contains { !$0.description.isEmpty && $0.quantity > 0 && $0.unitPrice > 0 }
+        !controller.invoice.customer.customer_name.isEmpty &&
+        !controller.invoice.supplier.supplier_name.isEmpty &&
+        !controller.invoice.invoice_number.isEmpty &&
+        controller.invoice.items.contains { !$0.description.isEmpty && $0.quantity > 0 && $0.unit_price > 0 }
     }
 }
 
