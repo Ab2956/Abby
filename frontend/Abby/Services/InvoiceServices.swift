@@ -32,17 +32,25 @@ class InvoiceServices: ObservableObject {
 				self.isLoading = false
 			}
 			if let err = err {
+                print("Invoice network err: \(err)")
 				DispatchQueue.main.async { completion(nil, err.localizedDescription) }
 				return
 			}
 			guard let data = data else {
+                print("no data returned from backend")
 				DispatchQueue.main.async { completion(nil, "No data returned") }
 				return
 			}
+            if let raw = String(data: data, encoding: .utf8){
+                print("raw json res: \n\(raw)")
+            }
 			do {
-				let invoices = try JSONDecoder().decode([Invoice].self, from: data)
+				let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .iso8601
+                let invoices = try decoder.decode([Invoice].self, from: data)
 				DispatchQueue.main.async { completion(invoices, nil) }
 			} catch {
+                print("decoding err: \(error)")
 				DispatchQueue.main.async { completion(nil, "Failed to decode invoices: \(error.localizedDescription)") }
 			}
 		}.resume()
