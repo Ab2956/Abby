@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const userDataHandler = require('../database/userDataHandler');
 const tokenEncryption = require('../utils/tokenEncryption');
 const authServices = require('./authServices');
+const invoiceDataHandler = require('../database/invoiceDataHandler');
 const { encryptToken, decryptToken } = tokenEncryption;
 
 class UserServices {
@@ -156,6 +157,14 @@ class UserServices {
             return null;
         } catch (error) {
             console.log("GetNino", error);
+            throw error;
+        }
+    }
+    async getAllUserInvoices(userId) {
+        try {
+            return await invoiceDataHandler.getAllUserInvoices(userId);
+        } catch (error) {
+            console.log("GetAllUserInvoices", error);
             throw error;
         }
     }

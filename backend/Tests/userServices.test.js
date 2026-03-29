@@ -100,4 +100,10 @@ describe('User Tests', () => {
         console.log("NINO:", nino);
         expect(nino).not.toBeNull();
     });
+    it ("can get all invoices for user", async() => {
+        const userId = "68fa2057b845e279d8dc41a9";
+        const invoices = await userServices.getAllUserInvoices(userId);
+        console.log("Invoices:", invoices);
+        expect(invoices).toBeDefined();
+    });
 });

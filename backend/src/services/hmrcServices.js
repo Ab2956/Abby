@@ -39,7 +39,6 @@ class HmrcService {
             const formattedData = mtdServices.formatForHmrc(data);
             const extraHeaders = {
                 ...this.fraudHeaders,
-                'Gov-Test-Scenario': 'SUCCESSFUL_PERIOD_SUBMISSION'
             };
 
             return this.httpClient.post(`/individuals/business/self-employment/${nino}/${businessId}/period`, {

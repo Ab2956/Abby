@@ -39,13 +39,32 @@ class ExtractionHelper {
             /From[:\s]+([^\n]+)/i,
             /Supplier\s*Name[:\s]+([^\n]+)/i,
             /Vendor[:\s]+([^\n]+)/i,
-            /INVOICE\s*\n\s*Supplier[:\s]*\n\s*([^\n]+)/i
+            /INVOICE\s*\n\s*Supplier[:\s]*\n\s*([^\n]+)/i,
+            /^([A-Za-z][A-Za-z0-9 &,.']{2,}(?:Ltd|Limited|PLC|LLP|Inc|Corporation)?)/m
         ];
+        for (const pattern of patterns) {
+        const match = text.match(pattern);
+        if (match && !/^[A-Z]{1,2}\d{1,2}\s?\d[A-Z]{2}$/i.test(match[1])) { 
+            return match[1].trim();
+        }
+    }
         return ( this.tryPatterns(text, patterns))?.trim();
     }
 
     extractSupplierAddress(text) {
-        const patterns = [
+        const supplierNameMatch = text.match(/Supplier[:\s]*\n\s*([^\n]+)/i);
+
+       if (supplierNameMatch) {
+        // Find everything after supplier name up to a stop word
+        const afterSupplier = text.split(supplierNameMatch[0])[1];
+        if (afterSupplier) {
+            const stopMatch = afterSupplier.match(/^(.*?)(?=\n(?:VAT|Phone|Tel|Email|Invoice|Customer|Billed|Total|$))/is);
+            if (stopMatch) {
+                return stopMatch[1].replace(/[\n\r]+/g, ', ').replace(/\s{2,}/g, ' ').trim();
+             }
+            }
+        }
+         const patterns = [
             /Supplier\s*Address[:\s]+([^\n]+(?:\n[^\n]+)*?)(?=\n\s*(?:VAT|Billed|Customer|Invoice))/is,
             /Address[:\s]+([^\n]+)/i
         ];
@@ -62,8 +81,7 @@ class ExtractionHelper {
         if (match) {
             return `${match[1].trim()}, ${match[2].trim()}, ${match[3].trim()}`;
         }
-        
-        return  this.tryPatterns(text, [patterns[0], patterns[2]])?.trim();
+    return  this.tryPatterns(text, [patterns[0], patterns[2]])?.trim();
     }
 
     extractSupplierContact(text) {
