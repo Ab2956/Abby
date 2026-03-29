@@ -20,7 +20,6 @@ class InvoiceServices: ObservableObject {
 		request.httpMethod = "GET"
 		request.setValue("application/json", forHTTPHeaderField: "Accept")
 
-		// Add JWT token if needed
 		if let token = KeychainHelper.shared.get(service: Constants.keychainService, account: Constants.keychainAccount) {
 			request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 		}

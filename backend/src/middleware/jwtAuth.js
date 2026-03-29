@@ -1,14 +1,13 @@
 const jwtService = require('../services/jwtServices');
 
 function jwtVerification(req, res, next){
-
+    // Jwt middleware to verify token and extract user info
     const authHeader = req.headers['authorization'];
     const token = (authHeader && authHeader.split(' ')[1]) || req.query.token;
 
     if(!token){
         return res.status(401).json({error: "No token"})
     }
-
     const decoded = jwtService.verifyJWT(token);
 
     if(!decoded){

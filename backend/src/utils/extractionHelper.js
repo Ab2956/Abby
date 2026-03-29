@@ -55,7 +55,6 @@ class ExtractionHelper {
         const supplierNameMatch = text.match(/Supplier[:\s]*\n\s*([^\n]+)/i);
 
        if (supplierNameMatch) {
-        // Find everything after supplier name up to a stop word
         const afterSupplier = text.split(supplierNameMatch[0])[1];
         if (afterSupplier) {
             const stopMatch = afterSupplier.match(/^(.*?)(?=\n(?:VAT|Phone|Tel|Email|Invoice|Customer|Billed|Total|$))/is);

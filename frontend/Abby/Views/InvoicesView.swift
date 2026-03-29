@@ -12,10 +12,10 @@ struct InvoicesView: View {
                 showDetail = true
             }) {
                 HStack {
-                    Text(invoice.id ?? "-")
+                    Text(invoice.invoice_number ?? "-")
                         .fontWeight(.medium)
                     Spacer()
-                    Text(invoice.invoiceDate, style: .date)
+                    Text(invoice.invoice_date, style: .date)
                         .foregroundColor(.secondary)
                 }
             }
@@ -42,15 +42,15 @@ struct InvoiceDetailView: View {
             Text("Invoice #\(invoice.id ?? "-")")
                 .font(.title2)
                 .fontWeight(.bold)
-            Text("Date: \(invoice.invoiceDate, style: .date)")
-            Text("Client: \(invoice.clientName)")
+            Text("Date: \(invoice.invoice_date, style: .date)")
+            Text("Client: \(invoice.customer.customer_name)")
             Divider()
-            ForEach(invoice.lineItems) { item in
+            ForEach(invoice.items) { item in
                 HStack {
                     Text(item.description)
                     Spacer()
                     Text("Qty: \(item.quantity, specifier: "%.0f")")
-                    Text("£\(item.unitPrice, specifier: "%.2f")")
+                    Text("£\(item.unit_price, specifier: "%.2f")")
                 }
             }
             Divider()

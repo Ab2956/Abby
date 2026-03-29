@@ -7,45 +7,50 @@
 
 import Foundation
 
-// Invoice Line Item
+// Supplier Model
+struct Supplier: Codable {
+    var supplier_name: String
+    var supplier_address: String
+    var supplier_contact: String?
+    var supplier_vat_number: String
+}
 
-struct InvoiceLineItem: Identifiable, Codable {
+// Customer Model
+struct Customer: Codable {
+    var customer_name: String
+    var customer_address: String
+}
+
+// Invoice Item Model
+struct InvoiceItem: Codable, Identifiable {
     var id = UUID()
-    var description: String = ""
-    var quantity: Double = 1
-    var unitPrice: Double = 0
-    var vatRate: Double = 20.0
-
-    var total: Double { quantity * unitPrice }
-    var vatAmount: Double { total * (vatRate / 100) }
+    var description: String
+    var quantity: Double
+    var unit_price: Double
+    var vat_rate: Double
+    var total_price: Double
 
     enum CodingKeys: String, CodingKey {
-        case description, quantity, unitPrice, vatRate
+        case description, quantity, unit_price, vat_rate, total_price
     }
 }
 
-// Invoice
-
-struct Invoice: Identifiable, Codable {
-    var id: String?
-    var clientName: String = ""
-    var clientEmail: String = ""
-    var invoiceDate: Date = Date()
-    var dueDate: Date = Date().addingTimeInterval(30 * 24 * 60 * 60)
-    var lineItems: [InvoiceLineItem] = []
-    var notes: String = ""
-
-    var subtotal: Double { lineItems.reduce(0) { $0 + $1.total } }
-    var totalVAT: Double { lineItems.reduce(0) { $0 + $1.vatAmount } }
-    var grandTotal: Double { subtotal + totalVAT }
+// Invoice Model
+struct Invoice: Codable, Identifiable {
+    var id: String? // MongoDB _id
+    var invoice_number: String
+    var invoice_date: Date
+    var supplier: Supplier
+    var customer: Customer
+    var items: [InvoiceItem]
+    var total_amount: Double
+    var vat_amount: Double?
 
     enum CodingKeys: String, CodingKey {
-        case id, clientName, clientEmail, invoiceDate, dueDate, lineItems, notes
+        case id = "_id"
+        case invoice_number, invoice_date, supplier, customer, items, total_amount, vat_amount
     }
 }
-
-// Invoice Upload Response
-
 struct InvoiceUploadResponse: Codable {
     let success: Bool?
     let message: String?
