@@ -38,7 +38,28 @@ class InvoiceController {
         try {
             const userId = req.user.userId;
             const invoices = await userServices.getAllUserInvoices(userId);
-            res.status(200).json(invoices);
+
+            // format the invoice for the frontend
+            const normalizeInvoice = (invoice) => ({
+                ...invoice,
+                _id: invoice._id?.toString(),
+                invoice_date: invoice.invoice_date instanceof Date
+                    ? invoice.invoice_date.toISOString()
+                    : (invoice.invoice_date?.$date || ""),
+                supplier: invoice.supplier ? {
+                    ...invoice.supplier,
+                    _id: undefined
+                } : undefined,
+                customer: invoice.customer ? {
+                    ...invoice.customer,
+                    _id: undefined
+                } : undefined,
+                items: Array.isArray(invoice.items) ? invoice.items.map(item => ({
+                    ...item,
+                    _id: undefined
+                })) : []
+            });
+            res.status(200).json(invoices.map(normalizeInvoice));
         } catch (error) {
             console.error('Error fetching invoices:', error);
             res.status(500).json({ error: 'Failed to fetch invoices' });
