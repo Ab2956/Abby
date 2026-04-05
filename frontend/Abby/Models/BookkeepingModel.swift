@@ -13,7 +13,7 @@ struct Receipt: Identifiable, Codable {
     var id: String?
     var vendor: String = ""
     var description: String = ""
-    var date: Date = Date()
+    var date: String = ""
     var totalAmount: Double = 0
     var vatAmount: Double = 0
     var category: String = "Uncategorised"
