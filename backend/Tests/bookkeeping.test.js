@@ -54,4 +54,11 @@ describe("Bookkeeping Tests", () => {
         expect(deleteResult.deletedCount).toBe(1);
 
     });
+    test("should get all recipt by id", async() => {
+        const res = await bookkeepingService.getRecipts(userId);
+        
+        expect(res).toBeDefined();
+        console.log(res);
+    });
+    
 });
