@@ -8,5 +8,5 @@ router.post('/addRecipt', jwtVerification, bookkeepingController.addRecipt);
 router.get('/getRecipts', jwtVerification, bookkeepingController.getRecipts);
 router.get('/deleteRecipt/', jwtVerification, bookkeepingController.deleteRecipt);
 router.get('/getReciptById/', jwtVerification, bookkeepingController.getReciptById);
-router.get('/getAllUserRecipts/', jwtVerification, bookkeepingController.getAllUserRecipts);
+router.get('/getAllUserReceipts/', jwtVerification, bookkeepingController.getAllUserRecipts);
 module.exports = router;
