@@ -36,20 +36,18 @@ class HmrcService {
 
         try {
             const periodDates = mtdServices.getPeriodDates(quarter, taxYear);
-            const formattedData = mtdServices.formatForHmrc(data);
+            const formattedData = mtdServices.formatVATForHmrc(data);
             const extraHeaders = {
                 ...this.fraudHeaders,
             };
 
-            return this.httpClient.post(`/organisations/vat/${vrn}/returns`, {
-                ...periodDates,
-                ...formattedData
-            }, extraHeaders);
+            return this.httpClient.post(`/organisations/vat/${vrn}/returns`,
+                formattedData, extraHeaders);
 
         } catch (error) {
             const errorMsg = error.response?.data ? JSON.stringify(error.response.data) : error.message;
             console.error('Error submitting data to HMRC:', errorMsg);
-            throw new Error('Failed to submit data to HMRC');
+            throw error;
         }
     }
     

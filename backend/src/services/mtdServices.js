@@ -138,14 +138,5 @@ class MtdServices {
             throw new Error('Failed to upload data');
         }   
     }
-    async submitVatReturn(userId, quarter, taxYear, data) {
-        try {
-            const periodDates = this.getPeriodDates(quarter, taxYear);
-            const formattedData = this.formatForHmrc(data);
-        } catch (error) {
-            console.error('Error submitting VAT return to HMRC:', error);
-            throw new Error('Failed to submit VAT return to HMRC');
-        }
-    }
 }
 module.exports = new MtdServices();
