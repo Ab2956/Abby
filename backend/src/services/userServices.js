@@ -47,6 +47,23 @@ class UserServices {
         }
     }
 
+    async getUserInfo(userId) {
+        try {
+            const user = await userDataHandler.getUserById(userId);
+            if (!user) {
+                throw new Error("User not found");
+            }
+            return {
+                email: user.email || '',
+                name: user.name || '',
+                isConnectedToHmrc: !!user.hmrc_connected
+            };
+        } catch (error) {
+            console.log("GetUserInfo", error);
+            throw error;
+        }
+    }
+
     async updateUser(userId, updateData) {
         try {
             return await userDataHandler.updateUser(userId, updateData);

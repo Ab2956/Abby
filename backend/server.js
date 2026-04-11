@@ -7,6 +7,7 @@ const invoiceRoutes = require('./src/routes/invoice');
 const bookkeepingRoutes = require('./src/routes/bookkeeping');
 const vatRoutes = require('./src/routes/vat');
 const mtdRoutes = require('./src/routes/mtd');
+const userRoutes = require('./src/routes/user');
 
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(invoiceRoutes);
 app.use(bookkeepingRoutes);
 app.use(vatRoutes);
 app.use(mtdRoutes);
+app.use(userRoutes);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
