@@ -116,7 +116,7 @@ class InvoiceController: ObservableObject {
 
         do {
             let _: ReceiptResponse = try await apiService.authenticatedPost(
-                path: "/uploadInvoice",
+                path: "/createInvoice",
                 body: invoice
             )
             successMessage = "Invoice created successfully"

@@ -67,6 +67,17 @@ class InvoiceController {
             res.status(500).json({ error: 'Failed to fetch invoices' });
         }
     }
+    async createInvoice(req, res) {
+        try {
+            const userId = req.user.userId;
+            const invoiceData = req.body;
+            await invoiceServices.addInvoice(userId, invoiceData);
+            res.status(200).json({ message: 'Invoice created successfully' });
+        } catch (error) {
+            console.error('Error creating invoice:', error);
+            res.status(500).json({ error: 'Failed to create invoice' });
+        }
+    }
 }
 
 module.exports = new InvoiceController();

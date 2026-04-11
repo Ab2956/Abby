@@ -7,8 +7,18 @@
 import SwiftUI
 
 struct VatView: View{
+    @StateObject private var vatController = VatController()
     
     var body: some View{
-        //.navigationTitle("VAT")
+        
+        VStack{
+            Text("Total VAT: £\(String(vatController.totalVat))")
+                .font(.largeTitle)
+                .padding()
+        }
+        .onAppear(){
+            Task{ await vatController.getVatTotal()}
+        }
+    
     }
 }

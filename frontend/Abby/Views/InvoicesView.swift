@@ -39,7 +39,7 @@ struct InvoiceDetailView: View {
     let invoice: Invoice
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Invoice #\(invoice.id ?? "-")")
+            Text("Invoice #\(invoice.invoice_number)")
                 .font(.title2)
                 .fontWeight(.bold)
             Text("Date: \(invoice.invoice_date, style: .date)")

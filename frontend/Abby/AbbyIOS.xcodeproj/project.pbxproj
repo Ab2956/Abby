@@ -40,6 +40,8 @@
 		25C4A00B2F68B20000DE3A0B /* InvoiceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AEF7372F427AF5003F2CC3 /* InvoiceModel.swift */; };
 		25C4A00C2F68B20000DE3A0C /* BookkeepingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AEF7392F427B21003F2CC3 /* BookkeepingModel.swift */; };
 		25CA3A902F8A696C009A34D8 /* VatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CA3A8F2F8A6965009A34D8 /* VatView.swift */; };
+		25CA3A922F8A80B7009A34D8 /* VatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CA3A912F8A80B0009A34D8 /* VatController.swift */; };
+		25CA3A932F8A950E009A34D8 /* UserServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 255375552F54C35B00CC536E /* UserServices.swift */; };
 		25DB24312F67326B00B33334 /* LinkToHmrcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DB24302F67325F00B33334 /* LinkToHmrcView.swift */; };
 		25DB24332F67453D00B33334 /* LoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DB24322F67453400B33334 /* LoginResponse.swift */; };
 		25DB24482F674F3B00B33334 /* ProfileResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DB24472F674F3300B33334 /* ProfileResponse.swift */; };
@@ -105,6 +107,7 @@
 		25C4A0062F68B20000DE3A09 /* MTDController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTDController.swift; sourceTree = "<group>"; };
 		25C4A0082F68B20000DE3A0A /* ObligationsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObligationsController.swift; sourceTree = "<group>"; };
 		25CA3A8F2F8A6965009A34D8 /* VatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VatView.swift; sourceTree = "<group>"; };
+		25CA3A912F8A80B0009A34D8 /* VatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VatController.swift; sourceTree = "<group>"; };
 		25DB24302F67325F00B33334 /* LinkToHmrcView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkToHmrcView.swift; sourceTree = "<group>"; };
 		25DB24322F67453400B33334 /* LoginResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginResponse.swift; sourceTree = "<group>"; };
 		25DB24472F674F3300B33334 /* ProfileResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileResponse.swift; sourceTree = "<group>"; };
@@ -176,6 +179,7 @@
 		253862802EC6270A00CA2D97 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				25CA3A912F8A80B0009A34D8 /* VatController.swift */,
 				259399622EE3724300CC608D /* LoginController.swift */,
 				25C4A0022F68B20000DE3A07 /* InvoiceController.swift */,
 				25C4A0042F68B20000DE3A08 /* ReceiptController.swift */,
@@ -406,6 +410,7 @@
 				2593996D2EECBC6900CC608D /* StartUpView.swift in Sources */,
 				25DB24332F67453D00B33334 /* LoginResponse.swift in Sources */,
 				259399692EE60DE900CC608D /* HomePageView.swift in Sources */,
+				25CA3A932F8A950E009A34D8 /* UserServices.swift in Sources */,
 				25DB245E2F675C0A00B33334 /* SettingsView.swift in Sources */,
 				2553755A2F54F21400CC536E /* keychainHelper.swift in Sources */,
 				255375612F56122600CC536E /* Constants.swift in Sources */,
@@ -423,6 +428,7 @@
 				25B559362F6C267E0019510B /* BookkeepingServices.swift in Sources */,
 				25B5593B2F79C8810019510B /* DeviceInfoService.swift in Sources */,
 				25C4A00B2F68B20000DE3A0B /* InvoiceModel.swift in Sources */,
+				25CA3A922F8A80B7009A34D8 /* VatController.swift in Sources */,
 				25C4A00C2F68B20000DE3A0C /* BookkeepingModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -26,8 +26,7 @@ enum HomeDestination: Hashable {
 }
 
 struct HomePageView: View {
-    @ObservedObject var loginController:
-    LoginController
+    @ObservedObject var loginController: LoginController
     @State private var selectedTab = "home"
 
     private let menuItems: [MenuItem] = [
@@ -114,7 +113,7 @@ struct HomePageView: View {
             .tag("vat")
 
             NavigationStack {
-                ProfileView()
+                ProfileView(loginController: loginController)
             }
             .tabItem {
                 Image(systemName: "person")
