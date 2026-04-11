@@ -2,6 +2,8 @@ const bookeepingService = require("../services/bookkeepingServices");
 
 class bookkeepingController {
 
+    // Controller to handle bookkeeping
+
     async addRecipt(req, res) {
         try {
             const reciptData = req.body;
@@ -13,6 +15,7 @@ class bookkeepingController {
             res.status(500).json({ error: 'Failed to add recipt' });
         }
     }
+    
     async getRecipts(req, res) {
         try {
             const userId = req.user.userId;
@@ -23,6 +26,7 @@ class bookkeepingController {
             res.status(500).json({ error: 'Failed to fetch recipts' });
         }
     }
+
     async deleteRecipt(req, res) {
         try {
             const reciptId = req.params.id;
@@ -33,6 +37,7 @@ class bookkeepingController {
             res.status(500).json({ error: 'Failed to delete recipt' });
         }
     }
+
     async handleUpload(file) {
         try {
             if (!file || !file.buffer) {
@@ -47,6 +52,7 @@ class bookkeepingController {
             throw error;
         }
     }
+
     async getReciptById(req, res) {
         try {
             const reciptId = req.params.id;
@@ -60,6 +66,7 @@ class bookkeepingController {
             res.status(500).json({ error: 'Failed to fetch recipt' });
         }
     }
+
     async getAllUserRecipts(req, res) {
         try {
             const userId = req.user.userId;

@@ -3,14 +3,22 @@ const { ObjectId } = require('mongodb');
 const { decryptToken } = require('../utils/tokenEncryption');
 
 class userDataHandler {
+
+    // Data handler to get user data from the database or upload data
+    // coudld be split into a other data handlers 
+
     constructor() {}
+
+    // helper function to get the collection
     async getUsers() {
         return await db.getCollection('users');
     }
+
     async findUser(query) {
         const userCollection = await this.getUsers();
         return await userCollection.findOne(query);
     }
+
     async getUserById(userId) {
         const userCollection = await this.getUsers();
         return await userCollection.findOne({ _id: new ObjectId(userId) });
@@ -20,10 +28,12 @@ class userDataHandler {
         const userCollection = await this.getUsers();
         return await userCollection.insertOne(user);
     }
+
     async updateUser(userId, updateData) {
         const userCollection = await this.getUsers();
         return await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: updateData });
     }
+
     async getRefreshToken(userId) {
         const userCollection = await this.getUsers();
         const user = await userCollection.findOne({ _id: new ObjectId(userId) });
@@ -34,10 +44,12 @@ class userDataHandler {
         }
         return null;
     }
+
     async updateRefreshToken(userId, encryptedToken, expiresIn) {
         const userCollection = await this.getUsers();
         return await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { refresh_token: encryptedToken, token_expiration: Date.now() + (expiresIn * 1000) } });
     }
+
     async getAccessToken(userId) {
         const userCollection = await this.getUsers();
         const user = await userCollection.findOne({ _id: new ObjectId(userId) });
@@ -49,6 +61,7 @@ class userDataHandler {
         }
         return null;
     }
+
     async updateAccessToken(userId, encryptedAccessToken, encryptedRefreshToken, expiresIn) {
         const userCollection = await this.getUsers();
         return await userCollection.updateOne({ _id: new ObjectId(userId) }, {
@@ -59,10 +72,12 @@ class userDataHandler {
             }
         });
     }
+
     async updateVrn(userId, encryptedVrn) {
         const userCollection = await this.getUsers();
         return await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { vrn: encryptedVrn } });
     }
+
     async getVrn(userId) {
         const userCollection = await this.getUsers();
         const user = await userCollection.findOne({ _id: new ObjectId(userId) });
@@ -72,15 +87,18 @@ class userDataHandler {
         }
         return null;
     }
+
     async isConnectedToHMRC(userId) {
         const userCollection = await this.getUsers();
         const user = await userCollection.findOne({ _id: new ObjectId(userId) });
         return user ? !!user.hmrc_connected : false;
     }
+
     async updateNino(userId, encryptedNino) {
         const userCollection = await this.getUsers();
         return await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { nino: encryptedNino } });
     }
+
     async getNino(userId) {
         const userCollection = await this.getUsers();
         const user = await userCollection.findOne({ _id: new ObjectId(userId) });
@@ -89,6 +107,7 @@ class userDataHandler {
             return nino;
         }        return null;
     }
+
     async addUserName(userId, name) {
         const userCollection = await this.getUsers();
         return await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { name } });

@@ -18,12 +18,14 @@ describe("VAT Service Tests", () => {
         expect(typeof totalVat).toBe("number");
         console.log("Total VAT for User:", totalVat);
     });
+
     test("should get total vat from recipts", async() => {  
         const totalVatFromRecipts = await bookkeepingDataHandler.getAllVatAmountsByUserId(userId);
         expect(totalVatFromRecipts).toBeDefined();
         expect(typeof totalVatFromRecipts).toBe("number");
         console.log("Total VAT from Recipts:", totalVatFromRecipts);
     });
+    
     test("should get total vat from invoices", async() => {  
         const totalVatFromInvoices = await invoiceDataHandler.getAllVatAmountsByUserId(userId);
         expect(totalVatFromInvoices).toBeDefined();

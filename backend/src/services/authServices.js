@@ -2,6 +2,7 @@ require('dotenv').config();
 const OAuthClient = require('../utils/oauthClient');
 
 module.exports = {
+    // Service functions for authentication and OAuth interactions with HMRC API
 
     // func to create the authorization url with the required query params for the HMRC API
     createUrl: (state) => {
@@ -44,6 +45,7 @@ module.exports = {
         }
     },
 
+    // func to refresh the access token using the refresh token
     getRefreshToken: async(refreshToken) => {
         const client = new OAuthClient("https://test-api.service.hmrc.gov.uk");
         try {

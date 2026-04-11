@@ -4,6 +4,10 @@ const HMRC_BASE_URL = 'https://test-api.service.hmrc.gov.uk'
 const mtdServices = require('./mtdServices');
 
 class HmrcService {
+
+    // Service functions for interacting with the HMRC API
+
+    // constructor to initialize the HttpClient with the base URL and access token, headers for fraud prevention
     constructor(accessToken, fraudHeaders = {}) {
         this.httpClient = new HttpClient(
             HMRC_BASE_URL,
@@ -11,6 +15,7 @@ class HmrcService {
         );
         this.fraudHeaders = fraudHeaders;
     }
+
     async getObligations(vrn, from, to, status) {
         try {
             return await this.httpClient.get(`/organisations/vat/${vrn}/obligations`, {
@@ -23,6 +28,7 @@ class HmrcService {
             throw new Error(`Failed to get obligations: ${errorMsg}`);
         }
     }
+
     async submitObligations(vrn, payload) {
         return this.httpClient.post(`/organisations/vat/${vrn}/returns`,
             payload, this.fraudHeaders);
@@ -32,6 +38,7 @@ class HmrcService {
         return this.httpClient.get(`/individuals/business/details/${nino}/list`, null, this.fraudHeaders);
     }
 
+    // Function to submit VAT quarterly data to HMRC
     async submitVATQuarterlyData(vrn, quarter, taxYear, data) {
 
         try {

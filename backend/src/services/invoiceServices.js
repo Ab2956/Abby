@@ -2,9 +2,7 @@ const invoiceDataHandler = require('../database/invoiceDataHandler');
 
 class InvoiceServices {
 
-    async getInvoiceById(id) {
-
-    }
+    // Service functions for invoice operations
 
     async addInvoice(userId, invoice) {
         return await invoiceDataHandler.addInvoice(userId, invoice);

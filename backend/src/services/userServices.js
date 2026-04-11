@@ -6,6 +6,10 @@ const invoiceDataHandler = require('../database/invoiceDataHandler');
 const { encryptToken, decryptToken } = tokenEncryption;
 
 class UserServices {
+    // Service class for user-related operations
+
+    // some functions can be moved to other services 
+
     constructor() {}
 
     async addUser(userData) {
@@ -72,6 +76,7 @@ class UserServices {
             throw error;
         }
     }
+
     async getRefreshToken(userId) {
         try {
             return await userDataHandler.getRefreshToken(userId);
@@ -80,6 +85,7 @@ class UserServices {
             throw error;
         }
     }
+
     async updateRefreshToken(userId, refreshToken, expiresIn) {
         try {
             const encryptedToken = await encryptToken(refreshToken);
@@ -89,6 +95,7 @@ class UserServices {
             throw error;
         }
     }
+
     async updateVrn(userId, vrn) {
         try {
             const encryptedVrn = await encryptToken(vrn);
@@ -98,6 +105,7 @@ class UserServices {
             throw error;
         }
     }
+
     async getVrn(userId) {
         try {
             const user = await userDataHandler.getUserById(userId);
@@ -111,6 +119,7 @@ class UserServices {
             throw error;
         }
     }
+
     async isConnectedToHMRC(userId) {
         try {
             return await userDataHandler.isConnectedToHMRC(userId);
@@ -155,6 +164,7 @@ class UserServices {
             throw error;
         }
     }
+
     async updateNino(userId, nino) {
         try {
             const encryptedNino = await encryptToken(nino);
@@ -164,6 +174,7 @@ class UserServices {
             throw error;
         }
     }
+
     async getNino(userId) {
         try {
             const user = await userDataHandler.getUserById(userId);
@@ -177,6 +188,7 @@ class UserServices {
             throw error;
         }
     }
+
     async getAllUserInvoices(userId) {
         try {
             return await invoiceDataHandler.getAllUserInvoices(userId);
@@ -185,6 +197,7 @@ class UserServices {
             throw error;
         }
     }
+
     async addUserName(userId, name) {
         try {
             return await userDataHandler.addUserName(userId, name);

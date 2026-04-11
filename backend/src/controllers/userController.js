@@ -1,16 +1,22 @@
 const userServices = require('../services/userServices');
 
 class UserController {
+
+    // Controller to handle user related operations
+
     async getUserInfo(req, res) {
+
         try {
             const userId = req.user.userId;
             const userInfo = await userServices.getUserInfo(userId);
             res.json(userInfo);
+
         } catch (error) {
             console.error('Error fetching user info:', error);
             res.status(500).json({ error: 'Failed to fetch user info' });
         }   
     }
+
     async updateUserInfo(req, res) {
         try {   
             const userId = req.user.userId;
@@ -22,6 +28,7 @@ class UserController {
             res.status(500).json({ error: 'Failed to update user info' });
         }
     }
+
     async updateVrn(req, res) {
         try {
             const userId = req.user.userId;
@@ -33,6 +40,7 @@ class UserController {
             res.status(500).json({ error: 'Failed to update VRN' });
         }   
     }
+
     async updatePassword(req, res) {
         try {
             const userId = req.user.userId;
@@ -44,6 +52,7 @@ class UserController {
             res.status(500).json({ error: 'Failed to update password' });
         }
     }
+    
     async addUserName(req, res) {
         try {
             const userId = req.user.userId;

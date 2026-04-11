@@ -4,6 +4,8 @@ const upload = require("../middleware/fileUpload");
 const InvoiceController = require("../controllers/invoiceController");
 const { jwtVerification } = require('../middleware/jwtAuth');
 
+// Routes for invoice related operations, all routes require JWT verification
+
 router.post('/uploadInvoice', jwtVerification, upload.single('file'), async(req, res) => {
     try {
         if (!req.file) {
@@ -23,6 +25,7 @@ router.post('/uploadInvoice', jwtVerification, upload.single('file'), async(req,
         });
     }
 });
+
 router.get('/getAllUserInvoices', jwtVerification, InvoiceController.getAllUserInvoices);
 router.post('/createInvoice', jwtVerification, InvoiceController.createInvoice);
 

@@ -3,7 +3,11 @@ const jwtServices = require('../services/jwtServices');
 const userServices = require('../services/userServices');
 const dataHandler = require('../database/dataHandler');
 
+
+// Controller to handle user login, validate credentials and return a JWT token if successful
+
 async function login(req, res) {
+
     const { email, password } = req.body;
 
     try {
@@ -28,6 +32,7 @@ async function login(req, res) {
         res.status(500).json({ error: "Internal server error" });
     }
 };
+
 async function getProfile(req, res) {
     try {
         const user = await dataHandler.findUser({ email: req.user.email });
@@ -42,7 +47,6 @@ async function getProfile(req, res) {
         res.status(500).json({ error: "Internal server error" });
     }
 }
-
 
 async function createAccount(req, res) {
     const { email, password, vrn } = req.body;

@@ -3,8 +3,6 @@ const { PdfParser } = require('../src/invoiceSystem/pdfParser');
 const { ImageParser } = require('../src/invoiceSystem/imageParser');
 const fs = require('fs');
 const path = require('path');
-const invoviceSchema = require('../src/models/InvoiceModel');
-const e = require('express');
 
 describe('Invoice Parsers', () => {
 
@@ -18,6 +16,7 @@ describe('Invoice Parsers', () => {
     test('PdfParser should be intailised', () => {
         expect(pdfParser).toBeInstanceOf(PdfParser);
     });
+
     test('ImageParser should be intailised', () => {
         expect(imageParser).toBeInstanceOf(ImageParser);
     });
@@ -35,6 +34,7 @@ describe('Invoice Parsers', () => {
         console.log(result);
 
     });
+
     test('image parser can extract text from image file', async() => {
         const imageParser = new ImageParser();
         const filePath = path.join(__dirname, 'testFiles', 'test_invoice_png.png');
@@ -47,9 +47,5 @@ describe('Invoice Parsers', () => {
         expect(result).toBeDefined();
         expect(result.invoice_number).toBe('INV-100123');
         console.log(result);
-    });
-
-    describe('Test pasers output to format', () => {
-
     });
 });;

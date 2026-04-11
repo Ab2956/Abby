@@ -1,6 +1,8 @@
 const monngoose = require('mongoose');
 const Schema = monngoose.Schema;
 
+// Mongoose schema for receipts helps format data for db
+
 const ReciptSchema = new Schema({
     vendor: {
         type: String,

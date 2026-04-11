@@ -1,16 +1,19 @@
 const axios = require('axios');
 
-// helper class for authentication
+// helper class for authentication specific to 0Auth 2.0
 class oauthClient {
+
     constructor(baseUrl) {
         this.client = axios.create({
             baseURL: baseUrl
         });
     }
+
     async get(path, headers = {}) {
         const response = await this.client.get(path, { headers });
         return response.data;
     };
+
     async post(path, data = {}, headers = {}) {
         const response = await this.client.post(path, data, { headers });
         return response.data;

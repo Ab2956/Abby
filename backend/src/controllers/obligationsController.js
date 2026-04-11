@@ -4,11 +4,14 @@ const fraudPreventionBuilder = require('../services/fraudPreventionBuilder');
 
 class obligationsController {
 
+    // Controller to handle obligations related operations and error handling for HMRC interactions
+
     constructor() {
         this.getObligations = this.getObligations.bind(this);
         this.submitObligation = this.submitObligation.bind(this);
     }
 
+    //helper func
     async getHmrcService(userId, req, forceRefresh = false) {
         const accessToken = await userServices.getValidAccessToken(userId, forceRefresh);
         const deviceInfo = fraudPreventionBuilder.extractDeviceInfo(req);

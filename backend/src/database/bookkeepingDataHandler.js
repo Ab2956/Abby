@@ -2,16 +2,23 @@ const db = require('../database/connectDB');
 const { ObjectId } = require('mongodb');
 
 class bookkeepingDataHandler {
+
+    //Data handler to get bookkeeping data from the database or upload data
+
     constructor() {
     }
+
+    // helper function to get the collection
     async getRecipts() {
             return await db.getCollection('recipts');
         }
+
     async getReciptsByUserId(userId = null) {
         const reciptCollection = await this.getRecipts();
         const query = userId ? { userId: new ObjectId(userId) } : {};
         return await reciptCollection.find(query).toArray();
     }
+
     async addRecpit(userId, reciptData) {
         const reciptCollection = await this.getRecipts();
         const recpit = {
@@ -21,14 +28,17 @@ class bookkeepingDataHandler {
         }
         return await reciptCollection.insertOne(recpit);
     }
+
     async deleteRecipt(reciptId) {
         const reciptCollection = await this.getRecipts();
         return await reciptCollection.deleteOne({ _id: new ObjectId(reciptId) });
     }
+    
     async getReciptById(reciptId) {
         const reciptCollection = await this.getRecipts();
         return await reciptCollection.findOne({ _id: new ObjectId(reciptId) }); 
     }
+
     async getAllVatAmountsByUserId(userId) {
         const reciptCollection = await this.getRecipts();
         const pipeline = [

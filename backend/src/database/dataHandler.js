@@ -1,13 +1,17 @@
 const db = require('../database/connectDB');
 const { ObjectId } = require('mongodb');
 const { decryptToken } = require('../utils/tokenEncryption');
+
 // data layer for database functions 
 class DatabaseHandler {
+
+    //Functions to be removed and put into their own data handlers for better separation of concerns and maintainability
     constructor() {};
 
     async getUsers() {
         return await db.getCollection('users');
     }
+
     async findUser(query) {
         const userCollection = await this.getUsers();
         return await userCollection.findOne(query);
@@ -17,10 +21,12 @@ class DatabaseHandler {
         const userCollection = await this.getUsers();
         return await userCollection.insertOne(user);
     }
+
     async updateUser(userId, updateData) {
         const userCollection = await this.getUsers();
         return await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: updateData });
     }
+
     async getRefreshToken(userId) {
             const userCollection = await this.getUsers();
             const user = await userCollection.findOne({ _id: new ObjectId(userId) });
@@ -31,6 +37,7 @@ class DatabaseHandler {
             }
             return null;
         }
+
     async updateRefreshToken(userId, encryptedToken, expiresIn) {
         const userCollection = await this.getUsers();
         return await userCollection.updateOne({ _id: new ObjectId(userId) }, 
@@ -41,6 +48,7 @@ class DatabaseHandler {
     async getInvoiceCollection() {
         return await db.getCollection('invoices');
     }
+
     async getInvoices(userId = null) {
         const invoiceCollection = await this.getInvoiceCollection();
         const query = userId ? { userId: new ObjectId(userId) } : {};
@@ -65,11 +73,13 @@ class DatabaseHandler {
     async getRecipts() {
         return await db.getCollection('recipts');
     }
+
     async getReciptsByUserId(userId = null) {
         const reciptCollection = await this.getRecipts();
         const query = userId ? { userId: new ObjectId(userId) } : {};
         return await reciptCollection.find(query).toArray();
     }
+
     async addRecpit(userId, reciptData) {
         const reciptCollection = await this.getRecipts();
         const recpit = {
@@ -79,6 +89,7 @@ class DatabaseHandler {
         }
         return await reciptCollection.insertOne(recpit);
     }
+
     async deleteRecipt(reciptId) {
         const reciptCollection = await this.getRecipts();
         return await reciptCollection.deleteOne({ _id: new ObjectId(reciptId) });

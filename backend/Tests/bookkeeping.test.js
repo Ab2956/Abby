@@ -33,16 +33,16 @@ describe("Bookkeeping Tests", () => {
 
             const addedRecipt = recipts.find(inv => inv._id.toString() === result.insertedId.toString());
             expect(addedRecipt.userId.toString()).toBe(userId);
-        }),
-
-        test("should get all recipts from db", async() => {
-            await bookkeepingService.addRecipt(userId, reciptData);
-            const recipts = await bookkeepingService.getRecipts(userId);
-
-            expect(recipts).toBeDefined();
-            expect(Array.isArray(recipts)).toBe(true);
-            expect(recipts.length).toBeGreaterThan(0);
         });
+
+    test("should get all recipts from db", async() => {
+        await bookkeepingService.addRecipt(userId, reciptData);
+        const recipts = await bookkeepingService.getRecipts(userId);
+
+        expect(recipts).toBeDefined();
+        expect(Array.isArray(recipts)).toBe(true);
+        expect(recipts.length).toBeGreaterThan(0);
+    });
 
     test("should delete recipt from db", async() => {
         const addResult = await bookkeepingService.addRecipt(userId, reciptData);
@@ -54,6 +54,7 @@ describe("Bookkeeping Tests", () => {
         expect(deleteResult.deletedCount).toBe(1);
 
     });
+
     test("should get all recipt by id", async() => {
         const res = await bookkeepingService.getRecipts(userId);
         

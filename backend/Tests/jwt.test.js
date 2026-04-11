@@ -1,6 +1,5 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const { jwtVerification } = require('../src/middleware/jwtAuth');
 const jwtServices = require('../src/services/jwtServices');
 
 

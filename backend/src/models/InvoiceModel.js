@@ -3,6 +3,8 @@ const Schema = mongoose.Schema;
 
 const InvoiceSchema = new Schema({
 
+    // Mongoose schema for invoices helps format data for db
+
     invoice_number: {
         type: String,
         required: true

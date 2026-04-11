@@ -1,5 +1,4 @@
 require('dotenv').config();
-const mtdServices = require('../src/services/mtdServices');
 const userServices = require('../src/services/userServices');
 HmrcService = require('../src/services/hmrcServices');
 const db = require('../src/database/connectDB');
@@ -8,12 +7,15 @@ describe("Making Tax Digital Tests", () => {
     test("should get vat obligations", async() => {
 
     });
+
     test("should submit vat return", async() => {
 
     });
+
     test("should get total vat", async() => {
 
     });
+
     afterAll(async() => {
         await db.closeConnection();
     });

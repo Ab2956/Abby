@@ -2,6 +2,7 @@ const bookkeepingDataHandler = require('../database/bookkeepingDataHandler');
 const invoiceDataHandler = require('../database/invoiceDataHandler');
 
 class vatService {
+    // Service functions for VAT-related operations
 
     async calculateTotalVat(userId) {
         try {
@@ -13,6 +14,7 @@ class vatService {
             const totalVat = totalVatFromRecipts + totalVatFromInvoices;
 
             return totalVat;
+            
         } catch (error) {
             console.error("Error calculating total VAT:", error);
             throw error;

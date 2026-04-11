@@ -4,11 +4,13 @@ const redisCache = require("../utils/redisCache.js");
 const crypto = require('crypto');
 const { encryptToken } = require('../utils/tokenEncryption');
 
+// function to handle the login in flow 
 exports.loginToOAuth = async(req, res) => {
 
     const userId = req.user.userId;
-    const isConnectedToHmrc = await userServices.isConnectedToHMRC(userId);
+    const isConnectedToHmrc = await userServices.isConnectedToHMRC(userId); 
 
+    //check if user is already connected to HMRC
     if (!isConnectedToHmrc) {
         const state = crypto.randomBytes(32).toString('hex');
 
@@ -21,6 +23,7 @@ exports.loginToOAuth = async(req, res) => {
         res.json({ message: "User already connected to HMRC" });
     }
 };
+// test function 
 exports.testOAuth = async(req, res) => {
     const testEmail = "romwan.newton@example.com"; // Hardcoded for testing
     const password = "testpassword"; // Hardcoded for testing
@@ -38,7 +41,7 @@ exports.testOAuth = async(req, res) => {
     console.log(url);
     res.redirect(url);
 };
-
+// function to handle the callback from HMRC after user authorizes the app
 exports.callback = async(req, res) => {
     try {
         const { code, state } = req.query;
@@ -55,6 +58,7 @@ exports.callback = async(req, res) => {
         const encrypted_access = encryptToken(access_token);
         console.log("Token Data:", tokenData, );
 
+        // add the tokens to the database and set the user as connected to HMRC
         const updateData = {
             hmrc_connected: true,
             access_token: encrypted_access,

@@ -4,6 +4,8 @@ const router = express.Router();
 const bookkeepingController = require("../controllers/bookkeepingController");
 const { jwtVerification } = require('../middleware/jwtAuth');
 
+// Routes for bookkeeping, all routes require JWT verification
+
 router.post('/addRecipt', jwtVerification, bookkeepingController.addRecipt);
 router.get('/getRecipts', jwtVerification, bookkeepingController.getRecipts);
 router.get('/deleteRecipt/', jwtVerification, bookkeepingController.deleteRecipt);

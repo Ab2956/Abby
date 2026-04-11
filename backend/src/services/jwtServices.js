@@ -2,6 +2,8 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const SECRET = process.env.JWT_SECRET;
 
+// Service class for JWT token creation and verification
+
 class jwtServices{
     constructor(){}
 

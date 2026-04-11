@@ -1,6 +1,9 @@
 const os = require('os');
 
 class FraudPreventionBuilder {
+    // helper to build the headers required for HMRC API calls, using device info from the request and server-derived values
+    // to be moved to utils
+
     constructor() {
         this.headers = {};
     }
@@ -16,9 +19,7 @@ class FraudPreventionBuilder {
             .replace(/\*/g, '%2A');
     }
 
-    /**
-     * Get the server's local IP addresses.
-     */
+    // get ip
     getServerIPs() {
         const interfaces = os.networkInterfaces();
         const ips = [];

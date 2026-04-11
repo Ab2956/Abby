@@ -1,5 +1,5 @@
 require('dotenv').config();
-//const dataHandler = require('../src/database/dataHandler');
+
 const userDataHandler = require('../src/database/userDataHandler');
 const userServices = require('../src/services/userServices');
 const bookkeepingDataHandler = require('../src/database/bookkeepingDataHandler');
@@ -28,6 +28,7 @@ describe('Data handler tests', () => {
                 modifiedCount: 1,
             });
         });
+
         it('should throw an error if update fails', async () => {
             const userId = '68fa2057b845e279d8dc41a9';
             const updateData = { refresh_token: 'new_refresh_token' };
@@ -37,6 +38,7 @@ describe('Data handler tests', () => {
             await expect(userServices.updateUser(userId, updateData)).rejects.toThrow('Update failed');
         });
     });
+
     describe('invoiceDataHandler tests', () => {
         it('should add invoice data successfully', async () => {
             const invoiceData = {
@@ -72,6 +74,7 @@ describe('Data handler tests', () => {
         }
         );
     });
+
     describe('bookkeepingDataHandler tests', () => {
         it('should add bookkeeping entry successfully', async () => {
             const entryData = {

@@ -2,7 +2,9 @@ const HmrcService = require("../services/hmrcServices");
 const userServices = require("../services/userServices");
 const mtdServices = require("../services/mtdServices");
 const fraudPreventionBuilder = require("../services/fraudPreventionBuilder");
-const e = require("express");
+
+
+// Controller to handle Making Tax Digital related operations
 
 class MtdController {
 
@@ -11,6 +13,7 @@ class MtdController {
         this.submitToHmrc = this.submitToHmrc.bind(this);
     }
 
+    // helper function to get the correct intance
     async getHmrcService(userId, req, forceRefresh = false) {
         const accessToken = await userServices.getValidAccessToken(userId, forceRefresh);
         const deviceInfo = fraudPreventionBuilder.extractDeviceInfo(req);
@@ -31,6 +34,8 @@ class MtdController {
             res.status(500).json({ message: 'Internal server error' });
         }
     }
+
+    // Submit data to HMRC using the constuctor to get token and headers
     async submitToHmrc(req, res) {
         try {
             const userId = req.user.userId;

@@ -1,5 +1,7 @@
 const crypto = require('crypto');
 const ENCRYPTION_KEY = process.env.TOKEN_ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex');
+// helper for encrypting and decrypting tokens using AES-256-CBC
+// can be used for other types of sensitive data not bound to tokens
 
 // encryption for the tokens using crypto lib
 function encryptToken(token) {

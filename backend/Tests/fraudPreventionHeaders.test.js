@@ -1,7 +1,5 @@
 require("dotenv").config();
 
-const HttpClient = require('../src/utils/httpClient');
-const HmrcService = require('../src/services/hmrcServices');
 const axios = require('axios');
 const authServices = require('../src/services/authServices');
 const userServices = require('../src/services/userServices');

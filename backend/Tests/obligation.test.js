@@ -63,6 +63,7 @@ describe('Test Obligations', () => {
                 refresh_token: newRefreshToken,
                 expires_in: 3600
             });
+            
             // Mock: DB update succeeds
             userDataHandler.updateAccessToken = jest.fn().mockResolvedValue({});
 

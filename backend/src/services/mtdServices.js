@@ -1,4 +1,5 @@
 
+// helper to catorgrise
 const VALID_EXPENSE_CATEGORIES = [
     'costOfGoods',
     'staffCosts',
@@ -14,6 +15,7 @@ const VALID_EXPENSE_CATEGORIES = [
     'otherExpenses'
 ];
 
+// helper for quater formatting
 const QUARTER_PERIODS = {
         1:{ start: '04-06', end: '07-05' },
         2:{ start: '07-06', end: '10-05' },
@@ -21,7 +23,11 @@ const QUARTER_PERIODS = {
         4:{ start: '01-06', end: '04-05' }
     };
 
+
+    
 class MtdServices {
+
+    // Service class for MTD-related operations
 
     getPeriodDates(quarter, taxYear) {
         const period = QUARTER_PERIODS[quarter];
@@ -139,4 +145,5 @@ class MtdServices {
         }   
     }
 }
+
 module.exports = new MtdServices();

@@ -10,12 +10,15 @@ const imageParser = new ImageParser();
 class InvoiceController {
     constructor() {}
 
+    // Controller to handle invoice related operations
+
     async handleUpload(file, userId) {
 
         try {
             if (!file || !file.buffer) {
                 throw new Error('No file provided');
             }
+            // Stragety pattern to handle different file types for invoice upload
             if (file.mimetype == "application/pdf") {
                 const parsedFile = await pdfParser.parseFile(file.buffer);
                 await invoiceServices.addInvoice(userId, parsedFile);
@@ -36,6 +39,7 @@ class InvoiceController {
             throw new Error(`File upload failed: ${error.message}`);
         }
     }
+
     async getAllUserInvoices(req, res) {
         try {
             const userId = req.user.userId;
@@ -67,6 +71,8 @@ class InvoiceController {
             res.status(500).json({ error: 'Failed to fetch invoices' });
         }
     }
+
+    // invoice creation
     async createInvoice(req, res) {
         try {
             const userId = req.user.userId;

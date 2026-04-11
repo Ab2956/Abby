@@ -1,6 +1,8 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = process.env.MONGODB_URI;
 
+// MongoDB client setup with connection pooling and error handling
+
 const client = new MongoClient(uri, {
     serverApi: {
         version: ServerApiVersion.v1,
