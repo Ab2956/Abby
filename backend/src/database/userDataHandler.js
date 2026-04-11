@@ -89,5 +89,9 @@ class userDataHandler {
             return nino;
         }        return null;
     }
+    async addUserName(userId, name) {
+        const userCollection = await this.getUsers();
+        return await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { name } });
+    }
 }
 module.exports = new userDataHandler();

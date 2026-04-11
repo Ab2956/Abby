@@ -168,6 +168,14 @@ class UserServices {
             throw error;
         }
     }
+    async addUserName(userId, name) {
+        try {
+            return await userDataHandler.addUserName(userId, name);
+        } catch (error) {
+            console.log("AddUserName", error);
+            throw error;    
+        }
+    }
 }
 
 module.exports = new UserServices();
