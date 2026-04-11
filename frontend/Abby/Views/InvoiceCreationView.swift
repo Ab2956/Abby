@@ -52,7 +52,7 @@ struct InvoiceCreationView: View {
 
                             Spacer()
 
-                            Text("£\(item.total_price, specifier: "%.2f")")
+                            Text("£\(item.calculatedTotal, specifier: "%.2f")")
                                 .fontWeight(.medium)
                                 .foregroundColor(.secondary)
                         }
@@ -85,12 +85,12 @@ struct InvoiceCreationView: View {
                 HStack {
                     Text("Total Amount")
                     Spacer()
-                    Text("£\(controller.invoice.total_amount, specifier: "%.2f")")
+                    Text("£\(controller.invoice.calculatedTotalAmount, specifier: "%.2f")")
                 }
                 HStack {
                     Text("VAT Amount")
                     Spacer()
-                    Text("£\(controller.invoice.vat_amount ?? 0, specifier: "%.2f")")
+                    Text("£\(controller.invoice.calculatedVatAmount, specifier: "%.2f")")
                 }
             }
 
