@@ -151,4 +151,15 @@ class ReceiptController: ObservableObject {
         errorMessage = nil
         successMessage = nil
     }
+    func dateToString(date: Date) -> String{
+        let formatter = DateFormatter()
+//        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX"
+//        formatter.locale = Locale(identifier: "en_US_POSIX")
+//        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateStyle = .long
+        formatter.timeStyle = .none
+        
+        return formatter.string(from: date)
+    }
+    
 }

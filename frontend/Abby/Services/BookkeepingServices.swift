@@ -46,14 +46,13 @@ class BookkeepingServices: ObservableObject{
                 print("raw data: \(raw)")
             }
             do{
-                let decoder = JSONDecoder()
-                decoder.dateDecodingStrategy = .iso8601
-                let recepits = try decoder.decode([Receipt].self, from :data)
+                let recepits = try JSONDecoder().decode([Receipt].self, from :data)
                 DispatchQueue.main.async{ completion(recepits, nil)}
             }
             catch{
+                print("Decode error: \(error)")
                 DispatchQueue.main.async {
-                    completion(nil,"Failed to decode:")
+                    completion(nil,"Failed to decode: \(error.localizedDescription)")
                 }
             }
         }.resume()

@@ -105,8 +105,7 @@ struct HomePageView: View {
             .tag("home")
 
             NavigationStack {
-                Text("VAT")
-                    .navigationTitle("VAT")
+                VatView()
             }
             .tabItem {
                 Image(systemName: "percent")
@@ -115,8 +114,7 @@ struct HomePageView: View {
             .tag("vat")
 
             NavigationStack {
-                Text("Profile")
-                    .navigationTitle("Profile")
+                ProfileView()
             }
             .tabItem {
                 Image(systemName: "person")

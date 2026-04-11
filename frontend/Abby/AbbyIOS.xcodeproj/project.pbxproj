@@ -39,6 +39,7 @@
 		25C4A0072F68B20000DE3A0A /* ObligationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C4A0082F68B20000DE3A0A /* ObligationsController.swift */; };
 		25C4A00B2F68B20000DE3A0B /* InvoiceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AEF7372F427AF5003F2CC3 /* InvoiceModel.swift */; };
 		25C4A00C2F68B20000DE3A0C /* BookkeepingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AEF7392F427B21003F2CC3 /* BookkeepingModel.swift */; };
+		25CA3A902F8A696C009A34D8 /* VatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CA3A8F2F8A6965009A34D8 /* VatView.swift */; };
 		25DB24312F67326B00B33334 /* LinkToHmrcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DB24302F67325F00B33334 /* LinkToHmrcView.swift */; };
 		25DB24332F67453D00B33334 /* LoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DB24322F67453400B33334 /* LoginResponse.swift */; };
 		25DB24482F674F3B00B33334 /* ProfileResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25DB24472F674F3300B33334 /* ProfileResponse.swift */; };
@@ -103,6 +104,7 @@
 		25C4A0042F68B20000DE3A08 /* ReceiptController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptController.swift; sourceTree = "<group>"; };
 		25C4A0062F68B20000DE3A09 /* MTDController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTDController.swift; sourceTree = "<group>"; };
 		25C4A0082F68B20000DE3A0A /* ObligationsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObligationsController.swift; sourceTree = "<group>"; };
+		25CA3A8F2F8A6965009A34D8 /* VatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VatView.swift; sourceTree = "<group>"; };
 		25DB24302F67325F00B33334 /* LinkToHmrcView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkToHmrcView.swift; sourceTree = "<group>"; };
 		25DB24322F67453400B33334 /* LoginResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginResponse.swift; sourceTree = "<group>"; };
 		25DB24472F674F3300B33334 /* ProfileResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileResponse.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 		253862852EC627F500CA2D97 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				25CA3A8F2F8A6965009A34D8 /* VatView.swift */,
 				25B559392F6C270F0019510B /* ReceiptsView.swift */,
 				25B559372F6C27010019510B /* InvoicesView.swift */,
 				25DB245D2F675C0300B33334 /* SettingsView.swift */,
@@ -399,6 +402,7 @@
 				253862582EC6252200CA2D97 /* AbbyApp.swift in Sources */,
 				255375592F54F1EA00CC536E /* OauthServices.swift in Sources */,
 				25DB245C2F675BF800B33334 /* ProfileView.swift in Sources */,
+				25CA3A902F8A696C009A34D8 /* VatView.swift in Sources */,
 				2593996D2EECBC6900CC608D /* StartUpView.swift in Sources */,
 				25DB24332F67453D00B33334 /* LoginResponse.swift in Sources */,
 				259399692EE60DE900CC608D /* HomePageView.swift in Sources */,

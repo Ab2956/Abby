@@ -13,7 +13,7 @@ struct Receipt: Identifiable, Codable {
     var id: String?
     var vendor: String = ""
     var description: String = ""
-    var date: String = ""
+    var date: Date = Date()
     var totalAmount: Double = 0
     var vatAmount: Double = 0
     var category: String = "Uncategorised"
@@ -25,9 +25,11 @@ struct Receipt: Identifiable, Codable {
     var netAmount: Double { totalAmount - vatAmount }
 
     enum CodingKeys: String, CodingKey {
-        case id, vendor, description, date, totalAmount, vatAmount
+        case id = "_id"
+        case vendor, description, date, totalAmount, vatAmount
         case category, paymentMethod, isIncome, notes
     }
+    
 }
 
 // Receipt Response
@@ -107,3 +109,5 @@ struct ObligationDetail: Codable {
     let status: String
     let periodKey: String?
 }
+
+

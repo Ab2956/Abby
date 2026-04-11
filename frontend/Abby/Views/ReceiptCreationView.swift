@@ -64,6 +64,7 @@ struct ReceiptCreationView: View {
                 TextField("Description", text: $controller.manualReceipt.description)
 
                 DatePicker("Date", selection: $controller.manualReceipt.date, displayedComponents: .date)
+                
             }
 
             // Amounts
