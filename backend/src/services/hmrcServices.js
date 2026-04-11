@@ -32,7 +32,7 @@ class HmrcService {
         return this.httpClient.get(`/individuals/business/details/${nino}/list`, null, this.fraudHeaders);
     }
 
-    async submitQuarterlyData(nino, businessId, quarter, taxYear, data) {
+    async submitVATQuarterlyData(vrn, quarter, taxYear, data) {
 
         try {
             const periodDates = mtdServices.getPeriodDates(quarter, taxYear);
@@ -41,7 +41,7 @@ class HmrcService {
                 ...this.fraudHeaders,
             };
 
-            return this.httpClient.post(`/individuals/business/self-employment/${nino}/${businessId}/period`, {
+            return this.httpClient.post(`/organisations/vat/${vrn}/returns`, {
                 ...periodDates,
                 ...formattedData
             }, extraHeaders);

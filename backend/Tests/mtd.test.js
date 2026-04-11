@@ -14,6 +14,36 @@ describe("Making Tax Digital Tests", () => {
     test("should get total vat", async() => {
 
     });
+    test("should submit VAT quarterly data", async() => {
+        const accessToken =  await userServices.getValidAccessToken("68fa2057b845e279d8dc41a9", true);
+        const fraudHeaders = {
+            "Gov-Client-Connection-Method": "MOBILE_APP_VIA_SERVER",
+            "Gov-Client-Device-ID": "test-device-id",
+            "Gov-Client-User-IDs": "Abby=test-user",
+            "Gov-Vendor-Product-Name": "Abby",
+            "Gov-Vendor-Version": "Abby=1.0.0",
+        };
+
+        const hmrcService = new HmrcService(accessToken, fraudHeaders);
+        const vrn = '125354193';
+       
+        const result = await hmrcService.submitVATQuarterlyData(vrn, 1, "2023-24", {
+            "periodKey": "21A1",
+            "vatDueSales": 100000,
+            "vatDueAcquisitions": 5000,
+            "totalVatDue": 105000,
+            "vatReclaimedCurrPeriod": 2000,
+            "netVatDue": 103000,
+            "totalValueSalesExVAT": 100000,
+            "totalValuePurchasesExVAT": 5000,
+            "totalValueGoodsSuppliedExVAT": 0,
+            "totalAcquisitionsExVAT": 0,
+            "finalised": true
+        }
+        );
+        console.log("Submission result:", result);
+
+    });
     // test ("should submit tax quartly with hardcoded test businessId", async () => {
 
     //     const accessToken =  await userServices.getValidAccessToken("68fa2057b845e279d8dc41a9", true);

@@ -75,6 +75,26 @@ class MtdServices {
 
         return { periodIncome, periodExpenses };
     }
+    // operation to format into the VAT structure for HMRC
+    formatVATForHmrc(data) {
+        if (!data || typeof data !== 'object') {
+            throw new Error('Invalid data format');
+        }
+            return {
+                periodKey: data.periodKey || '',
+                vatDueSales: this.roundAmount(data.vatDueSales || 0),
+                vatDueAcquisitions: this.roundAmount(data.vatDueAcquisitions || 0),
+                totalVatDue: this.roundAmount(data.totalVatDue || 0),
+                vatReclaimedCurrPeriod: this.roundAmount(data.vatReclaimedCurrPeriod || 0),
+                netVatDue: this.roundAmount(data.netVatDue || 0),
+                totalValueSalesExVAT: this.roundAmount(data.totalValueSalesExVAT || 0),
+                totalValuePurchasesExVAT: this.roundAmount(data.totalValuePurchasesExVAT || 0),
+                totalValueGoodsSuppliedExVAT: this.roundAmount(data.totalValueGoodsSuppliedExVAT || 0),
+                totalAcquisitionsExVAT: this.roundAmount(data.totalAcquisitionsExVAT || 0),
+                finalised: Boolean(data.finalised)
+            };
+    }
+
     roundAmount(value) {
         const num = Number(value);
         if (isNaN(num) || num < 0) {

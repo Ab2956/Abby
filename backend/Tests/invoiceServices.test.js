@@ -45,8 +45,9 @@ describe('Test Invoice Services', () => {
         expect(addedInvoice.userId.toString()).toBe(userId);
 
     });
-    test('should get all invoices from db', async() => {
-        const invoices = await InvoiceServices.getInvoices();
+    test('should get all invoices from db using userId', async() => {
+        const userId = '68fa2057b845e279d8dc41a9';
+        const invoices = await InvoiceServices.getInvoices(userId);
         expect(invoices).toBeDefined();
         expect(Array.isArray(invoices)).toBe(true);
 

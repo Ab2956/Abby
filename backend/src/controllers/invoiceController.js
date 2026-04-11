@@ -31,6 +31,7 @@ class InvoiceController {
             }
 
             return { success: true, message: "Invoice uploaded successfully" };
+            
         } catch (error) {
             throw new Error(`File upload failed: ${error.message}`);
         }

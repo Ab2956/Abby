@@ -33,4 +33,5 @@ class invoiceDataHandler {
         return await invoiceCollection.find({ userId: new ObjectId(userId) }).toArray();
     }
 }
+
 module.exports = new invoiceDataHandler();
