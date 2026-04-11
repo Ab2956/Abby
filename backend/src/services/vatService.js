@@ -1,14 +1,17 @@
-const datahandler = require('../database/dataHandler');
+const bookkeepingDataHandler = require('../database/bookkeepingDataHandler');
+const invoiceDataHandler = require('../database/invoiceDataHandler');
 
 class vatService {
 
     async calculateTotalVat(userId) {
         try {
 
-            const userInvoices = await datahandler.getInvoices(userId);
-            // get all the total vat and sum them up
+            // gets all vat data for user and sums it up
+            const totalVatFromRecipts = await bookkeepingDataHandler.getAllVatAmountsByUserId(userId);
+            const totalVatFromInvoices = await invoiceDataHandler.getAllVatAmountsByUserId(userId);
 
-            const totalVat = await datahandler.getVatTotalbyUserId(userId);
+            const totalVat = totalVatFromRecipts + totalVatFromInvoices;
+
             return totalVat;
         } catch (error) {
             console.error("Error calculating total VAT:", error);

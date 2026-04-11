@@ -29,5 +29,14 @@ class bookkeepingDataHandler {
         const reciptCollection = await this.getRecipts();
         return await reciptCollection.findOne({ _id: new ObjectId(reciptId) }); 
     }
+    async getAllVatAmountsByUserId(userId) {
+        const reciptCollection = await this.getRecipts();
+        const pipeline = [
+            { $match: { userId: new ObjectId(userId) } },
+            { $group: { _id: null, totalVat: { $sum: "$vatAmount" } } }
+        ];
+        const result = await reciptCollection.aggregate(pipeline).toArray();
+        return result.length > 0 ? result[0].totalVat : 0;
+    }
 }
 module.exports = new bookkeepingDataHandler();

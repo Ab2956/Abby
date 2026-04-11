@@ -32,6 +32,15 @@ class invoiceDataHandler {
         const invoiceCollection = await this.getInvoiceCollection();
         return await invoiceCollection.find({ userId: new ObjectId(userId) }).toArray();
     }
+    async getAllVatAmountsByUserId(userId) {
+        const invoiceCollection = await this.getInvoiceCollection();
+        const pipeline = [
+            { $match: { userId: new ObjectId(userId) } },
+            { $group: { _id: null, totalVat: { $sum: "$vat_amount" } } }
+        ];
+        const result = await invoiceCollection.aggregate(pipeline).toArray();
+        return result.length > 0 ? result[0].totalVat : 0;
+    }
 }
 
 module.exports = new invoiceDataHandler();
