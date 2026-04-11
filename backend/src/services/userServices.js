@@ -55,7 +55,7 @@ class UserServices {
             }
             return {
                 email: user.email || '',
-                name: user.name || '',
+                name: user.userName || '',
                 isConnectedToHmrc: !!user.hmrc_connected
             };
         } catch (error) {
@@ -190,7 +190,7 @@ class UserServices {
             return await userDataHandler.addUserName(userId, name);
         } catch (error) {
             console.log("AddUserName", error);
-            throw error;    
+            throw error;
         }
     }
 }
