@@ -2,8 +2,7 @@ import Foundation
 
 class MockURLProtocol: URLProtocol {
     
-    /// Map a request handler that returns (data, response, error) per request.
-    /// Set this before each test.
+    // mock response handler to be set in tests
     static var requestHandler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
     
     override class func canInit(with request: URLRequest) -> Bool {

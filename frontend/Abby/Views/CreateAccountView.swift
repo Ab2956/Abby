@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CreateAccountView: View {
+    @State private var username = ""
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
@@ -31,6 +32,11 @@ struct CreateAccountView: View {
                     .background(Color.red.opacity(0.85))
                     .cornerRadius(10)
             }
+            TextField("Username", text: $username)
+                .autocapitalization(.none)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
             
             TextField("Email", text: $email)
                 .keyboardType(.emailAddress)
@@ -67,6 +73,7 @@ struct CreateAccountView: View {
                 }
                 Task {
                     await loginController.createAccount(
+                        username: username,
                         email: email,
                         password: password,
                         vrn: vrn
@@ -93,7 +100,7 @@ struct CreateAccountView: View {
     }
     
     private var formValid: Bool {
-        !email.isEmpty && !password.isEmpty && !confirmPassword.isEmpty && !vrn.isEmpty
+        !username.isEmpty && !email.isEmpty && !password.isEmpty && !confirmPassword.isEmpty && !vrn.isEmpty
     }
 }
 

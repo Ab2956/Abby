@@ -14,18 +14,19 @@ class UserServices {
 
     async addUser(userData) {
 
-        const { email, password, vrn, refresh_token = '', token_expiration = '' } = userData;
+        const { user_name, email, password, vrn, refresh_token = '', token_expiration = '' } = userData;
         const hashed_password = await bcrypt.hash(password, 10);
         const encrypted_vrn = await encryptToken(vrn);
         try {
-            if (!userData.email || !userData.password || !userData.vrn) {
-                throw new Error("missing email or password or vrn");
+            if (!userData.user_name || !userData.email || !userData.password || !userData.vrn) {
+                throw new Error("missing username or email or password or vrn");
             }
             const existing = await userDataHandler.findUser({ email });
             if (existing) {
                 throw new Error("email already exists");
             }
             const user = ({
+                user_name,
                 email,
                 password: hashed_password,
                 vrn: encrypted_vrn,
@@ -59,7 +60,7 @@ class UserServices {
             }
             return {
                 email: user.email || '',
-                name: user.userName || '',
+                name: user.user_name || '',
                 isConnectedToHmrc: !!user.hmrc_connected
             };
         } catch (error) {
