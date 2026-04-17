@@ -48,10 +48,10 @@ class InvoiceController {
             // format the invoice for the frontend
             const normalizeInvoice = (invoice) => ({
                 ...invoice,
-                _id: invoice._id ? .toString(),
+                _id: invoice._id ? invoice._id.toString() : undefined,
                 invoice_date: invoice.invoice_date instanceof Date ?
                     invoice.invoice_date.toISOString() :
-                    (typeof invoice.invoice_date === 'string' ? invoice.invoice_date : (invoice.invoice_date ? .$date || "")),
+                    (typeof invoice.invoice_date === 'string' ? invoice.invoice_date : (invoice.invoice_date ? invoice.invoice_date.$date || "" : "")),
                 supplier: invoice.supplier ? {
                     ...invoice.supplier,
                     _id: undefined
