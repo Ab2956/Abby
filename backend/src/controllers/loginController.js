@@ -49,8 +49,8 @@ async function getProfile(req, res) {
 }
 
 async function createAccount(req, res) {
-    const { email, password, vrn } = req.body;
-    const userData = { email, password, vrn };
+    const { user_name, email, password, vrn } = req.body;
+    const userData = { user_name, email, password, vrn };
 
     try {
         await userServices.addUser(userData);
