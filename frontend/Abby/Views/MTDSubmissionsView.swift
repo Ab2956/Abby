@@ -89,7 +89,7 @@ struct MTDSubmissionsView: View {
                 Spacer()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color("BackgroundColour"))
         .navigationTitle("VAT Returns")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {

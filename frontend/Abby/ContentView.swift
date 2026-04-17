@@ -16,49 +16,50 @@ struct ContentView: View {
     @State private var opacity = 1.0
     
     var body: some View {
-        group {
-        if showSplash {
-            // Splash screen
-            ZStack {
-                Color("BackgroundColour")
-                    .ignoresSafeArea()
-                VStack {
-                    Image("abbyLogo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 350, height: 350)
-                }
-                .opacity(opacity)
-                .onAppear {
-                    withAnimation(.easeIn(duration: 1.3)) {
-                        self.opacity = 1.0
+        Group {
+            if showSplash {
+                // Splash screen
+                ZStack {
+                    Color("BackgroundColour")
+                        .ignoresSafeArea()
+                    VStack {
+                        Image("abbyLogo")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 350, height: 350)
                     }
-                    Task {
-                        // Try to restore session from stored token
-                        if loginController.hasStoredToken {
-                            await loginController.restoreSession()
+                    .opacity(opacity)
+                    .onAppear {
+                        withAnimation(.easeIn(duration: 1.3)) {
+                            self.opacity = 1.0
                         }
-                        withAnimation {
-                            self.showSplash = false
+                        Task {
+                            // Try to restore session from stored token
+                            if loginController.hasStoredToken {
+                                await loginController.restoreSession()
+                            }
+                            withAnimation {
+                                self.showSplash = false
+                            }
                         }
                     }
                 }
-            }
-        }else if !loginController.isLoggedIn {
-            NavigationStack {
-                LoginView(loginController: loginController)
+            }else if !loginController.isLoggedIn {
+                NavigationStack {
+                    LoginView(loginController: loginController)
+                }
+                
+            } else if !loginController.isLinkedToHMRC {
+                LinkToHmrcView(loginController: loginController)
+                
+            } else {
+                HomePageView(loginController: loginController)
             }
             
-        } else if !loginController.isLinkedToHMRC {
-            LinkToHmrcView(loginController: loginController)
-            
-        } else {
-            HomePageView(loginController: loginController)
-        }
-        .preferredColorScheme(appAppearance == "light" ? .light : .dark)
+        }.preferredColorScheme(appAppearance == "light" ? .light : .dark)
     }
+    
 }
 #Preview {
     ContentView()
-}
 }

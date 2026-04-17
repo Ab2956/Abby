@@ -176,7 +176,7 @@ struct HomePageView: View {
             ToolbarItem(placement: .principal) {
                 Image("abbyLogo")
                     .resizable()
-                    .padding(30)
+                    .padding(45)
                     .frame(width: 250, height: 200)
             }
         }
