@@ -58,9 +58,11 @@ class UserServices {
             if (!user) {
                 throw new Error("User not found");
             }
+            const vrn = await decryptToken(user.vrn)
             return {
                 email: user.email || '',
                 name: user.user_name || '',
+                vrn: vrn || '',
                 isConnectedToHmrc: !!user.hmrc_connected
             };
         } catch (error) {
