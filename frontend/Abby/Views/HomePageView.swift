@@ -123,7 +123,7 @@ struct HomePageView: View {
         }
     }
 
-    // MARK: - Home Tab Content
+    // Home Tab Content
 
     private var homeContent: some View {
         ScrollView {
@@ -201,7 +201,7 @@ struct HomePageView: View {
     }
 }
 
-// MARK: - Menu Card
+// Menu Card
 
 struct MenuCard: View {
     let item: MenuItem

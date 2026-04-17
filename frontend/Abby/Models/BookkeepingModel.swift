@@ -32,6 +32,7 @@ struct Receipt: Identifiable, Codable {
 
     init() {}
 
+    // decode to help parse the data
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decodeIfPresent(String.self, forKey: .id)
@@ -44,14 +45,13 @@ struct Receipt: Identifiable, Codable {
         isIncome = try container.decodeIfPresent(Bool.self, forKey: .isIncome) ?? false
         notes = try container.decodeIfPresent(String.self, forKey: .notes) ?? ""
 
-        // Parse date from ISO 8601 string (MongoDB sends dates as ISO strings)
+        // Parse date from ISO 8601 string 
         if let dateString = try? container.decode(String.self, forKey: .date) {
             let isoFormatter = ISO8601DateFormatter()
             isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
             if let parsed = isoFormatter.date(from: dateString) {
                 date = parsed
             } else {
-                // Try without fractional seconds
                 let basicFormatter = ISO8601DateFormatter()
                 date = basicFormatter.date(from: dateString) ?? Date()
             }

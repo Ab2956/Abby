@@ -25,7 +25,7 @@ struct SettingsView: View {
                 .ignoresSafeArea()
 
             Form {
-                // MARK: - Appearance
+                // Appearance slider
                 Section(header: Text("App Appearance")) {
                     Picker("Theme", selection: $appAppearance) {
                         Text("Light").tag("light")
@@ -34,7 +34,7 @@ struct SettingsView: View {
                     .pickerStyle(.segmented)
                 }
 
-                // MARK: - Change Name
+                // Change Name
                 Section(header: Text("Change User Name")) {
                     TextField("New name", text: $newName)
                         .textContentType(.name)
@@ -55,7 +55,7 @@ struct SettingsView: View {
                     .disabled(newName.trimmingCharacters(in: .whitespaces).isEmpty || userServices.isLoading)
                 }
 
-                // MARK: - Change VRN
+                // Change VRN
                 Section(header: Text("Change VRN")) {
                     TextField("New VRN", text: $newVrn)
                         .keyboardType(.numberPad)
@@ -75,7 +75,7 @@ struct SettingsView: View {
                     .disabled(newVrn.trimmingCharacters(in: .whitespaces).isEmpty || userServices.isLoading)
                 }
 
-                // MARK: - Change Password
+                // Change Password
                 Section(header: Text("Change Password")) {
                     SecureField("Current password", text: $currentPassword)
                         .textContentType(.password)
@@ -115,7 +115,7 @@ struct SettingsView: View {
                     )
                 }
 
-                // MARK: - Messages
+                // error messages
                 if let success = successMessage {
                     Section {
                         Label(success, systemImage: "checkmark.circle.fill")

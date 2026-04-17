@@ -13,7 +13,6 @@ struct LoginView: View {
             VStack(spacing: 20) {
                 Image("abbyLogo")
                     .resizable()
-                //.scaledToFit()
                     .frame(width:200, height: 150)
                 
                 Text("Login")

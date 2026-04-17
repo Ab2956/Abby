@@ -2,7 +2,7 @@
 //  ReceiptCreationView.swift
 //  Abby
 //
-//  Created on 05/03/2026.
+//  Created on by Adam Brows 05/03/2026.
 //
 
 import SwiftUI
@@ -11,7 +11,7 @@ struct ReceiptCreationView: View {
     @StateObject private var controller = ReceiptController()
     @State private var showSuccess = false
 
-    // Local text bindings for amount fields (String ↔ Double)
+    // Local text bindings for amount fields
     @State private var totalAmountText = ""
     @State private var vatAmountText = ""
 
@@ -177,7 +177,7 @@ struct ReceiptCreationView: View {
         }
     }
 
-    // MARK: - Computed
+    // Computed
 
     private var formValid: Bool {
         !controller.manualReceipt.vendor.isEmpty && !totalAmountText.isEmpty && Double(totalAmountText) != nil

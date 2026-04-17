@@ -7,6 +7,8 @@
 import Foundation
 
 class OauthServices {
+
+    // oauth services gets the url
     
     private var oauthURL: String { "\(Constants.baseURL)/loginAuth" }
     private var oauthCallback: String { "\(Constants.baseURL)/callback" }

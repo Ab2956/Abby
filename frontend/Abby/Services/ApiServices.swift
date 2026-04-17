@@ -6,6 +6,7 @@
 //
 import Foundation
 
+// error handle model
 enum ApiError: LocalizedError {
     case badURL
     case badResponse(statusCode: Int)
@@ -28,7 +29,7 @@ class ApiServices {
     
     static let shared = ApiServices()
     
-    /// URLSession used for all requests. Override in tests with a mock session.
+    // URLSession used for all requests. Override in tests with a mock session.
     var session: URLSession
     
     public init(session: URLSession = .shared) {
@@ -37,7 +38,7 @@ class ApiServices {
     
     private var baseURL: String { Constants.baseURL }
     
-    /// Retrieve the stored JWT token from Keychain
+    // Retrieve the stored JWT token from Keychain
     private var authToken: String? {
         KeychainHelper.shared.get(
             service: Constants.keychainService,
@@ -46,7 +47,7 @@ class ApiServices {
     }
     
     
-    /// Returns the JWT token string on success
+    // Returns the JWT token string on success
     func login(email: String, password: String) async throws -> LoginResponse {
         
         guard let url = URL(string: "\(baseURL)/login") else {
@@ -121,7 +122,7 @@ class ApiServices {
     
     // authenticated Request Helper
     
-    /// Build a URLRequest with the JWT Authorization header attached
+    // Build a URLRequest with the JWT Authorization header attached
     func authenticatedRequest(path: String, method: String = "GET", includeDeviceInfo: Bool = false) -> URLRequest? {
         guard let url = URL(string: "\(baseURL)\(path)"),
               let token = authToken else {
@@ -138,9 +139,9 @@ class ApiServices {
         return request
     }
 
-    // MARK: - Authenticated GET / POST helpers
+    // Authenticated GET / POST helpers
 
-    /// Perform an authenticated GET request and decode the JSON response
+    // authenticated GET request and decode the JSON response
     func authenticatedGet<T: Decodable>(path: String, queryItems: [URLQueryItem]? = nil, includeDeviceInfo: Bool = false) async throws -> T {
         guard let token = authToken,
               var components = URLComponents(string: "\(baseURL)\(path)") else {
@@ -166,7 +167,7 @@ class ApiServices {
         return try decoder.decode(T.self, from: data)
     }
 
-    /// Perform an authenticated POST request with a JSON body and decode the response
+    // authenticated POST request with a JSON body and decode the response
     func authenticatedPost<T: Decodable>(path: String, body: Encodable, includeDeviceInfo: Bool = false) async throws -> T {
         guard let token = authToken,
               let url = URL(string: "\(baseURL)\(path)") else {
@@ -193,7 +194,7 @@ class ApiServices {
         return try JSONDecoder().decode(T.self, from: data)
     }
 
-    /// Perform an authenticated multipart file upload and decode the response
+    // authenticated multipart file upload and decode the response
     func authenticatedUpload<T: Decodable>(path: String, fileData: Data, fileName: String, mimeType: String) async throws -> T {
         guard let token = authToken,
               let url = URL(string: "\(baseURL)\(path)") else {
@@ -219,7 +220,7 @@ class ApiServices {
         return try JSONDecoder().decode(T.self, from: data)
     }
 
-    /// Perform an authenticated DELETE request
+    // authenticated DELETE request
     func authenticatedDelete(path: String) async throws {
         guard let token = authToken,
               let url = URL(string: "\(baseURL)\(path)") else {
@@ -256,10 +257,8 @@ class ApiServices {
             throw ApiError.serverError(message)
         }
     }
-    
-    // MARK: - Profile
 
-    /// Fetch the current user's profile (requires stored JWT)
+    // Fetch the current user's profile (requires stored JWT)
     func fetchProfile() async throws -> ProfileResponse {
         return try await authenticatedGet(path: "/profile")
     }

@@ -36,7 +36,7 @@ class InvoiceController: ObservableObject {
 
     // Invoice Upload
 
-    /// Upload an invoice image or PDF to the backend for OCR parsing
+    // Upload an invoice image or PDF to the backend for OCR parsing
     func uploadInvoice(fileData: Data, fileName: String, mimeType: String) async {
         isLoading = true
         errorMessage = nil
@@ -58,7 +58,7 @@ class InvoiceController: ObservableObject {
         isLoading = false
     }
 
-    /// Load image data from a PhotosPickerItem and upload it
+    // Load image data from a PhotosPickerItem and upload it
     func uploadFromPhotoPicker(_ item: PhotosPickerItem) async {
         do {
             guard let data = try await item.loadTransferable(type: Data.self) else {
@@ -71,7 +71,7 @@ class InvoiceController: ObservableObject {
         }
     }
 
-    /// Read file data immediately 
+    // Read file data immediately to be sent
     func loadFileFromURL(_ url: URL) {
         let accessing = url.startAccessingSecurityScopedResource()
         defer { if accessing { url.stopAccessingSecurityScopedResource() } }
@@ -97,7 +97,7 @@ class InvoiceController: ObservableObject {
         }
     }
 
-    /// Upload previously loaded file data
+    // Upload previously loaded file data from file picker
     func uploadSelectedFile() async {
         guard let data = selectedFileData, let name = selectedFileName, let mime = selectedFileMimeType else {
             errorMessage = "No file selected"
@@ -108,7 +108,7 @@ class InvoiceController: ObservableObject {
 
     // Invoice Creation
 
-    /// Create a new invoice by sending it to the backend
+    // Create a new invoice by sending it to the backend
     func createInvoice() async {
         isLoading = true
         errorMessage = nil

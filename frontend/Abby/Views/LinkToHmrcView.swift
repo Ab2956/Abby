@@ -19,7 +19,6 @@ struct LinkToHmrcView: View{
                     VStack{
                         Image("abbyLogo")
                             .resizable()
-                        //.scaledToFit()
                             .frame(width:200, height: 150)
                         Text("Link to HMRC")
                             .font(.largeTitle)

@@ -6,7 +6,7 @@ final class DeviceInfoService {
     static let shared = DeviceInfoService()
     private init() {}
 
-    /// A persistent device ID stored in Keychain, generated once per install.
+    // A persistent device ID stored in Keychain, generated once per install.
     var deviceId: String {
         let service = "com.abby.device"
         let account = "deviceId"
@@ -18,7 +18,7 @@ final class DeviceInfoService {
         return newId
     }
 
-    /// Timezone in UTC offset format, e.g. "UTC+01:00"
+    // Timezone in UTC offset format
     var timezone: String {
         let seconds = TimeZone.current.secondsFromGMT()
         let hours = abs(seconds) / 3600
@@ -27,7 +27,7 @@ final class DeviceInfoService {
         return "UTC\(sign)\(String(format: "%02d", hours)):\(String(format: "%02d", minutes))"
     }
 
-    /// Screen info: width, height, scaling factor, colour depth
+    // Screen info: 
     var screens: String {
         let screen = UIScreen.main
         let w = Int(screen.bounds.width)
@@ -36,7 +36,7 @@ final class DeviceInfoService {
         return "width=\(w)&height=\(h)&scaling-factor=\(scale)&colour-depth=32"
     }
 
-    /// Window size (matches screen for mobile)
+    // Window size 
     var windowSize: String {
         let screen = UIScreen.main
         let w = Int(screen.bounds.width)
@@ -44,11 +44,11 @@ final class DeviceInfoService {
         return "width=\(w)&height=\(h)"
     }
 
-    /// Device user agent string in HMRC format
+    // Device user agent string in HMRC format
     var userAgent: String {
         let device = UIDevice.current
         let osVersion = device.systemVersion
-        var model = device.model // "iPhone" / "iPad"
+        var model = device.model 
 
         // Get specific model identifier
         var systemInfo = utsname()
@@ -63,7 +63,7 @@ final class DeviceInfoService {
         return "os-family=iOS&os-version=\(osVersion)&device-manufacturer=Apple&device-model=\(encoded)"
     }
 
-    /// Local IP addresses (IPv4 and IPv6)
+    // Local IP addresses
     var localIPs: String {
         var addresses: [String] = []
         var ifaddr: UnsafeMutablePointer<ifaddrs>?
@@ -93,7 +93,7 @@ final class DeviceInfoService {
         return addresses.joined(separator: ",")
     }
 
-    /// Apply all fraud-prevention device headers to a URLRequest
+    // Apply all fraud-prevention device headers to a URLRequest
     func applyHeaders(to request: inout URLRequest) {
         let now = ISO8601DateFormatter().string(from: Date())
         request.setValue(deviceId, forHTTPHeaderField: "X-Device-ID")

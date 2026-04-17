@@ -44,7 +44,7 @@ class UserServices: ObservableObject {
         self.apiService = apiService
     }
 
-    /// Fetch user profile from GET /profile
+    // Fetch user profile 
     func fetchUserProfile() async {
         isLoading = true
         errorMessage = nil
@@ -60,7 +60,7 @@ class UserServices: ObservableObject {
         isLoading = false
     }
 
-    /// Fetch full user info from GET /getUserInfo
+    // Fetch full user info 
     func fetchUserInfo() async {
         isLoading = true
         errorMessage = nil
@@ -78,7 +78,7 @@ class UserServices: ObservableObject {
         isLoading = false
     }
 
-    /// Update user name via POST /updateUserName
+    // Update user name 
     func updateUserName(newName: String) async {
         isLoading = true
         errorMessage = nil
@@ -96,7 +96,7 @@ class UserServices: ObservableObject {
         isLoading = false
     }
 
-    /// Update VRN via POST /updateVrn
+    // Update VRN 
     func updateVrn(newVrn: String) async {
         isLoading = true
         errorMessage = nil
@@ -113,7 +113,7 @@ class UserServices: ObservableObject {
         isLoading = false
     }
 
-    /// Update password via POST /updatePassword
+    // Update password 
     func updatePassword(currentPassword: String, newPassword: String) async {
         isLoading = true
         errorMessage = nil

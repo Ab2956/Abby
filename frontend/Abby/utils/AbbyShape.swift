@@ -11,7 +11,7 @@ struct AbbyShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
 
-        // Example placeholder path
+        // logo
         path.move(to: CGPoint(x: rect.minX + 10, y: rect.midY))
         path.addCurve(
             to: CGPoint(x: rect.maxX - 10, y: rect.midY),

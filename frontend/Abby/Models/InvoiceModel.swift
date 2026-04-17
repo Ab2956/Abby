@@ -30,9 +30,9 @@ struct InvoiceItem: Codable, Identifiable {
     var vat_rate: Double
     var total_price: Double
 
-    /// Recalculated total: quantity * unit_price
+    // Recalculated total: quantity * unit_price
     var calculatedTotal: Double { quantity * unit_price }
-    /// VAT for this item
+    // VAT for this item
     var calculatedVat: Double { calculatedTotal * (vat_rate / 100.0) }
 
     enum CodingKeys: String, CodingKey {
@@ -76,6 +76,7 @@ struct Invoice: Codable, Identifiable {
 
     init() {}
 
+    // decode for data similar to the bookkeeping model with parsing and decoded the date format
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decodeIfPresent(String.self, forKey: .id)
@@ -86,7 +87,7 @@ struct Invoice: Codable, Identifiable {
         total_amount = try container.decodeIfPresent(Double.self, forKey: .total_amount) ?? 0
         vat_amount = try container.decodeIfPresent(Double.self, forKey: .vat_amount)
 
-        // Try decoding as ISO 8601 string first, then as Date
+        
         if let dateString = try? container.decode(String.self, forKey: .invoice_date_iso) {
             let formatter = ISO8601DateFormatter()
             formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]

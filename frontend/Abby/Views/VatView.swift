@@ -9,6 +9,7 @@ import SwiftUI
 struct VatView: View{
     @StateObject private var vatController = VatController()
     
+    // simple view to show the users total vat
     var body: some View{
         ZStack{
             Color("BackgroundColour")

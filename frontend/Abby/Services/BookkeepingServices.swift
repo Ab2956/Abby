@@ -31,6 +31,8 @@ class BookkeepingServices: ObservableObject{
         URLSession.shared.dataTask(with: request){ data, response, err in DispatchQueue.main.async{
             self.isLoading = false
         }
+
+            // error handling for debugging issues with formatting this gets raw data from the backend
             if let err = err{
                 print("Receipt net error: \(err)")
                 DispatchQueue.main.async {

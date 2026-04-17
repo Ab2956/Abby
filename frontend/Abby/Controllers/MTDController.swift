@@ -2,12 +2,12 @@
 //  MTDController.swift
 //  Abby
 //
-//  Created on 05/03/2026.
+//  Created by Adam Brows on 05/03/2026.
 //
 
 import SwiftUI
 
-// MARK: - HMRC Obligations Response
+// HMRC Obligations Response can be moved tro models
 
 struct HMRCObligationsResponse: Codable {
     let obligations: [HMRCObligation]?
@@ -17,11 +17,11 @@ struct HMRCObligation: Codable {
     let start: String
     let end: String
     let due: String
-    let status: String        // "O" = open, "F" = fulfilled
+    let status: String        
     let periodKey: String?
 }
 
-// MARK: - VAT Return Submission Body
+// VAT Return Submission Body
 
 struct VATReturnBody: Codable {
     let periodKey: String
@@ -37,7 +37,7 @@ struct VATReturnBody: Codable {
     let finalised: Bool
 }
 
-// MARK: - Controller
+// Controller
 
 @MainActor
 class MTDController: ObservableObject {
@@ -53,7 +53,7 @@ class MTDController: ObservableObject {
         self.apiService = apiService
     }
 
-    // MARK: - Fetch obligations from HMRC
+    // Fetch obligations from HMRC
 
     func loadObligations() async {
         isLoading = true
@@ -92,7 +92,7 @@ class MTDController: ObservableObject {
         isLoading = false
     }
 
-    // MARK: - Submit a VAT return for a quarter
+    // Submit a VAT return for a quarter
 
     func submitVATReturn(index: Int) async {
         guard index >= 0, index < obligations.count else { return }
@@ -135,7 +135,7 @@ class MTDController: ObservableObject {
         obligations[index].isSubmitting = false
     }
 
-    // MARK: - Computed summaries
+    // summaries
 
     var totalVatDue: Double {
         obligations.reduce(0) { $0 + $1.vatDueSales + $1.vatDueAcquisitions }
@@ -150,7 +150,7 @@ class MTDController: ObservableObject {
     }
 }
 
-// MARK: - VAT Quarter View Model
+// VAT Quarter View Model can also be moved to models
 
 struct VATQuarterViewModel: Identifiable {
     let id = UUID()

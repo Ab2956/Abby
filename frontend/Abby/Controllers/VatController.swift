@@ -14,6 +14,8 @@ struct VatTotalResponse: Codable {
 @MainActor
 class VatController: ObservableObject {
 
+
+
     @Published var totalVat: Double = 0
     @Published var isLoading = false
     @Published var errorMessage: String?
@@ -28,6 +30,7 @@ class VatController: ObservableObject {
 
     }
 
+    // function to get the total vat using backend endpoint
     func getVatTotal() async {
         isLoading = true
         errorMessage = nil

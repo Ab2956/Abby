@@ -26,7 +26,7 @@ class ReceiptController: ObservableObject {
     @Published var scannedReceipt = Receipt()
     @Published var isScanning = false
 
-    // Creation state (manual entry)
+    // Creation state 
     @Published var manualReceipt = Receipt()
 
     var apiService: ApiServices
@@ -35,16 +35,16 @@ class ReceiptController: ObservableObject {
         self.apiService = apiService
     }
 
-    // Receipt Upload (with image)
+    // Receipt Upload 
 
-    /// Upload a receipt image to the backend, then save with user-verified data
+    // Upload a receipt image to the backend, then save with user-verified data
     func uploadReceipt() async {
         isLoading = true
         errorMessage = nil
         successMessage = nil
 
         do {
-            // If we have image data, upload as multipart
+            // If we have image data, upload as multipart for multer
             if let image = receiptImage, let imageData = image.jpegData(compressionQuality: 0.8) {
                 let _: ReceiptResponse = try await apiService.authenticatedUpload(
                     path: "/addRecipt",
@@ -67,15 +67,14 @@ class ReceiptController: ObservableObject {
         isLoading = false
     }
 
-    /// Load image from PhotosPickerItem
+    // Load image from PhotosPickerItem
     func loadImage(from item: PhotosPickerItem) async {
         do {
             if let data = try await item.loadTransferable(type: Data.self),
                let image = UIImage(data: data) {
                 receiptImage = image
                 isScanning = true
-                // In future: send to backend OCR endpoint and pre-fill scannedReceipt
-                // For now, mark scanning complete after a moment
+               
                 try await Task.sleep(nanoseconds: 500_000_000)
                 isScanning = false
             }
@@ -84,9 +83,9 @@ class ReceiptController: ObservableObject {
         }
     }
 
-    // Receipt Creation (manual)
+    // Receipt Creation
 
-    /// Save a manually created receipt to the backend
+    // Save a manually created receipt to the backend
     func createReceipt() async {
         isLoading = true
         errorMessage = nil
@@ -107,7 +106,7 @@ class ReceiptController: ObservableObject {
 
     // Fetch Receipts
 
-    /// Fetch all receipts from the backend
+    // Fetch all receipts from the backend
     func fetchReceipts() async {
         isLoading = true
         errorMessage = nil
@@ -123,7 +122,7 @@ class ReceiptController: ObservableObject {
 
     // Delete Receipt
 
-    /// Delete a receipt by ID
+    // Delete a receipt by ID
     func deleteReceipt(id: String) async {
         errorMessage = nil
 
@@ -153,9 +152,6 @@ class ReceiptController: ObservableObject {
     }
     func dateToString(date: Date) -> String{
         let formatter = DateFormatter()
-//        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX"
-//        formatter.locale = Locale(identifier: "en_US_POSIX")
-//        formatter.timeZone = TimeZone(secondsFromGMT: 0)
         formatter.dateStyle = .long
         formatter.timeStyle = .none
         

@@ -2,7 +2,7 @@
 //  ObligationsView.swift
 //  Abby
 //
-//  Created on 05/03/2026.
+//  Created on by Adam Brows 05/03/2026.
 //
 
 import SwiftUI
@@ -115,7 +115,7 @@ struct ObligationsView: View {
     }
 }
 
-// MARK: - Obligation Row
+// Obligation Row
 
 struct ObligationRow: View {
     let obligation: ObligationViewModel
@@ -181,7 +181,7 @@ struct ObligationRow: View {
     }
 }
 
-// MARK: - Badge
+// Badge
 
 struct ObligationBadge: View {
     let count: Int

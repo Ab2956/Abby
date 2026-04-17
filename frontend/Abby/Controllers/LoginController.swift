@@ -151,7 +151,7 @@ class LoginController: ObservableObject {
             }
         }
 
-        // Provide the presentation anchor so the auth sheet knows where to appear
+        // Provide anchor for the sheet
         let contextProvider = OAuthPresentationContext(anchor: session, window: presentationAnchor)
         session.presentationContextProvider = contextProvider
         session.prefersEphemeralWebBrowserSession = false

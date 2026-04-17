@@ -10,6 +10,7 @@ class InvoiceServices: ObservableObject {
 
 	private var baseURL: String { Constants.baseURL }
 
+	// function to get the users invoices to be displayed
 	func fetchAllUserInvoices(completion: @escaping ([Invoice]?, String?) -> Void) {
 		guard let url = URL(string: "\(baseURL)/getAllUserInvoices") else {
 			completion(nil, "Invalid URL")
@@ -31,6 +32,7 @@ class InvoiceServices: ObservableObject {
 			DispatchQueue.main.async {
 				self.isLoading = false
 			}
+			// error handling
 			if let err = err {
                 print("Invoice network err: \(err)")
 				DispatchQueue.main.async { completion(nil, err.localizedDescription) }

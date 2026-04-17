@@ -98,7 +98,7 @@ struct MTDSubmissionsView: View {
     }
 }
 
-// MARK: - VAT Quarter Card
+// VAT Quarter Card
 
 struct VATQuarterCard: View {
     @Binding var quarter: VATQuarterViewModel
@@ -211,7 +211,7 @@ struct VATQuarterCard: View {
     }
 }
 
-// MARK: - VAT Field Helper
+// VAT Field Helper
 
 struct VATField: View {
     let label: String
@@ -233,7 +233,7 @@ struct VATField: View {
     }
 }
 
-// MARK: - Summary Box
+// Summary Box model to be moved
 
 struct SummaryBox: View {
     let title: String
