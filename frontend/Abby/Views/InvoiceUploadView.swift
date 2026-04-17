@@ -42,8 +42,10 @@ struct InvoiceUploadView: View {
                             VStack(alignment: .leading) {
                                 Text("Choose from Photos")
                                     .fontWeight(.medium)
+                                
                                 Text("Select an invoice image from your library")
                                     .font(.caption)
+                                    
                                     .foregroundColor(.secondary)
                             }
                             Spacer()
@@ -51,7 +53,7 @@ struct InvoiceUploadView: View {
                                 .foregroundColor(.secondary)
                         }
                         .padding()
-                        .background(Color(.systemBackground))
+                        .background(Color("CardColour"))
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                         .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
                     }
@@ -75,7 +77,7 @@ struct InvoiceUploadView: View {
                                 .foregroundColor(.secondary)
                         }
                         .padding()
-                        .background(Color(.systemBackground))
+                        .background(Color("CardColour"))
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                         .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
                     }
@@ -125,7 +127,7 @@ struct InvoiceUploadView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(canUpload ? Color.blue : Color.gray)
+                    .background(canUpload ? Color("ButtonColour") : Color("BtnPressedColour"))
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
@@ -149,7 +151,7 @@ struct InvoiceUploadView: View {
                 Spacer()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color("BackgroundColour"))
         .navigationTitle("Upload Invoice")
         .navigationBarTitleDisplayMode(.inline)
         .fileImporter(

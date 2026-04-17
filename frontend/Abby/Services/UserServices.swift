@@ -5,6 +5,7 @@ import Foundation
 struct UserInfoResponse: Codable {
     let email: String?
     let name: String?
+    let vrn: String?
     let isConnectedToHmrc: Bool?
 }
 
@@ -32,6 +33,7 @@ class UserServices: ObservableObject {
 
     @Published var userName: String = ""
     @Published var userEmail: String = ""
+    @Published var userVrn: String = ""
     @Published var isConnectedToHmrc: Bool = false
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
@@ -67,6 +69,7 @@ class UserServices: ObservableObject {
             let response: UserInfoResponse = try await apiService.authenticatedGet(path: "/getUserInfo")
             userEmail = response.email ?? userEmail
             userName = response.name ?? userName
+            userVrn = response.vrn ?? userVrn
             isConnectedToHmrc = response.isConnectedToHmrc ?? isConnectedToHmrc
         } catch {
             errorMessage = error.localizedDescription

@@ -10,22 +10,20 @@ import SwiftUI
 struct MTDSubmissionsView: View {
     @StateObject private var controller = MTDController()
 
-    private let taxYears = [2024, 2025, 2026]
-
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
                 // Header
                 VStack(spacing: 8) {
-                    Image(systemName: "chart.bar.doc.horizontal")
+                    Image(systemName: "percent")
                         .font(.system(size: 48))
                         .foregroundColor(.purple)
 
-                    Text("MTD Submissions")
+                    Text("MTD VAT Returns")
                         .font(.title2)
                         .fontWeight(.bold)
 
-                    Text("Submit your quarterly income and expenses to HMRC.")
+                    Text("Submit your quarterly VAT returns to HMRC.")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
@@ -33,42 +31,48 @@ struct MTDSubmissionsView: View {
                 }
                 .padding(.top)
 
-                // Tax Year Picker
-                Picker("Tax Year", selection: $controller.selectedTaxYear) {
-                    ForEach(taxYears, id: \.self) { year in
-                        Text("\(String(year))/\(String(year + 1 - 2000))").tag(year)
-                    }
+                if controller.isLoading {
+                    ProgressView("Loading obligations…")
+                        .padding()
                 }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
 
                 // Quarter Cards
-                VStack(spacing: 16) {
-                    ForEach(Array(controller.quarters.enumerated()), id: \.element.id) { index, _ in
-                        QuarterCard(
-                            quarter: $controller.quarters[index],
-                            onSubmit: {
-                                Task { await controller.submitQuarter(index: index) }
-                            }
-                        )
+                if controller.obligations.isEmpty && !controller.isLoading {
+                    Text("No VAT obligations found.\nMake sure your VRN is set and you are connected to HMRC.")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                } else {
+                    VStack(spacing: 16) {
+                        ForEach(Array(controller.obligations.enumerated()), id: \.element.id) { index, _ in
+                            VATQuarterCard(
+                                quarter: $controller.obligations[index],
+                                onSubmit: {
+                                    Task { await controller.submitVATReturn(index: index) }
+                                }
+                            )
+                        }
                     }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
 
-                // Annual Summary
-                VStack(spacing: 12) {
-                    Text("Annual Summary")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                // Summary
+                if !controller.obligations.isEmpty {
+                    VStack(spacing: 12) {
+                        Text("Summary")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity, alignment: .leading)
 
-                    HStack {
-                        SummaryBox(title: "Total Income", amount: controller.totalIncome, color: .green)
-                        SummaryBox(title: "Total Expenses", amount: controller.totalExpenses, color: .red)
+                        HStack {
+                            SummaryBox(title: "Total VAT Due", amount: controller.totalVatDue, color: .red)
+                            SummaryBox(title: "VAT Reclaimed", amount: controller.totalVatReclaimed, color: .green)
+                        }
+
+                        SummaryBox(title: "Net VAT Due", amount: controller.netVatDue, color: .purple)
                     }
-
-                    SummaryBox(title: "Net Profit", amount: controller.netProfit, color: .purple)
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
 
                 if let success = controller.successMessage {
                     Label(success, systemImage: "checkmark.circle.fill")
@@ -86,24 +90,24 @@ struct MTDSubmissionsView: View {
             }
         }
         .background(Color(.systemGroupedBackground))
-        .navigationTitle("MTD Submissions")
+        .navigationTitle("VAT Returns")
         .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: controller.selectedTaxYear) {
-            Task { await controller.loadQuarterData() }
+        .onAppear {
+            Task { await controller.loadObligations() }
         }
     }
 }
 
-// MARK: - Quarter Card
+// MARK: - VAT Quarter Card
 
-struct QuarterCard: View {
-    @Binding var quarter: MTDQuarterViewModel
+struct VATQuarterCard: View {
+    @Binding var quarter: VATQuarterViewModel
     let onSubmit: () -> Void
     @State private var isExpanded = false
 
     var body: some View {
         VStack(spacing: 0) {
-            // Header (always visible)
+            // Header
             Button {
                 withAnimation(.easeInOut(duration: 0.25)) {
                     isExpanded.toggle()
@@ -148,56 +152,34 @@ struct QuarterCard: View {
                 Divider()
 
                 VStack(spacing: 12) {
-                    // Income fields
-                    HStack {
-                        Text("Turnover (£)")
-                            .font(.subheadline)
-                        Spacer()
-                        TextField("0.00", value: $quarter.turnover, format: .number)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .frame(width: 120)
-                            .padding(8)
-                            .background(Color(.systemGray6))
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                    }
-
-                    HStack {
-                        Text("Other Income (£)")
-                            .font(.subheadline)
-                        Spacer()
-                        TextField("0.00", value: $quarter.otherIncome, format: .number)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .frame(width: 120)
-                            .padding(8)
-                            .background(Color(.systemGray6))
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                    }
-
-                    HStack {
-                        Text("Total Expenses (£)")
-                            .font(.subheadline)
-                        Spacer()
-                        TextField("0.00", value: $quarter.totalExpenses, format: .number)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .frame(width: 120)
-                            .padding(8)
-                            .background(Color(.systemGray6))
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                    }
+                    VATField(label: "VAT Due on Sales (£)", value: $quarter.vatDueSales)
+                    VATField(label: "VAT Due on Acquisitions (£)", value: $quarter.vatDueAcquisitions)
+                    VATField(label: "VAT Reclaimed (£)", value: $quarter.vatReclaimedCurrPeriod)
+                    VATField(label: "Total Sales ex VAT (£)", value: $quarter.totalValueSalesExVAT)
+                    VATField(label: "Total Purchases ex VAT (£)", value: $quarter.totalValuePurchasesExVAT)
+                    VATField(label: "Goods Supplied ex VAT (£)", value: $quarter.totalValueGoodsSuppliedExVAT)
+                    VATField(label: "Total Acquisitions ex VAT (£)", value: $quarter.totalAcquisitionsExVAT)
 
                     Divider()
 
                     HStack {
-                        Text("Net Profit")
+                        Text("Total VAT Due")
                             .font(.subheadline)
                             .fontWeight(.semibold)
                         Spacer()
-                        Text("£\(quarter.netProfit, specifier: "%.2f")")
+                        Text("£\(quarter.totalVatDue, specifier: "%.2f")")
                             .fontWeight(.bold)
-                            .foregroundColor(quarter.netProfit >= 0 ? .green : .red)
+                            .foregroundColor(.red)
+                    }
+
+                    HStack {
+                        Text("Net VAT Due")
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                        Spacer()
+                        Text("£\(quarter.netVatDue, specifier: "%.2f")")
+                            .fontWeight(.bold)
+                            .foregroundColor(.purple)
                     }
 
                     // Submit button
@@ -214,7 +196,7 @@ struct QuarterCard: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
-                        .background(Color.purple)
+                        .background(Color("ButtonColour"))
                         .foregroundColor(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
@@ -223,9 +205,31 @@ struct QuarterCard: View {
                 .padding()
             }
         }
-        .background(Color(.systemBackground))
+        .background(Color("CardColour"))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+    }
+}
+
+// MARK: - VAT Field Helper
+
+struct VATField: View {
+    let label: String
+    @Binding var value: Double
+
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.subheadline)
+            Spacer()
+            TextField("0.00", value: $value, format: .number)
+                .keyboardType(.decimalPad)
+                .multilineTextAlignment(.trailing)
+                .frame(width: 120)
+                .padding(8)
+                .background(Color(.systemGray6))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+        }
     }
 }
 
@@ -248,7 +252,7 @@ struct SummaryBox: View {
         }
         .frame(maxWidth: .infinity)
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color("CardColour"))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
     }

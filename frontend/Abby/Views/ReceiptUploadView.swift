@@ -87,7 +87,7 @@ struct ReceiptUploadView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 24)
-                            .background(Color(.systemBackground))
+                            .background(Color("CardColour"))
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             .shadow(color: .black.opacity(0.05), radius: 4)
                         }
@@ -104,7 +104,7 @@ struct ReceiptUploadView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 24)
-                            .background(Color(.systemBackground))
+                            .background(Color("CardColour"))
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             .shadow(color: .black.opacity(0.05), radius: 4)
                         }
@@ -217,7 +217,7 @@ struct ReceiptUploadView: View {
                 Spacer()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color("BackgroundColour"))
         .navigationTitle("Upload Receipt")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: controller.selectedPhotoItem) {

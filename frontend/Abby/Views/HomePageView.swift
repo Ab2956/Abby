@@ -46,14 +46,14 @@ struct HomePageView: View {
         ),
         MenuItem(
             title: "Upload Receipt",
-            subtitle: "Scan a cash payment receipt",
+            subtitle: "Scan receipt",
             icon: "camera.viewfinder",
             color: .green,
             destination: .receiptUpload
         ),
         MenuItem(
             title: "Create Receipt",
-            subtitle: "Enter a cash payment manually",
+            subtitle: "Enter a receipt manually",
             icon: "square.and.pencil",
             color: .orange,
             destination: .receiptCreation
@@ -67,7 +67,7 @@ struct HomePageView: View {
         ),
         MenuItem(
             title: "Obligations",
-            subtitle: "Check HMRC deadlines and obligations",
+            subtitle: "View HMRC deadlines and obligations",
             icon: "calendar.badge.clock",
             color: .red,
             destination: .obligations
@@ -127,7 +127,7 @@ struct HomePageView: View {
 
     private var homeContent: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: 30) {
                 // Header
                 VStack(spacing: 6) {
                     Text("Your Accounting Buddy")
@@ -155,7 +155,7 @@ struct HomePageView: View {
             }
             .padding(.bottom, 24)
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color("BackgroundColour"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -180,6 +180,8 @@ struct HomePageView: View {
                     .frame(width: 250, height: 200)
             }
         }
+        .padding(.top,10)
+        .background(Color("BackgroundColour"))
         .navigationDestination(for: HomeDestination.self) { destination in
             switch destination {
             case .invoiceUpload:
@@ -230,7 +232,7 @@ struct MenuCard: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, 18)
         .padding(.horizontal, 8)
-        .background(Color(.systemBackground))
+        .background(item.color.opacity(0.1))
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 2)
     }

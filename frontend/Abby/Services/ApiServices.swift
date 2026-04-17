@@ -88,7 +88,7 @@ class ApiServices {
     
     // create Account
     
-    func createAccount(email: String, password: String, vrn: String) async throws {
+    func createAccount(username: String, email: String, password: String, vrn: String) async throws {
         
         guard let url = URL(string: "\(baseURL)/registerAccount") else {
             throw ApiError.badURL
@@ -99,6 +99,7 @@ class ApiServices {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         let body: [String: String] = [
+            "user_name": username,
             "email": email,
             "password": password,
             "vrn": vrn
@@ -160,7 +161,9 @@ class ApiServices {
 
         let (data, response) = try await session.data(for: request)
         try validateResponse(response, data: data)
-        return try JSONDecoder().decode(T.self, from: data)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(T.self, from: data)
     }
 
     /// Perform an authenticated POST request with a JSON body and decode the response
@@ -177,7 +180,13 @@ class ApiServices {
         if includeDeviceInfo {
             DeviceInfoService.shared.applyHeaders(to: &request)
         }
-        request.httpBody = try JSONEncoder().encode(body)
+        let encoder = JSONEncoder()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        encoder.dateEncodingStrategy = .formatted(dateFormatter)
+        request.httpBody = try encoder.encode(body)
 
         let (data, response) = try await session.data(for: request)
         try validateResponse(response, data: data)

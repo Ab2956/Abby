@@ -46,7 +46,7 @@ class BookkeepingServices: ObservableObject{
                 print("raw data: \(raw)")
             }
             do{
-                let recepits = try JSONDecoder().decode([Receipt].self, from :data)
+                let recepits = try JSONDecoder().decode([Receipt].self, from: data)
                 DispatchQueue.main.async{ completion(recepits, nil)}
             }
             catch{

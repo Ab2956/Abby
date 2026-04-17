@@ -11,14 +11,16 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject private var loginController = LoginController()
+    @AppStorage("appAppearance") private var appAppearance: String = "system"
     @State private var showSplash = true
     @State private var opacity = 1.0
     
     var body: some View {
+        group {
         if showSplash {
             // Splash screen
             ZStack {
-                Color(UIColor.gray)
+                Color("BackgroundColour")
                     .ignoresSafeArea()
                 VStack {
                     Image("abbyLogo")
@@ -53,9 +55,10 @@ struct ContentView: View {
         } else {
             HomePageView(loginController: loginController)
         }
+        .preferredColorScheme(appAppearance == "light" ? .light : .dark)
     }
 }
-
 #Preview {
     ContentView()
+}
 }

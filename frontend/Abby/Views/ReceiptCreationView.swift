@@ -45,127 +45,135 @@ struct ReceiptCreationView: View {
     ]
 
     var body: some View {
-        Form {
-            // Transaction Type
-            Section {
-                Picker("Transaction Type", selection: $controller.manualReceipt.isIncome) {
-                    Text("Expense").tag(false)
-                    Text("Income").tag(true)
+        ZStack{
+            Color("BackgroundColour")
+            
+            Form {
+                // Transaction Type
+                Section {
+                    Picker("Transaction Type", selection: $controller.manualReceipt.isIncome) {
+                        Text("Expense").tag(false)
+                        Text("Income").tag(true)
+                    }
+                    .tint(Color("BackgroundColour"))
+                    .pickerStyle(.segmented)
+                } header: {
+                    Text("Type")
                 }
-                .pickerStyle(.segmented)
-            } header: {
-                Text("Type")
-            }
-
-            // Basic Details
-            Section("Details") {
-                TextField("Vendor / Paid to", text: $controller.manualReceipt.vendor)
-
-                TextField("Description", text: $controller.manualReceipt.description)
-
-                DatePicker("Date", selection: $controller.manualReceipt.date, displayedComponents: .date)
                 
-            }
-
-            // Amounts
-            Section("Amounts") {
-                HStack {
-                    Text("£")
-                        .foregroundColor(.secondary)
-                    TextField("Total Amount", text: $totalAmountText)
-                        .keyboardType(.decimalPad)
-                        .onChange(of: totalAmountText) {
-                            controller.manualReceipt.totalAmount = Double(totalAmountText) ?? 0
-                        }
+                
+                // Basic Details
+                Section("Details") {
+                    TextField("Vendor / Paid to", text: $controller.manualReceipt.vendor)
+                    
+                    TextField("Description", text: $controller.manualReceipt.description)
+                    
+                    DatePicker("Date", selection: $controller.manualReceipt.date, displayedComponents: .date)
+                    
                 }
-
-                HStack {
-                    Text("£")
-                        .foregroundColor(.secondary)
-                    TextField("VAT Amount (0 if none)", text: $vatAmountText)
-                        .keyboardType(.decimalPad)
-                        .onChange(of: vatAmountText) {
-                            controller.manualReceipt.vatAmount = Double(vatAmountText) ?? 0
-                        }
-                }
-
-                if controller.manualReceipt.totalAmount > 0 {
+                
+                // Amounts
+                Section("Amounts") {
                     HStack {
-                        Text("Net Amount")
+                        Text("£")
                             .foregroundColor(.secondary)
-                        Spacer()
-                        Text("£\(controller.manualReceipt.netAmount, specifier: "%.2f")")
-                            .fontWeight(.medium)
+                        TextField("Total Amount", text: $totalAmountText)
+                            .keyboardType(.decimalPad)
+                            .onChange(of: totalAmountText) {
+                                controller.manualReceipt.totalAmount = Double(totalAmountText) ?? 0
+                            }
                     }
-                }
-            }
-
-            // Category & Payment
-            Section("Classification") {
-                Picker("Category", selection: $controller.manualReceipt.category) {
-                    ForEach(categories, id: \.self) { cat in
-                        Text(cat).tag(cat)
-                    }
-                }
-
-                Picker("Payment Method", selection: $controller.manualReceipt.paymentMethod) {
-                    ForEach(paymentMethods, id: \.self) { method in
-                        Text(method).tag(method)
-                    }
-                }
-            }
-
-            // Notes
-            Section("Notes (Optional)") {
-                TextEditor(text: $controller.manualReceipt.notes)
-                    .frame(minHeight: 60)
-            }
-
-            // Save
-            Section {
-                Button {
-                    Task {
-                        await controller.createReceipt()
-                        if controller.errorMessage == nil {
-                            showSuccess = true
-                        }
-                    }
-                } label: {
+                    
                     HStack {
-                        Spacer()
-                        if controller.isLoading {
-                            ProgressView()
-                                .tint(.white)
-                        }
-                        Text(controller.isLoading ? "Saving..." : "Save Receipt")
-                            .fontWeight(.semibold)
-                        Spacer()
+                        Text("£")
+                            .foregroundColor(.secondary)
+                        TextField("VAT Amount (0 if none)", text: $vatAmountText)
+                            .keyboardType(.decimalPad)
+                            .onChange(of: vatAmountText) {
+                                controller.manualReceipt.vatAmount = Double(vatAmountText) ?? 0
+                            }
                     }
-                    .padding(.vertical, 4)
+                    
+                    if controller.manualReceipt.totalAmount > 0 {
+                        HStack {
+                            Text("Net Amount")
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text("£\(controller.manualReceipt.netAmount, specifier: "%.2f")")
+                                .fontWeight(.medium)
+                        }
+                    }
                 }
-                .listRowBackground(formValid ? Color.orange : Color.gray)
-                .foregroundColor(.white)
-                .disabled(!formValid || controller.isLoading)
+                
+                // Category & Payment
+                Section("Classification") {
+                    Picker("Category", selection: $controller.manualReceipt.category) {
+                        ForEach(categories, id: \.self) { cat in
+                            Text(cat).tag(cat)
+                        }
+                    }
+                    
+                    Picker("Payment Method", selection: $controller.manualReceipt.paymentMethod) {
+                        ForEach(paymentMethods, id: \.self) { method in
+                            Text(method).tag(method)
+                        }
+                    }
+                }
+                
+                // Notes
+                Section("Notes (Optional)") {
+                    TextEditor(text: $controller.manualReceipt.notes)
+                        .frame(minHeight: 60)
+                }
+                
+                // Save
+                Section {
+                    Button {
+                        Task {
+                            await controller.createReceipt()
+                            if controller.errorMessage == nil {
+                                showSuccess = true
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            Spacer()
+                            if controller.isLoading {
+                                ProgressView()
+                                    .tint(.white)
+                            }
+                            Text(controller.isLoading ? "Saving..." : "Save Receipt")
+                                .fontWeight(.semibold)
+                            Spacer()
+                        }
+                        .padding(.vertical, 4)
+                    }
+                    .listRowBackground(formValid ? Color.orange : Color.gray)
+                    .foregroundColor(.white)
+                    .disabled(!formValid || controller.isLoading)
+                }
             }
-        }
-        .navigationTitle("Create Receipt")
-        .navigationBarTitleDisplayMode(.inline)
-        .alert("Receipt Saved", isPresented: $showSuccess) {
-            Button("OK") {
-                controller.resetCreation()
-                totalAmountText = ""
-                vatAmountText = ""
+            .background(Color("BackgroundColour"))
+            .scrollContentBackground(.hidden)
+            .navigationTitle("Create Receipt")
+            .navigationBarTitleDisplayMode(.inline)
+            .alert("Receipt Saved", isPresented: $showSuccess) {
+                Button("OK") {
+                    controller.resetCreation()
+                    totalAmountText = ""
+                    vatAmountText = ""
+                }
+            } message: {
+                Text("Your receipt has been recorded successfully.")
             }
-        } message: {
-            Text("Your cash receipt has been recorded successfully.")
-        }
-        .alert("Error", isPresented: .init(
-            get: { controller.errorMessage != nil },
-            set: { if !$0 { controller.errorMessage = nil } }
-        )) {
-            Button("OK") { }
-        } message: {
-            Text(controller.errorMessage ?? "")
+            .alert("Error", isPresented: .init(
+                get: { controller.errorMessage != nil },
+                set: { if !$0 { controller.errorMessage = nil } }
+            )) {
+                Button("OK") { }
+            } message: {
+                Text(controller.errorMessage ?? "")
+            }
         }
     }
 

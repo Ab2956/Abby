@@ -29,7 +29,36 @@ struct Receipt: Identifiable, Codable {
         case vendor, description, date, totalAmount, vatAmount
         case category, paymentMethod, isIncome, notes
     }
-    
+
+    init() {}
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(String.self, forKey: .id)
+        vendor = try container.decodeIfPresent(String.self, forKey: .vendor) ?? ""
+        description = try container.decodeIfPresent(String.self, forKey: .description) ?? ""
+        totalAmount = try container.decodeIfPresent(Double.self, forKey: .totalAmount) ?? 0
+        vatAmount = try container.decodeIfPresent(Double.self, forKey: .vatAmount) ?? 0
+        category = try container.decodeIfPresent(String.self, forKey: .category) ?? "Uncategorised"
+        paymentMethod = try container.decodeIfPresent(String.self, forKey: .paymentMethod) ?? "Cash"
+        isIncome = try container.decodeIfPresent(Bool.self, forKey: .isIncome) ?? false
+        notes = try container.decodeIfPresent(String.self, forKey: .notes) ?? ""
+
+        // Parse date from ISO 8601 string (MongoDB sends dates as ISO strings)
+        if let dateString = try? container.decode(String.self, forKey: .date) {
+            let isoFormatter = ISO8601DateFormatter()
+            isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            if let parsed = isoFormatter.date(from: dateString) {
+                date = parsed
+            } else {
+                // Try without fractional seconds
+                let basicFormatter = ISO8601DateFormatter()
+                date = basicFormatter.date(from: dateString) ?? Date()
+            }
+        } else if let decodedDate = try? container.decode(Date.self, forKey: .date) {
+            date = decodedDate
+        }
+    }
 }
 
 // Receipt Response

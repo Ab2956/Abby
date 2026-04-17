@@ -79,12 +79,12 @@ class LoginController: ObservableObject {
     }
     
     // create Account
-    func createAccount(email: String, password: String, vrn: String) async {
+    func createAccount(username: String, email: String, password: String, vrn: String) async {
         errorMessage = nil
         isLoading = true
         
         do {
-            try await apiService.createAccount(email: email, password: password, vrn: vrn)
+            try await apiService.createAccount(username: username,email: email, password: password, vrn: vrn)
             await login(email: email, password: password)
             
         } catch {

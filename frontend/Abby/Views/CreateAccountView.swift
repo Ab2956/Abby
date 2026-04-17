@@ -18,91 +18,96 @@ struct CreateAccountView: View {
     @ObservedObject var loginController: LoginController
     
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Create Account")
-                .font(.largeTitle)
-                .fontWeight(.bold)
+        ZStack{
+            Color("BackgroundColour")
+                .ignoresSafeArea()
             
-            // Error banner
-            if let error = localError ?? loginController.errorMessage {
-                Text(error)
-                    .foregroundColor(.white)
+            VStack(spacing: 20) {
+                Text("Create Account")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                
+                // Error banner
+                if let error = localError ?? loginController.errorMessage {
+                    Text(error)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.red.opacity(0.85))
+                        .cornerRadius(10)
+                }
+                TextField("Username", text: $username)
+                    .autocapitalization(.none)
                     .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.red.opacity(0.85))
+                    .background(Color("CardColour"))
                     .cornerRadius(10)
+                
+                TextField("Email", text: $email)
+                    .keyboardType(.emailAddress)
+                    .autocapitalization(.none)
+                    .padding()
+                    .background(Color("CardColour"))
+                    .cornerRadius(10)
+                
+                SecureField("Password", text: $password)
+                    .padding()
+                    .background(Color("CardColour"))
+                    .cornerRadius(10)
+                
+                SecureField("Confirm Password", text: $confirmPassword)
+                    .padding()
+                    .background(Color("CardColour"))
+                    .cornerRadius(10)
+                
+                TextField("VAT Registration Number (VRN)", text: $vrn)
+                    .keyboardType(.default)
+                    .padding()
+                    .background(Color("CardColour"))
+                    .cornerRadius(10)
+                
+                Button {
+                    localError = nil
+                    guard password == confirmPassword else {
+                        localError = "Passwords do not match."
+                        return
+                    }
+                    guard password.count >= 6 else {
+                        localError = "Password must be at least 6 characters."
+                        return
+                    }
+                    Task {
+                        await loginController.createAccount(
+                            username: username,
+                            email: email,
+                            password: password,
+                            vrn: vrn
+                        )
+                    }
+                } label: {
+                    if loginController.isLoading {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                    } else {
+                        Text("Sign Up")
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+                .padding()
+                .background(formValid ? Color.blue : Color.gray)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                .disabled(!formValid || loginController.isLoading)
+                
+                Spacer()
             }
-            TextField("Username", text: $username)
-                .autocapitalization(.none)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-            
-            TextField("Email", text: $email)
-                .keyboardType(.emailAddress)
-                .autocapitalization(.none)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-            
-            SecureField("Password", text: $password)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-            
-            SecureField("Confirm Password", text: $confirmPassword)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-            
-            TextField("VAT Registration Number (VRN)", text: $vrn)
-                .keyboardType(.numberPad)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-            
-            Button {
-                localError = nil
-                guard password == confirmPassword else {
-                    localError = "Passwords do not match."
-                    return
-                }
-                guard password.count >= 6 else {
-                    localError = "Password must be at least 6 characters."
-                    return
-                }
-                Task {
-                    await loginController.createAccount(
-                        username: username,
-                        email: email,
-                        password: password,
-                        vrn: vrn
-                    )
-                }
-            } label: {
-                if loginController.isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity)
-                } else {
-                    Text("Sign Up")
-                        .frame(maxWidth: .infinity)
-                }
-            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding()
-            .background(formValid ? Color.blue : Color.gray)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-            .disabled(!formValid || loginController.isLoading)
-            
-            Spacer()
         }
-        .padding()
     }
-    
-    private var formValid: Bool {
-        !username.isEmpty && !email.isEmpty && !password.isEmpty && !confirmPassword.isEmpty && !vrn.isEmpty
+        private var formValid: Bool {
+            !username.isEmpty && !email.isEmpty && !password.isEmpty && !confirmPassword.isEmpty && !vrn.isEmpty
+        }
     }
-}
 
 #Preview {
     NavigationStack {

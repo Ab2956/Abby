@@ -10,15 +10,25 @@ struct VatView: View{
     @StateObject private var vatController = VatController()
     
     var body: some View{
-        
-        VStack{
-            Text("Total VAT: £\(String(vatController.totalVat))")
-                .font(.largeTitle)
-                .padding()
+        ZStack{
+            Color("BackgroundColour")
+                .ignoresSafeArea()
+            
+            VStack{
+                Text("VAT")
+                    .font(.title)
+                    
+                Text("Total VAT: £\(String(vatController.totalVat))")
+                    .font(.largeTitle)
+                    .padding()
+            }
+            .frame(maxHeight: .infinity, alignment: .top)
+            .padding(.top)
+                .cornerRadius(12)
+            .onAppear(){
+                Task{ await vatController.getVatTotal()}
+            }
+            
         }
-        .onAppear(){
-            Task{ await vatController.getVatTotal()}
-        }
-    
     }
 }

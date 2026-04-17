@@ -45,9 +45,7 @@ class InvoiceServices: ObservableObject {
                 print("raw json res: \n\(raw)")
             }
 			do {
-				let decoder = JSONDecoder()
-                decoder.dateDecodingStrategy = .iso8601
-                let invoices = try decoder.decode([Invoice].self, from: data)
+				let invoices = try JSONDecoder().decode([Invoice].self, from: data)
 				DispatchQueue.main.async { completion(invoices, nil) }
 			} catch {
                 print("decoding err: \(error)")

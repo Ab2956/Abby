@@ -26,7 +26,7 @@ struct ObligationsView: View {
                         .font(.title2)
                         .fontWeight(.bold)
 
-                    Text("View your HMRC deadlines and submission obligations.")
+                    Text("View your HMRC deadlines and submission obligations")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
@@ -95,7 +95,7 @@ struct ObligationsView: View {
                 Spacer()
             }
         }
-        .background(Color(.systemGroupedBackground))
+        .background(Color("BackgroundColour"))
         .navigationTitle("Obligations")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -175,7 +175,7 @@ struct ObligationRow: View {
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color("CardColour"))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
     }
@@ -200,7 +200,7 @@ struct ObligationBadge: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background(Color(.systemBackground))
+        .background(Color("CardColour"))
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 1)
     }

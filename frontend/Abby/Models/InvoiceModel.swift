@@ -45,7 +45,7 @@ struct Invoice: Codable, Identifiable {
     var id: String? = nil// MongoDB _id
     var invoice_number: String = ""
     var invoice_date: Date = Date()
-    var invoice_date_iso: String = ""
+    var invoice_date_iso: Date = Date()
     var supplier = Supplier(supplier_name: "", supplier_address: "", supplier_contact: nil, supplier_vat_number: "")
     var customer = Customer(customer_name: "", customer_address: "")
     var items: [InvoiceItem] = []
@@ -72,6 +72,37 @@ struct Invoice: Codable, Identifiable {
         case invoice_number
         case invoice_date_iso = "invoice_date"
         case supplier, customer, items, total_amount, vat_amount
+    }
+
+    init() {}
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(String.self, forKey: .id)
+        invoice_number = try container.decodeIfPresent(String.self, forKey: .invoice_number) ?? ""
+        supplier = try container.decode(Supplier.self, forKey: .supplier)
+        customer = try container.decode(Customer.self, forKey: .customer)
+        items = try container.decodeIfPresent([InvoiceItem].self, forKey: .items) ?? []
+        total_amount = try container.decodeIfPresent(Double.self, forKey: .total_amount) ?? 0
+        vat_amount = try container.decodeIfPresent(Double.self, forKey: .vat_amount)
+
+        // Try decoding as ISO 8601 string first, then as Date
+        if let dateString = try? container.decode(String.self, forKey: .invoice_date_iso) {
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            if let parsed = formatter.date(from: dateString) {
+                invoice_date = parsed
+                invoice_date_iso = parsed
+            } else {
+                let basicFormatter = ISO8601DateFormatter()
+                let parsed = basicFormatter.date(from: dateString) ?? Date()
+                invoice_date = parsed
+                invoice_date_iso = parsed
+            }
+        } else if let date = try? container.decode(Date.self, forKey: .invoice_date_iso) {
+            invoice_date = date
+            invoice_date_iso = date
+        }
     }
 }
 struct InvoiceUploadResponse: Codable {

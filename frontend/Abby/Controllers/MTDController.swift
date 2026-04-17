@@ -7,16 +7,45 @@
 
 import SwiftUI
 
+// MARK: - HMRC Obligations Response
+
+struct HMRCObligationsResponse: Codable {
+    let obligations: [HMRCObligation]?
+}
+
+struct HMRCObligation: Codable {
+    let start: String
+    let end: String
+    let due: String
+    let status: String        // "O" = open, "F" = fulfilled
+    let periodKey: String?
+}
+
+// MARK: - VAT Return Submission Body
+
+struct VATReturnBody: Codable {
+    let periodKey: String
+    let vatDueSales: Double
+    let vatDueAcquisitions: Double
+    let totalVatDue: Double
+    let vatReclaimedCurrPeriod: Double
+    let netVatDue: Double
+    let totalValueSalesExVAT: Double
+    let totalValuePurchasesExVAT: Double
+    let totalValueGoodsSuppliedExVAT: Double
+    let totalAcquisitionsExVAT: Double
+    let finalised: Bool
+}
+
+// MARK: - Controller
+
 @MainActor
 class MTDController: ObservableObject {
-
-    // Published state
 
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var successMessage: String?
-    @Published var selectedTaxYear: Int = 2025
-    @Published var quarters: [MTDQuarterViewModel] = MTDQuarterViewModel.defaultQuarters()
+    @Published var obligations: [VATQuarterViewModel] = []
 
     var apiService: ApiServices
 
@@ -24,140 +53,144 @@ class MTDController: ObservableObject {
         self.apiService = apiService
     }
 
-    // Submit quarterly update
+    // MARK: - Fetch obligations from HMRC
 
-    /// Submit a single quarter's data to the backend, which formats and sends to HMRC
-    func submitQuarter(index: Int) async {
-        guard index >= 0, index < quarters.count else { return }
-
-        quarters[index].isSubmitting = true
+    func loadObligations() async {
+        isLoading = true
         errorMessage = nil
-        successMessage = nil
-
-        let quarter = quarters[index]
-
-        let body: [String: Any] = [
-            "quarter": quarter.quarter,
-            "taxYear": selectedTaxYear,
-            "turnover": quarter.turnover,
-            "otherIncome": quarter.otherIncome,
-            "totalExpenses": quarter.totalExpenses,
-        ]
 
         do {
-            let jsonData = try JSONSerialization.data(withJSONObject: body)
+            // Fetch open + fulfilled obligations for the current tax year window
+            let from = "2025-04-06"
+            let to = "2026-04-05"
 
-            guard let token = KeychainHelper.shared.get(
-                service: Constants.keychainService,
-                account: Constants.keychainAccount
-            ),
-            let url = URL(string: "\(Constants.baseURL)/mtd/submit") else {
-                throw ApiError.badURL
+            let response: HMRCObligationsResponse = try await apiService.authenticatedGet(
+                path: "/vat",
+                queryItems: [
+                    URLQueryItem(name: "from", value: from),
+                    URLQueryItem(name: "to", value: to)
+                ],
+                includeDeviceInfo: true
+            )
+
+            if let hmrcObligations = response.obligations {
+                obligations = hmrcObligations.enumerated().map { index, ob in
+                    VATQuarterViewModel(
+                        quarter: index + 1,
+                        periodStart: ob.start,
+                        periodEnd: ob.end,
+                        deadline: ob.due,
+                        periodKey: ob.periodKey ?? "",
+                        status: ob.status == "F" ? .submitted : .open
+                    )
+                }
             }
-
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-            DeviceInfoService.shared.applyHeaders(to: &request)
-            request.httpBody = jsonData
-
-            let (data, response) = try await apiService.session.data(for: request)
-
-            guard let httpResponse = response as? HTTPURLResponse else {
-                throw ApiError.badResponse(statusCode: 0)
-            }
-
-            if httpResponse.statusCode >= 400 {
-                let message = String(data: data, encoding: .utf8) ?? "Submission failed"
-                throw ApiError.serverError(message)
-            }
-
-            quarters[index].status = .submitted
-            successMessage = "Quarter \(quarter.quarter) submitted successfully"
-
         } catch {
             errorMessage = error.localizedDescription
         }
 
-        quarters[index].isSubmitting = false
-    }
-
-    // Load quarter data from backend
-
-    func loadQuarterData() async {
-        isLoading = true
-        errorMessage = nil
-
-        // Reset to defaults; in future, fetch saved drafts from backend
-        quarters = MTDQuarterViewModel.defaultQuarters()
-
         isLoading = false
     }
 
-    // Computed properties
+    // MARK: - Submit a VAT return for a quarter
 
-    var totalIncome: Double {
-        quarters.reduce(0) { $0 + $1.turnover + $1.otherIncome }
+    func submitVATReturn(index: Int) async {
+        guard index >= 0, index < obligations.count else { return }
+
+        obligations[index].isSubmitting = true
+        errorMessage = nil
+        successMessage = nil
+
+        let quarter = obligations[index]
+
+        let totalVatDue = quarter.vatDueSales + quarter.vatDueAcquisitions
+        let netVatDue = abs(totalVatDue - quarter.vatReclaimedCurrPeriod)
+
+        let body = VATReturnBody(
+            periodKey: quarter.periodKey,
+            vatDueSales: quarter.vatDueSales,
+            vatDueAcquisitions: quarter.vatDueAcquisitions,
+            totalVatDue: totalVatDue,
+            vatReclaimedCurrPeriod: quarter.vatReclaimedCurrPeriod,
+            netVatDue: netVatDue,
+            totalValueSalesExVAT: quarter.totalValueSalesExVAT,
+            totalValuePurchasesExVAT: quarter.totalValuePurchasesExVAT,
+            totalValueGoodsSuppliedExVAT: quarter.totalValueGoodsSuppliedExVAT,
+            totalAcquisitionsExVAT: quarter.totalAcquisitionsExVAT,
+            finalised: true
+        )
+
+        do {
+            let _: [String: String] = try await apiService.authenticatedPost(
+                path: "/vat",
+                body: body,
+                includeDeviceInfo: true
+            )
+            obligations[index].status = .submitted
+            successMessage = "VAT return for period \(quarter.periodKey) submitted successfully"
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+
+        obligations[index].isSubmitting = false
     }
 
-    var totalExpenses: Double {
-        quarters.reduce(0) { $0 + $1.totalExpenses }
+    // MARK: - Computed summaries
+
+    var totalVatDue: Double {
+        obligations.reduce(0) { $0 + $1.vatDueSales + $1.vatDueAcquisitions }
     }
 
-    var netProfit: Double {
-        totalIncome - totalExpenses
+    var totalVatReclaimed: Double {
+        obligations.reduce(0) { $0 + $1.vatReclaimedCurrPeriod }
+    }
+
+    var netVatDue: Double {
+        abs(totalVatDue - totalVatReclaimed)
     }
 }
 
-// Quarter View Model
+// MARK: - VAT Quarter View Model
 
-struct MTDQuarterViewModel: Identifiable {
+struct VATQuarterViewModel: Identifiable {
     let id = UUID()
     var quarter: Int
     var periodStart: String
     var periodEnd: String
     var deadline: String
-    var turnover: Double = 0
-    var otherIncome: Double = 0
-    var totalExpenses: Double = 0
-    var status: QuarterStatus = .notStarted
+    var periodKey: String
+
+    // VAT return fields
+    var vatDueSales: Double = 0
+    var vatDueAcquisitions: Double = 0
+    var vatReclaimedCurrPeriod: Double = 0
+    var totalValueSalesExVAT: Double = 0
+    var totalValuePurchasesExVAT: Double = 0
+    var totalValueGoodsSuppliedExVAT: Double = 0
+    var totalAcquisitionsExVAT: Double = 0
+
+    var status: QuarterStatus = .open
     var isSubmitting = false
 
-    var totalIncome: Double { turnover + otherIncome }
-    var netProfit: Double { totalIncome - totalExpenses }
+    var totalVatDue: Double { vatDueSales + vatDueAcquisitions }
+    var netVatDue: Double { abs(totalVatDue - vatReclaimedCurrPeriod) }
 
     enum QuarterStatus: String {
-        case notStarted = "Not Started"
-        case draft = "Draft"
+        case open = "Open"
         case submitted = "Submitted"
-        case overdue = "Overdue"
 
         var color: Color {
             switch self {
-            case .notStarted: return .gray
-            case .draft: return .orange
+            case .open: return .orange
             case .submitted: return .green
-            case .overdue: return .red
             }
         }
 
         var icon: String {
             switch self {
-            case .notStarted: return "circle"
-            case .draft: return "pencil.circle.fill"
+            case .open: return "circle"
             case .submitted: return "checkmark.circle.fill"
-            case .overdue: return "exclamationmark.circle.fill"
             }
         }
-    }
-
-    static func defaultQuarters() -> [MTDQuarterViewModel] {
-        [
-            MTDQuarterViewModel(quarter: 1, periodStart: "6 Apr", periodEnd: "5 Jul", deadline: "7 Aug"),
-            MTDQuarterViewModel(quarter: 2, periodStart: "6 Jul", periodEnd: "5 Oct", deadline: "7 Nov"),
-            MTDQuarterViewModel(quarter: 3, periodStart: "6 Oct", periodEnd: "5 Jan", deadline: "7 Feb"),
-            MTDQuarterViewModel(quarter: 4, periodStart: "6 Jan", periodEnd: "5 Apr", deadline: "7 May"),
-        ]
     }
 }

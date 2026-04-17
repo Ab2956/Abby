@@ -116,7 +116,7 @@ class InvoiceController: ObservableObject {
 
         do {
             var finalInvoice = invoice.withRecalculatedTotals()
-            finalInvoice.invoice_date_iso = formatDateToISO8601(date: invoice.invoice_date)
+            finalInvoice.invoice_date_iso = invoice.invoice_date
             let _: ReceiptResponse = try await apiService.authenticatedPost(
                 path: "/createInvoice",
                 body: finalInvoice
@@ -148,11 +148,5 @@ class InvoiceController: ObservableObject {
         successMessage = nil
     }
 
-    func formatDateToISO8601( date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter.string(from: date)
-    }
+
 }
