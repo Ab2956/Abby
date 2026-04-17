@@ -1,6 +1,6 @@
 const InoviceSchema = require("../models/InvoiceModel");
-const {PdfParser} = require("../invoiceSystem/pdfParser");
-const {ImageParser} = require("../invoiceSystem/imageParser");
+const { PdfParser } = require("../invoiceSystem/pdfParser");
+const { ImageParser } = require("../invoiceSystem/imageParser");
 const invoiceServices = require("../services/invoiceServices");
 const userServices = require("../services/userServices");
 
@@ -34,7 +34,7 @@ class InvoiceController {
             }
 
             return { success: true, message: "Invoice uploaded successfully" };
-            
+
         } catch (error) {
             throw new Error(`File upload failed: ${error.message}`);
         }
@@ -48,10 +48,10 @@ class InvoiceController {
             // format the invoice for the frontend
             const normalizeInvoice = (invoice) => ({
                 ...invoice,
-                _id: invoice._id?.toString(),
-                invoice_date: invoice.invoice_date instanceof Date
-                    ? invoice.invoice_date.toISOString()
-                    : (invoice.invoice_date?.$date || ""),
+                _id: invoice._id ? .toString(),
+                invoice_date: invoice.invoice_date instanceof Date ?
+                    invoice.invoice_date.toISOString() :
+                    (typeof invoice.invoice_date === 'string' ? invoice.invoice_date : (invoice.invoice_date ? .$date || "")),
                 supplier: invoice.supplier ? {
                     ...invoice.supplier,
                     _id: undefined
