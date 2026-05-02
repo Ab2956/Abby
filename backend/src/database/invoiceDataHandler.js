@@ -47,6 +47,10 @@ class invoiceDataHandler {
         const result = await invoiceCollection.aggregate(pipeline).toArray();
         return result.length > 0 ? result[0].totalVat : 0;
     }
+    async deleteInvoice(invoiceId) {
+        const invoiceCollection = await this.getInvoiceCollection();
+        return await invoiceCollection.deleteOne({ _id: new ObjectId(invoiceId)});
+    }
 }
 
 module.exports = new invoiceDataHandler();

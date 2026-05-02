@@ -28,5 +28,6 @@ router.post('/uploadInvoice', jwtVerification, upload.single('file'), async(req,
 
 router.get('/getAllUserInvoices', jwtVerification, InvoiceController.getAllUserInvoices);
 router.post('/createInvoice', jwtVerification, InvoiceController.createInvoice);
+router.post('/deleteInvoice', jwtVerification, InvoiceController.deleteInvoice);
 
 module.exports = router;

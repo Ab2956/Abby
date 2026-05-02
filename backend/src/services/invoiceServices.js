@@ -19,5 +19,8 @@ class InvoiceServices {
     async getInvoiceCollection() {
         return await invoiceDataHandler.getInvoiceCollection();
     }
+    async deleteInvoice(invoiceId) {
+        return await invoiceDataHandler.deleteInvoice(invoiceId);
+    }
 
 } module.exports = new InvoiceServices();

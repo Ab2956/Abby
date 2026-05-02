@@ -128,6 +128,22 @@ class InvoiceController: ObservableObject {
 
         isLoading = false
     }
+    func deleteInvoice(invoiceId: String) async {
+        isLoading = true
+        errorMessage = nil
+        successMessage = nil
+
+        do {
+            let _: DeleteInvoiceResponse = try await apiService.authenticatedPost(
+                path: "/deleteInvoice",
+                body: ["invoiceId": invoiceId]
+            )
+            successMessage = "Invoice deleted successfully"
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading = false
+    }
 
     // Helpers
 

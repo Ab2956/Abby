@@ -84,6 +84,18 @@ class InvoiceController {
             res.status(500).json({ error: 'Failed to create invoice' });
         }
     }
+
+    // delete invoice
+    async deleteInvoice(req, res) {
+        try {
+            const invoiceId = req.body.invoiceId;
+            await invoiceServices.deleteInvoice(invoiceId);
+            res.status(200).json({ message: 'Invoice deleted successfully' });
+        } catch (error) {
+            console.error('Error deleting invoice:', error);
+            res.status(500).json({ error: 'Failed to delete invoice' });
+        }
+    }
 }
 
 module.exports = new InvoiceController();
