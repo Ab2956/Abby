@@ -44,21 +44,10 @@ class ReceiptController: ObservableObject {
         successMessage = nil
 
         do {
-            // If we have image data, upload as multipart for multer
-            if let image = receiptImage, let imageData = image.jpegData(compressionQuality: 0.8) {
-                let _: ReceiptResponse = try await apiService.authenticatedUpload(
-                    path: "/addRecipt",
-                    fileData: imageData,
-                    fileName: "receipt.jpg",
-                    mimeType: "image/jpeg"
-                )
-            } else {
-                // No image, send receipt data as JSON
-                let _: ReceiptResponse = try await apiService.authenticatedPost(
-                    path: "/addRecipt",
-                    body: scannedReceipt
-                )
-            }
+            let _: ReceiptResponse = try await apiService.authenticatedPost(
+                path: "/addRecipt",
+                body: scannedReceipt
+            )
             successMessage = "Receipt saved successfully"
         } catch {
             errorMessage = error.localizedDescription

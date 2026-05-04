@@ -10,7 +10,6 @@ import PhotosUI
 
 struct ReceiptUploadView: View {
     @StateObject private var controller = ReceiptController()
-    @State private var isShowingCamera = false
 
     // Local text bindings for amount fields (String ↔ Double)
     @State private var totalAmountText = ""
@@ -73,43 +72,22 @@ struct ReceiptUploadView: View {
                     }
                     .padding(.horizontal)
                 } else {
-                    HStack(spacing: 16) {
-                        // Camera
-                        Button {
-                            isShowingCamera = true
-                        } label: {
-                            VStack(spacing: 8) {
-                                Image(systemName: "camera.fill")
-                                    .font(.title2)
-                                Text("Camera")
-                                    .font(.caption)
-                                    .fontWeight(.medium)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 24)
-                            .background(Color("CardColour"))
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                            .shadow(color: .black.opacity(0.05), radius: 4)
+                    // Photo Library
+                    PhotosPicker(selection: $controller.selectedPhotoItem, matching: .images) {
+                        VStack(spacing: 8) {
+                            Image(systemName: "photo.on.rectangle")
+                                .font(.title2)
+                            Text("Select Photo")
+                                .font(.caption)
+                                .fontWeight(.medium)
                         }
-                        .buttonStyle(.plain)
-
-                        // Photo Library
-                        PhotosPicker(selection: $controller.selectedPhotoItem, matching: .images) {
-                            VStack(spacing: 8) {
-                                Image(systemName: "photo.on.rectangle")
-                                    .font(.title2)
-                                Text("Library")
-                                    .font(.caption)
-                                    .fontWeight(.medium)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 24)
-                            .background(Color("CardColour"))
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                            .shadow(color: .black.opacity(0.05), radius: 4)
-                        }
-                        .buttonStyle(.plain)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 24)
+                        .background(Color("CardColour"))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .shadow(color: .black.opacity(0.05), radius: 4)
                     }
+                    .buttonStyle(.plain)
                     .padding(.horizontal)
                 }
 
@@ -224,9 +202,6 @@ struct ReceiptUploadView: View {
             if let item = controller.selectedPhotoItem {
                 Task { await controller.loadImage(from: item) }
             }
-        }
-        .sheet(isPresented: $isShowingCamera) {
-            CameraView(image: $controller.receiptImage)
         }
     }
 
