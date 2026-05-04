@@ -53,4 +53,4 @@ class invoiceDataHandler {
     }
 }
 
-module.exports = new invoiceDataHandler();
+module.exports = new invoiceDataHandler(); 

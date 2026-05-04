@@ -13,11 +13,11 @@ describe('Test Invoice Services', () => {
         await closeConnection();
     });
 
-    afterEach(async() => {
-        const userId = new ObjectId('68fa2057b845e279d8dc41a9');
-        const invoiceColl = await db.getCollection('invoices');
-        await invoiceColl.deleteOne({ userId: userId });
-    });
+    // afterEach(async() => {
+    //     const userId = new ObjectId('68fa2057b845e279d8dc41a9');
+    //     const invoiceColl = await db.getCollection('invoices');
+    //     await invoiceColl.deleteOne({ userId: userId });
+    // });
 
     test('should add invoice to db', async() => {
         const userId = '68fa2057b845e279d8dc41a9';
@@ -54,4 +54,10 @@ describe('Test Invoice Services', () => {
 
         console.log(invoices);
     });
+    test('should delete invoice from db using invoiceId', async() => {
+        const invoiceId = '69f88ebbd78f3aa3d8c8ea87';
+        const result = await InvoiceServices.deleteInvoice(invoiceId);
+        expect(result).toBeDefined();
+        expect(result.deletedCount).toBe(1);
+    });   
 })
