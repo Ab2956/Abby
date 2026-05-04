@@ -126,9 +126,11 @@ class ReceiptController: ObservableObject {
     func deleteReceipt(id: String) async {
         errorMessage = nil
 
-        do {
-            try await apiService.authenticatedDelete(path: "/deleteRecipt/\(id)")
-            receipts.removeAll { $0.id == id }
+         do {
+            let _: MessageResponse = try await apiService.authenticatedPost(
+                path: "/deleteReceipt",
+                body: ["receiptId": id]
+            )
         } catch {
             errorMessage = error.localizedDescription
         }

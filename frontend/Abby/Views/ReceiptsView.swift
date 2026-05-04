@@ -25,12 +25,33 @@ struct ReceiptsView: View {
                             .foregroundColor(.secondary)
                     }
                 }
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    Button(role: .destructive) {
+                        Task {
+                            if let id = recepit.id {
+                                await controller.deleteReceipt(id: id)
+                                if controller.errorMessage == nil {
+                                    service.receipts.removeAll { $0.id == id }
+                                }
+                            }
+                        }
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
                 
             }
             .scrollContentBackground(.hidden)
             .navigationTitle("Receipts")
             .fontWeight(.regular)
             .font(.headline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: ReceiptCreationView()) {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
             .onAppear(){
                 service.getAllUserReceipts { receipts,error in
                     if let receipts = receipts {

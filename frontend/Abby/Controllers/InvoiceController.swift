@@ -117,6 +117,9 @@ class InvoiceController: ObservableObject {
         do {
             var finalInvoice = invoice.withRecalculatedTotals()
             finalInvoice.invoice_date_iso = invoice.invoice_date
+            if !finalInvoice.invoice_number.hasPrefix("INV-") {
+                finalInvoice.invoice_number = "INV-\(finalInvoice.invoice_number)"
+            }
             let _: ReceiptResponse = try await apiService.authenticatedPost(
                 path: "/createInvoice",
                 body: finalInvoice
@@ -129,20 +132,16 @@ class InvoiceController: ObservableObject {
         isLoading = false
     }
     func deleteInvoice(invoiceId: String) async {
-        isLoading = true
         errorMessage = nil
-        successMessage = nil
 
         do {
-            let _: DeleteInvoiceResponse = try await apiService.authenticatedPost(
+            let _: MessageResponse = try await apiService.authenticatedPost(
                 path: "/deleteInvoice",
                 body: ["invoiceId": invoiceId]
             )
-            successMessage = "Invoice deleted successfully"
         } catch {
             errorMessage = error.localizedDescription
         }
-        isLoading = false
     }
 
     // Helpers

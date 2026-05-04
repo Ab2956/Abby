@@ -2,6 +2,7 @@ import SwiftUI
 
 struct InvoicesView: View {
     @StateObject private var service = InvoiceServices.shared
+    @StateObject private var controller = InvoiceController()
     @State private var selectedInvoice: Invoice?
     @State private var showDetail = false
     
@@ -24,9 +25,30 @@ struct InvoicesView: View {
                             .fontWeight(.regular)
                     }
                 }
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    Button(role: .destructive) {
+                        Task {
+                            if let id = invoice.id {
+                                await controller.deleteInvoice(invoiceId: id)
+                                if controller.errorMessage == nil {
+                                    service.invoices.removeAll { $0.id == id }
+                                }
+                            }
+                        }
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
             }
             .scrollContentBackground(.hidden)
             .navigationTitle("Invoices").font(.headline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: InvoiceCreationView()) {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
             .onAppear {
                 service.fetchAllUserInvoices { invoices, error in
                     if let invoices = invoices {
@@ -47,7 +69,7 @@ struct InvoiceDetailView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Invoice \(invoice.invoice_number)")
+                Text(invoice.invoice_number)
                     .font(.title2)
                     .fontWeight(.bold)
                 
