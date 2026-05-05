@@ -128,7 +128,7 @@ class MTDController: ObservableObject {
         )
 
         do {
-            let _: [String: String] = try await apiService.authenticatedPost(
+            let _: [String: AnyCodable] = try await apiService.authenticatedPost(
                 path: "/vat",
                 body: body,
                 includeDeviceInfo: true

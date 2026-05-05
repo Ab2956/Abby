@@ -30,9 +30,13 @@ class HmrcService {
     }
 
     async submitObligations(vrn, payload) {
-        return this.httpClient.post(`/organisations/vat/${vrn}/returns`,
-            payload, this.fraudHeaders);
-
+        try {
+            return await this.httpClient.post(`/organisations/vat/${vrn}/returns`,
+                payload, this.fraudHeaders);
+        } catch (error) {
+            const errorMsg = error.response?.data ? JSON.stringify(error.response.data) : error.message;
+            throw new Error(`Failed to submit VAT return: ${errorMsg}`);
+        }
     }
     async getBusinessId(nino) {
         return this.httpClient.get(`/individuals/business/details/${nino}/list`, null, this.fraudHeaders);

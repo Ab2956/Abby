@@ -82,7 +82,7 @@ class obligationsController {
             console.error('Error submitting obligation:', error);
             const message = error.message && error.message.includes('refresh token')
                 ? 'HMRC session expired, please reconnect to HMRC'
-                : 'Failed to submit obligation';
+                : error.message || 'Failed to submit obligation';
             res.status(500).json({ error: message });
         }
     }
