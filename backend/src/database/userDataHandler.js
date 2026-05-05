@@ -111,7 +111,7 @@ class userDataHandler {
 
     async addUserName(userId, name) {
         const userCollection = await this.getUsers();
-        return await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { name } });
+        return await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { user_name: name } });
     }
     async updatePassword(userId, encryptedPassword) {
         const userCollection = await this.getUsers();
