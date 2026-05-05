@@ -57,7 +57,7 @@ class UserController {
         try {
             const userId = req.user.userId;
             const { name } = req.body;
-            const updatedUserInfo = await userServices.addUserName(name);
+            const updatedUserInfo = await userServices.addUserName(userId, name);
             res.json(updatedUserInfo);
         } catch (error) {
             console.error('Error adding user name:', error);

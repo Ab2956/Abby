@@ -99,10 +99,10 @@ class UserServices {
         }
     }
 
-    async updateVrn( vrn) {
+    async updateVrn(userId, vrn) {
         try {
             const encryptedVrn = await encryptToken(vrn);
-            return await userDataHandler.updateVrn( encryptedVrn);
+            return await userDataHandler.updateVrn(userId, encryptedVrn);
         } catch (error) {
             console.log("UpdateVrn", error);
             throw error;
@@ -201,11 +201,28 @@ class UserServices {
         }
     }
 
-    async addUserName( name) {
+    async addUserName(userId, name) {
         try {
-            return await userDataHandler.addUserName( name);
+            return await userDataHandler.addUserName(userId, name);
         } catch (error) {
             console.log("AddUserName", error);
+            throw error;
+        }
+    }
+    async updatePassword(userId, currentPassword, newPassword) {
+        try {
+            const user = await userDataHandler.getUserById(userId);
+            if (!user) {
+                throw new Error("User not found");
+            }
+            const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+            if (!passwordMatch) {
+                throw new Error("Current password is incorrect");
+            }
+            const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+            return await userDataHandler.updateUser(userId, { password: hashedNewPassword });
+        } catch (error) {
+            console.log("UpdatePassword", error);
             throw error;
         }
     }

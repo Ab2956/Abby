@@ -105,12 +105,17 @@ class userDataHandler {
         if (user && user.nino) {
             const nino = decryptToken(user.nino);
             return nino;
-        }        return null;
+        }
+        return null;
     }
 
     async addUserName(userId, name) {
         const userCollection = await this.getUsers();
         return await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { name } });
+    }
+    async updatePassword(userId, encryptedPassword) {
+        const userCollection = await this.getUsers();
+        return await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { password: encryptedPassword } });
     }
 }
 module.exports = new userDataHandler();
