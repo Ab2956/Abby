@@ -99,10 +99,10 @@ class UserServices {
         }
     }
 
-    async updateVrn(userId, vrn) {
+    async updateVrn( vrn) {
         try {
             const encryptedVrn = await encryptToken(vrn);
-            return await userDataHandler.updateVrn(userId, encryptedVrn);
+            return await userDataHandler.updateVrn( encryptedVrn);
         } catch (error) {
             console.log("UpdateVrn", error);
             throw error;
@@ -201,9 +201,9 @@ class UserServices {
         }
     }
 
-    async addUserName(userId, name) {
+    async addUserName( name) {
         try {
-            return await userDataHandler.addUserName(userId, name);
+            return await userDataHandler.addUserName( name);
         } catch (error) {
             console.log("AddUserName", error);
             throw error;
