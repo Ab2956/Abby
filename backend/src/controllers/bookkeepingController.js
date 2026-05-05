@@ -29,7 +29,7 @@ class bookkeepingController {
 
     async deleteRecipt(req, res) {
         try {
-            const reciptId = req.params.id;
+            const reciptId = req.body.receiptId;
             await bookeepingService.deleteRecipt(reciptId);
             res.status(200).json({ message: 'Recipt deleted successfully' });
         } catch (error) {
