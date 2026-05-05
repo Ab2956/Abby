@@ -81,14 +81,16 @@ class MTDController: ObservableObject {
             )
 
             if let hmrcObligations = response.obligations {
+                let locallySubmitted = Set(obligations.filter { $0.status == .submitted }.map { $0.periodKey })
                 obligations = hmrcObligations.enumerated().map { index, ob in
-                    VATQuarterViewModel(
+                    let isSubmitted = ob.status == "F" || locallySubmitted.contains(ob.periodKey ?? "")
+                    return VATQuarterViewModel(
                         quarter: index + 1,
                         periodStart: ob.start,
                         periodEnd: ob.end,
                         deadline: ob.due,
                         periodKey: ob.periodKey ?? "",
-                        status: ob.status == "F" ? .submitted : .open
+                        status: isSubmitted ? .submitted : .open
                     )
                 }
             }
