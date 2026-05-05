@@ -1,6 +1,7 @@
 const HmrcService = require('../services/hmrcServices');
 const userServices = require('../services/userServices');
 const fraudPreventionBuilder = require('../services/fraudPreventionBuilder');
+const mtdServices = require('../services/mtdServices');
 
 class obligationsController {
 
@@ -62,7 +63,7 @@ class obligationsController {
                 return res.status(400).json({ error: 'No VRN found for user, please update your profile' });
             }
 
-            const obligationData = req.body;
+            const obligationData = mtdServices.formatVATForHmrc(req.body);
 
             let hmrcService = await this.getHmrcService(userId, req);
             try {

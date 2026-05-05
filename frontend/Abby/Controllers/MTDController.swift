@@ -60,9 +60,16 @@ class MTDController: ObservableObject {
         errorMessage = nil
 
         do {
-            // Fetch open + fulfilled obligations for the current tax year window
-            let from = "2025-04-06"
-            let to = "2026-04-05"
+            // Compute current UK tax year: April 6 – April 5
+            let calendar = Calendar.current
+            let now = Date()
+            let year = calendar.component(.year, from: now)
+            let month = calendar.component(.month, from: now)
+            let day = calendar.component(.day, from: now)
+            // Tax year starts April 6; if before April 6, start year is previous year
+            let taxYearStart = (month < 4 || (month == 4 && day < 6)) ? year - 1 : year
+            let from = "\(taxYearStart)-04-06"
+            let to = "\(taxYearStart + 1)-04-05"
 
             let response: HMRCObligationsResponse = try await apiService.authenticatedGet(
                 path: "/vat",
