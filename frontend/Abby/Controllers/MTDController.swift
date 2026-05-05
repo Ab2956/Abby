@@ -136,7 +136,14 @@ class MTDController: ObservableObject {
             obligations[index].status = .submitted
             successMessage = "VAT return for period \(quarter.periodKey) submitted successfully"
         } catch {
-            errorMessage = error.localizedDescription
+            let msg = error.localizedDescription
+            if msg.contains("DUPLICATE_SUBMISSION") {
+                // HMRC already has this return — treat as submitted
+                obligations[index].status = .submitted
+                successMessage = "VAT return for period \(quarter.periodKey) was already submitted to HMRC"
+            } else {
+                errorMessage = msg
+            }
         }
 
         obligations[index].isSubmitting = false
